@@ -1,0 +1,3 @@
+class RankingSeite extends Seite {
+    
+}
