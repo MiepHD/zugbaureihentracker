@@ -1,20 +1,34 @@
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import { Nutzer } from './models/Nutzer';
+import { Freundesliste } from './models/Freundesliste';
+import { Baureihe } from './models/Baureihe';
+import { Aktivitaet } from './models/Aktivitaet';
 
 class API {
+    
     private nutzer: Nutzer;
+    private freundesliste: Freundesliste;
+    private baureihe: Baureihe;
+    private aktivitaet: Aktivitaet;
+    
     constructor() {
 
-    User.init({
-        // Model attributes are defined here
-        firstName: {
-        type: DataTypes.STRING,
-        allowNull: false,
+    Nutzer.init({
+        uuid: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
-        lastName: {
-        type: DataTypes.STRING,
-        // allowNull defaults to true
+        name: {
+            type: DataTypes.STRING,
         },
+        passworthash: {
+            type: DataTypes.STRING,
+        },
+        sessiontoken: {
+            type: DataTypes.STRING,
+        }
+
+
     },
     {
         // Other model options go here
