@@ -10,35 +10,133 @@ class API {
     private freundesliste: Freundesliste;
     private baureihe: Baureihe;
     private aktivitaet: Aktivitaet;
+    private sequelize: Sequelize;
     
     constructor() {
-
-    Nutzer.init({
-        uuid: {
-            type: DataTypes.STRING,
-            allowNull: false,
+        const sequelize = new Sequelize('database', 'username', 'password', {
+            host: 'localhost',
+            dialect: 'mariadb'
+        });
+        this.sequelize = sequelize;
+        Nutzer.init({
+            uuid: {
+                type: DataTypes.UUIDV4,
+                allowNull: false,
+                primaryKey: true,
+            },
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            passworthash: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            sessiontoken: {
+                type: DataTypes.STRING,
+            }
         },
-        name: {
-            type: DataTypes.STRING,
-        },
-        passworthash: {
-            type: DataTypes.STRING,
-        },
-        sessiontoken: {
-            type: DataTypes.STRING,
-        }
+        {
+            sequelize,
+            modelName: 'Nutzer',
+        });
 
+        Freundesliste.init({
+            von: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: Nutzer,
+                    key: 'uuid',
+                },
+            },
+            zu: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                references: {
+                    model: Nutzer,
+                    key: 'uuid',
+                },
+            }
+        },
+        {
+            sequelize,
+            modelName: 'Freundesliste',
+        });
+        Nutzer.belongsToMany(Nutzer, { through: Freundesliste });
 
-    },
-    {
-        // Other model options go here
-        sequelize, // We need to pass the connection instance
-        modelName: 'User', // We need to choose the model name
-    },
-    );
+        Baureihe.init({
+            ubid: {
+                type: DataTypes.UUIDV4,
+                allowNull: false,
+                primaryKey: true,
+            },
+            name: {
+                type: DataTypes.STRING,
+            },
+            beschreibung: {
+                type: DataTypes.STRING,
+            },
+        },
+        {
+            sequelize,
+            modelName: 'Baureihe',
+        });
+
+        Aktivitaet.init({
+            ubid: {
+                type: DataTypes.UUIDV4,
+                allowNull: false,
+                references: {
+                    model: Nutzer,
+                    key: 'uuid',
+                },
+            },
+            uuid: {
+                type: DataTypes.UUIDV4,
+                allowNull: false,
+                references: {
+                    model: Baureihe,
+                    key: 'ubid',
+                },
+            },
+        },
+        {
+            sequelize,
+            modelName: 'Aktivitaet',
+        });
+        Nutzer.belongsToMany(Baureihe, { through: Aktivitaet });
     }
 
+    public baureiheAlsGefundenMarkieren(sessiontoken: String, ubid: String): boolean {
+        
+    }
 
-    
-    
+    public getBaureihe(): Baureihe {
+
+    }
+
+    public anmelden(name: String, passworthash: String): boolean {
+
+    }
+
+    public fuegeFreundHinzu(sessiontoken: String, uuid: String): boolean {
+
+    }
+
+    public entferneFreund(sessiontoken: String, uuid: String): boolean {
+
+    }
+
+    public getRanking(sessiontoken: String): Ranking {
+
+    }
+
+    public getGefundeneBaureihen(sessiontoken: String): Baureihe[] {
+        
+    }
+
+    public async getGesamtzahlBaureihen(): Promise <number> {
+        return Baureihe.count();
+    } 
 }
