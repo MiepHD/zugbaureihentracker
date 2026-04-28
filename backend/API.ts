@@ -129,14 +129,29 @@ class API {
     }
 
     public getRanking(sessiontoken: String): Ranking {
-
+        
     }
 
-    public getGefundeneBaureihen(sessiontoken: String): Baureihe[] {
-        
+    public async getGefundeneBaureihen(sessiontoken: String): Promise<Baureihe[]> {
+        const uuid = await this.getNutzer(sessiontoken);
+        return Aktivitaet.findAll({
+            where: {
+                uuid: uuid,
+            },
+            include: [Baureihe]
+        });
     }
 
     public async getGesamtzahlBaureihen(): Promise <number> {
         return Baureihe.count();
     } 
+
+    private async getNutzer(sessiontoken: String): Promise<String> {
+        const nutzer = await Nutzer.findAll({
+            where: {
+                sessiontoken: sessiontoken,
+            },
+        });
+        if (nutzer.length > 0) return nutzer[0].getDataValue("uuid"); else throw new Error("not found");
+    }
 }
