@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model } from 'sequelize';
+import { Sequelize, DataTypes, Model, UUIDV4 } from 'sequelize';
 import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
@@ -27,6 +27,7 @@ class API {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                unique: true,
             },
             passworthash: {
                 type: DataTypes.STRING,
@@ -108,27 +109,67 @@ class API {
         Nutzer.belongsToMany(Baureihe, { through: Aktivitaet });
     }
 
-    public baureiheAlsGefundenMarkieren(sessiontoken: String, ubid: String): boolean {
+    public async baureiheAlsGefundenMarkieren(sessiontoken: String, ubid: String): boolean {
         
     }
 
-    public getBaureihe(): Baureihe {
+    public async getBaureihe(): Baureihe {
 
     }
 
-    public anmelden(name: String, passworthash: String): boolean {
-
+    public async anmelden(name: String, passworthash: String): Promise<boolean | String> {
+        const test = await Nutzer.count({
+            where: {
+                name: name,
+                passworthash: passworthash,
+            }
+        });
+        if(test == 0) return false;
+        if(test > 1) throw new Error("Nutzer doppelt vorhanden.");
+        
     }
 
-    public fuegeFreundHinzu(sessiontoken: String, uuid: String): boolean {
-
+    public async fuegeFreundHinzu(sessiontoken: String, uuid: String): Promise<boolean> {
+        const uuid2 = await this.getNutzer(sessiontoken);
+        const test = await Freundesliste.count({
+            where: {
+                von: uuid2,
+                zu: uuid,
+            }
+        });
+        if(test > 0) return false;
+        const entry = await Freundesliste.create({
+            von: uuid2,
+            zu: uuid,
+        });
+        if(entry != null) return true;
+        throw new Error("Hinzufügen nicht möglich.");
     }
 
-    public entferneFreund(sessiontoken: String, uuid: String): boolean {
-
+    public async entferneFreund(sessiontoken: String, uuid: String): Promise<boolean> {
+        const uuid2 = await this.getNutzer(sessiontoken);
+        const t = await this.sequelize.transaction();
+        try {
+            const exit = await Freundesliste.destroy({
+                where: {
+                    von: uuid2,
+                    zu: uuid,
+                },
+                transaction: t,
+            });
+            if (exit > 1) {
+                await t.rollback();
+                throw new Error("Mehr als ein Eintrag gelöscht – Rollback durchgeführt!");
+            }
+            await t.commit();
+            return exit === 1;
+        } catch (err) {
+            await t.rollback();
+            throw err;
+        }
     }
 
-    public getRanking(sessiontoken: String): Ranking {
+    public async getRanking(sessiontoken: String): Ranking {
         
     }
 
