@@ -12,6 +12,10 @@ class API {
     private aktivitaet: Aktivitaet;
     private sequelize: Sequelize;
     
+    /**
+     * Konstruktor der Klasse Api; Erstellen des Sequelize zur Kommunikation mit der Datenbank; Erstellen der Tabellen
+     * Tim & Lia, 24.04.2026
+     */
     constructor() {
         const sequelize = new Sequelize('database', 'username', 'password', {
             host: 'localhost',
@@ -109,14 +113,53 @@ class API {
         Nutzer.belongsToMany(Baureihe, { through: Aktivitaet });
     }
 
+    /**
+     * 
+     * @param sessiontoken 
+     * @param ubid 
+     */
     public async baureiheAlsGefundenMarkieren(sessiontoken: String, ubid: String): boolean {
         
     }
 
+    /**
+     * 
+     */
     public async getBaureihe(): Baureihe {
 
     }
 
+    /**
+     * Registrieren eines Nutzers auf der Website.
+     * Tim & Lia, 08.05.2026
+     * @param name Benutzername des Nutzers.
+     * @param passworthash Passworthash des Nutzers.
+     * @returns True or False, ob das Registrieren funktioniert hat.
+     */
+    public async registieren(name: String, passworthash: String): Promise<boolean | String> {
+        const test = await Nutzer.count({
+            where: {
+                name: name,
+                passworthash: passworthash,
+            }
+        });
+        if(test > 0) throw new Error("Nutzer existiert schon.");
+        const entry = await Nutzer.create({
+            uuid: new UUIDV4(),
+            name: name,
+            passworthash: passworthash,
+        });
+        if(entry != null) return true;
+        throw new Error("Registrieren nicht möglich.");
+    }
+
+    /**
+     * Anmelden des Nutzers auf der Website.
+     * Tim & Lia, 08.05.2026
+     * @param name Benutzername des Nutzers.
+     * @param passworthash Passworthash des Nutzers.
+     * @returns Gibt das neu vergebene Sessiontoken zurück.
+     */
     public async anmelden(name: String, passworthash: String): Promise<boolean | String> {
         const test = await Nutzer.count({
             where: {
@@ -126,9 +169,24 @@ class API {
         });
         if(test == 0) return false;
         if(test > 1) throw new Error("Nutzer doppelt vorhanden.");
-        
+        const entry = await Nutzer.findOne({
+            where: {
+                name: name,
+                passworthash: passworthash,
+            }
+        });
+        const sessiontoken: String = new UUIDV4().key;
+        entry?.setDataValue("sessiontoken", sessiontoken);
+        return sessiontoken;
     }
 
+    /**
+     * Hinzufügen eines Freundes in die Freundesliste.
+     * Tim & Lia, 05.05.2026
+     * @param sessiontoken Sessiontoken eines Nutzers.
+     * @param uuid User ID eines Nutzers.
+     * @returns True or false, on das Hinzufügen erfolgreich war.
+     */
     public async fuegeFreundHinzu(sessiontoken: String, uuid: String): Promise<boolean> {
         const uuid2 = await this.getNutzer(sessiontoken);
         const test = await Freundesliste.count({
@@ -146,6 +204,13 @@ class API {
         throw new Error("Hinzufügen nicht möglich.");
     }
 
+    /**
+     * Entfernen eines Freundes aus der Freundesliste.
+     * Tim & Lia 05.05.2026
+     * @param sessiontoken Sessiontoken eines Nutzers.
+     * @param uuid UUID eines Nuters.
+     * @returns True or False, ob das Löschen erfolgreich war.
+     */
     public async entferneFreund(sessiontoken: String, uuid: String): Promise<boolean> {
         const uuid2 = await this.getNutzer(sessiontoken);
         const t = await this.sequelize.transaction();
@@ -169,10 +234,20 @@ class API {
         }
     }
 
+    /**
+     * 
+     * @param sessiontoken 
+     */
     public async getRanking(sessiontoken: String): Ranking {
         
     }
 
+    /**
+     * Gibt eine Liste an allen on einem Nutzer gefundenen Baureihen zurück.
+     * Tim & Lia, 28.04.2026
+     * @param sessiontoken Sessiontoken eines Nutzers.
+     * @returns Liste mit allen Einträgen der Tabelle Baureihe.
+     */
     public async getGefundeneBaureihen(sessiontoken: String): Promise<Baureihe[]> {
         const uuid = await this.getNutzer(sessiontoken);
         return Aktivitaet.findAll({
@@ -183,10 +258,21 @@ class API {
         });
     }
 
+    /**
+     * Gibt die Gesamtzahl aller gesammelten Baureihen zurück.
+     * Tim & Lia, 28.04.2026
+     * @returns Zahl der gesamten Baureihen.
+     */
     public async getGesamtzahlBaureihen(): Promise <number> {
         return Baureihe.count();
     } 
 
+    /**
+     * Sucht einen Nutzer zu einem Sessiontoken.
+     * Tim & Lia, 28.04.2026
+     * @param sessiontoken Sessiontoken eines Nutzers
+     * @returns Gibt die UUID vom Nutzer zurück.
+     */
     private async getNutzer(sessiontoken: String): Promise<String> {
         const nutzer = await Nutzer.findAll({
             where: {
