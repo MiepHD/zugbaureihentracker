@@ -5,11 +5,6 @@ import { Baureihe } from './models/Baureihe';
 import { Aktivitaet } from './models/Aktivitaet';
 
 class API {
-    
-    private nutzer: Nutzer;
-    private freundesliste: Freundesliste;
-    private baureihe: Baureihe;
-    private aktivitaet: Aktivitaet;
     private sequelize: Sequelize;
     
     /**
@@ -118,14 +113,14 @@ class API {
      * @param sessiontoken 
      * @param ubid 
      */
-    public async baureiheAlsGefundenMarkieren(sessiontoken: String, ubid: String): boolean {
+    public async baureiheAlsGefundenMarkieren(sessiontoken: String, ubid: String): Promise<boolean | void> {
         
     }
 
     /**
      * 
      */
-    public async getBaureihe(): Baureihe {
+    public async getBaureihe(): Promise<Baureihe | void> {
 
     }
 
@@ -238,7 +233,7 @@ class API {
      * 
      * @param sessiontoken 
      */
-    public async getRanking(sessiontoken: String): Ranking {
+    public async getRanking(sessiontoken: String): Promise<void> {
         
     }
 

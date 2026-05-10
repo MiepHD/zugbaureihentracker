@@ -5,12 +5,13 @@ import path from "path";
 export class DeliveryService {
     
     /* 17.04.2026, Tim + Lia, Die Paths sind die einzelnen Pfade zu den HTML Seiten, damit der DS diese abrufen und dem User zur Verfügung stellen kann */
-    private paths: String[] = ["login", "home", "ranking", "baureihen"];
+    private paths: String[] = ["", "login", "home", "ranking", "baureihen"];
 
     /* 17.04.2026, Tim + Lia, Der Konstruktor meldet eine Listener bei app an um dann die HTML Seiten bereitzustellen*/
     constructor(app: any) {
-        for(const urlpath of this.paths) {
+        for(let urlpath of this.paths) {
             app.get(`/${urlpath}`, (req: Request, res: Response) => {
+                if (urlpath === "") urlpath = "index";
                 res.sendFile(path.join(__dirname, `../frontend/seiten/${urlpath}/index.html`));
             });
         }
