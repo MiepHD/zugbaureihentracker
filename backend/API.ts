@@ -1,22 +1,22 @@
-import { Sequelize, DataTypes, Model, UUIDV4 } from 'sequelize';
+import { Sequelize, DataTypes, UUIDV4 } from 'sequelize';
 import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
 import { Aktivitaet } from './models/Aktivitaet';
 
-class API {
+export class API {
     private sequelize: Sequelize;
     
     /**
      * Konstruktor der Klasse Api; Erstellen des Sequelize zur Kommunikation mit der Datenbank; Erstellen der Tabellen
      * Tim & Lia, 24.04.2026
      */
-    constructor() {
-        const sequelize = new Sequelize('database', 'username', 'password', {
-            host: 'localhost',
-            dialect: 'mariadb'
-        });
+    constructor(sequelize: Sequelize) {
         this.sequelize = sequelize;
+    }
+
+    async init(){
+        const sequelize = this.sequelize;
         Nutzer.init({
             uuid: {
                 type: DataTypes.UUIDV4,
@@ -63,11 +63,11 @@ class API {
             sequelize,
             modelName: 'Freundesliste',
         });
-        Nutzer.belongsToMany(Nutzer, { through: Freundesliste });
+        Nutzer.belongsToMany(Nutzer, { as: "zu", through: Freundesliste });
 
         Baureihe.init({
             ubid: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.STRING,
                 allowNull: false,
                 primaryKey: true,
             },
@@ -106,6 +106,7 @@ class API {
             modelName: 'Aktivitaet',
         });
         Nutzer.belongsToMany(Baureihe, { through: Aktivitaet });
+        this.sequelize.sync();
     }
 
     /**
@@ -122,6 +123,25 @@ class API {
      */
     public async getBaureihe(): Promise<Baureihe | void> {
 
+    }
+
+    /**
+     * 
+     */
+    public async addBaureihe(ubid: String, name: String, beschreibung: String): Promise<boolean | void> {
+        const test = await Baureihe.count({
+            where: {
+                ubid
+            }
+        });
+        if (test > 0) return false;
+        Baureihe.create({
+            ubid,
+            name,
+            beschreibung
+        });
+        await this.sequelize.sync();
+        return true;
     }
 
     /**
@@ -259,7 +279,9 @@ class API {
      * @returns Zahl der gesamten Baureihen.
      */
     public async getGesamtzahlBaureihen(): Promise <number> {
-        return Baureihe.count();
+        const n: number = await Baureihe.count();
+        await this.sequelize.sync();
+        return n;
     } 
 
     /**
