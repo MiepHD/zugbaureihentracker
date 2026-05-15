@@ -1,9 +1,9 @@
-import express from "express";
+import express, { Express } from "express";
 import { DeliveryService } from "./DeliveryService";
 
 export class Server {
 
-    private app: any = express();
+    private app: Express = express();
     private PORT: number = 3000;
 
     /**

@@ -21,7 +21,7 @@ export class API {
         for (const i of interactions) {
             if (i.method === "get") {
                 app.get(`/api/${i.id}`, async (req: Request, res: Response) => {
-                    await req.text()
+                    await req.text();
                     res.send();
                 });
             }
