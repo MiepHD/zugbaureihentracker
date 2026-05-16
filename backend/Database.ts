@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, UUIDV4 } from 'sequelize';
+import { Sequelize, DataTypes, UUIDV4, Transaction } from 'sequelize';
 import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
@@ -114,22 +114,22 @@ export class Database {
      * @param sessiontoken 
      * @param ubid 
      */
-    public async baureiheAlsGefundenMarkieren(sessiontoken: String, ubid: String): Promise<boolean | void> {
+    public async baureiheAlsGefundenMarkieren(sessiontoken: string, ubid: string): Promise<boolean | void> {
         
     }
 
     /**
      * 
      */
-    public async getBaureihe(): Promise<Baureihe | void> {
+    public async getBaureihe(ubid: string): Promise<Baureihe> {
 
     }
 
     /**
      * 
      */
-    public async addBaureihe(ubid: String, name: String, beschreibung: String): Promise<boolean | void> {
-        const test = await Baureihe.count({
+    public async addBaureihe(ubid: string, name: string, beschreibung: string): Promise<boolean | void> {
+        const test: number = await Baureihe.count({
             where: {
                 ubid
             }
@@ -151,15 +151,15 @@ export class Database {
      * @param passworthash Passworthash des Nutzers.
      * @returns True or False, ob das Registrieren funktioniert hat.
      */
-    public async registieren(name: String, passworthash: String): Promise<boolean | String> {
-        const test = await Nutzer.count({
+    public async registieren(name: string, passworthash: string): Promise<boolean | string> {
+        const test: number = await Nutzer.count({
             where: {
                 name: name,
                 passworthash: passworthash,
             }
         });
         if(test > 0) throw new Error("Nutzer existiert schon.");
-        const entry = await Nutzer.create({
+        const entry: Nutzer = await Nutzer.create({
             uuid: new UUIDV4(),
             name: name,
             passworthash: passworthash,
@@ -176,7 +176,7 @@ export class Database {
      * @param passworthash Passworthash des Nutzers.
      * @returns Gibt das neu vergebene Sessiontoken zurück.
      */
-    public async anmelden(name: String, passworthash: String): Promise<boolean | String> {
+    public async anmelden(name: string, passworthash: string): Promise<boolean | string> {
         const test = await Nutzer.count({
             where: {
                 name: name,
@@ -191,7 +191,7 @@ export class Database {
                 passworthash: passworthash,
             }
         });
-        const sessiontoken: String = new UUIDV4().key;
+        const sessiontoken: string = new UUIDV4().key;
         entry?.setDataValue("sessiontoken", sessiontoken);
         return sessiontoken;
     }
@@ -203,7 +203,7 @@ export class Database {
      * @param uuid User ID eines Nutzers.
      * @returns True or false, on das Hinzufügen erfolgreich war.
      */
-    public async fuegeFreundHinzu(sessiontoken: String, uuid: String): Promise<boolean> {
+    public async fuegeFreundHinzu(sessiontoken: string, uuid: string): Promise<boolean> {
         const uuid2 = await this.getNutzer(sessiontoken);
         const test = await Freundesliste.count({
             where: {
@@ -227,9 +227,9 @@ export class Database {
      * @param uuid UUID eines Nuters.
      * @returns True or False, ob das Löschen erfolgreich war.
      */
-    public async entferneFreund(sessiontoken: String, uuid: String): Promise<boolean> {
-        const uuid2 = await this.getNutzer(sessiontoken);
-        const t = await this.sequelize.transaction();
+    public async entferneFreund(sessiontoken: string, uuid: string): Promise<boolean> {
+        const uuid2: string = await this.getNutzer(sessiontoken);
+        const t: Transaction = await this.sequelize.transaction();
         try {
             const exit = await Freundesliste.destroy({
                 where: {
@@ -254,7 +254,7 @@ export class Database {
      * 
      * @param sessiontoken 
      */
-    public async getRanking(sessiontoken: String): Promise<void> {
+    public async getRanking(sessiontoken: string): Promise<void> {
         
     }
 
@@ -264,7 +264,7 @@ export class Database {
      * @param sessiontoken Sessiontoken eines Nutzers.
      * @returns Liste mit allen Einträgen der Tabelle Baureihe.
      */
-    public async getGefundeneBaureihen(sessiontoken: String): Promise<Baureihe[]> {
+    public async getGefundeneBaureihen(sessiontoken: string): Promise<Baureihe[]> {
         const uuid = await this.getNutzer(sessiontoken);
         return Aktivitaet.findAll({
             where: {
@@ -283,7 +283,16 @@ export class Database {
         const n: number = await Baureihe.count();
         await this.sequelize.sync();
         return n;
-    } 
+    }
+
+    public async getUUID(sessiontoken: string): Promise<string> {
+        const user = await Nutzer.findOne({
+            where: {
+                sessiontoken: sessiontoken
+            }
+        });
+        return await user?.getDataValue("uuid");
+    }
 
     /**
      * Sucht einen Nutzer zu einem Sessiontoken.
@@ -291,7 +300,7 @@ export class Database {
      * @param sessiontoken Sessiontoken eines Nutzers
      * @returns Gibt die UUID vom Nutzer zurück.
      */
-    private async getNutzer(sessiontoken: String): Promise<String> {
+    private async getNutzer(sessiontoken: string): Promise<string> {
         const nutzer = await Nutzer.findAll({
             where: {
                 sessiontoken: sessiontoken,
