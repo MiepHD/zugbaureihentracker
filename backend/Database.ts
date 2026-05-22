@@ -3,6 +3,7 @@ import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
 import { Aktivitaet } from './models/Aktivitaet';
+import { randomUUID } from 'crypto';
 
 export class Database {
     private sequelize: Sequelize;
@@ -118,15 +119,20 @@ export class Database {
         
     }
 
-    /**
-     * 
+    /**Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
+     * Tim, 22.05.2026
      */
-    public async getBaureihe(ubid: string): Promise<Baureihe> {
+    public async getBaureihe(ubid: string): Promise<Baureihe | null> {
+        return await Baureihe.findOne({
+            where: {
+                ubid: ubid,
+            }
+        });
 
     }
 
-    /**
-     * 
+    /** Hinzufügen einer Baureihe in die Datenbank.
+     * Lia, 22.05.2026
      */
     public async addBaureihe(ubid: string, name: string, beschreibung: string): Promise<boolean | void> {
         const test: number = await Baureihe.count({
@@ -151,7 +157,7 @@ export class Database {
      * @param passworthash Passworthash des Nutzers.
      * @returns True or False, ob das Registrieren funktioniert hat.
      */
-    public async registieren(name: string, passworthash: string): Promise<boolean | string> {
+    public async registrieren(name: string, passworthash: string): Promise<boolean> {
         const test: number = await Nutzer.count({
             where: {
                 name: name,
@@ -160,7 +166,7 @@ export class Database {
         });
         if(test > 0) throw new Error("Nutzer existiert schon.");
         const entry: Nutzer = await Nutzer.create({
-            uuid: new UUIDV4(),
+            uuid: randomUUID(),
             name: name,
             passworthash: passworthash,
         });
@@ -191,8 +197,9 @@ export class Database {
                 passworthash: passworthash,
             }
         });
-        const sessiontoken: string = new UUIDV4().key;
+        const sessiontoken: string = randomUUID();
         entry?.setDataValue("sessiontoken", sessiontoken);
+        await entry?.save();
         return sessiontoken;
     }
 
@@ -204,7 +211,10 @@ export class Database {
      * @returns True or false, on das Hinzufügen erfolgreich war.
      */
     public async fuegeFreundHinzu(sessiontoken: string, uuid: string): Promise<boolean> {
-        const uuid2 = await this.getNutzer(sessiontoken);
+        const uuid2 = await this.getUUID(sessiontoken);
+        if (!uuid2) {
+            throw new Error("Nutzer nicht gefunden.");
+        }
         const test = await Freundesliste.count({
             where: {
                 von: uuid2,
@@ -301,11 +311,11 @@ export class Database {
      * @returns Gibt die UUID vom Nutzer zurück.
      */
     private async getNutzer(sessiontoken: string): Promise<string> {
-        const nutzer = await Nutzer.findAll({
+        const nutzer = await Nutzer.findOne({
             where: {
                 sessiontoken: sessiontoken,
             },
         });
-        if (nutzer.length > 0) return nutzer[0].getDataValue("uuid"); else throw new Error("not found");
+        return nutzer?.getDataValue("uuid");
     }
 }
