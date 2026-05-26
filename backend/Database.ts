@@ -10,12 +10,18 @@ export class Database {
     
     /**
      * Konstruktor der Klasse Api; Erstellen des Sequelize zur Kommunikation mit der Datenbank; Erstellen der Tabellen
-     * Tim & Lia, 24.04.2026
+     * @author Tim & Lia
+     * @since 24.04.2026
      */
     constructor(sequelize: Sequelize) {
         this.sequelize = sequelize;
     }
 
+    /**
+     * Initialisiert die Tabellen und Relations der Datenbank
+     * @author
+     * @since
+     */
     async init(){
         const sequelize = this.sequelize;
         Nutzer.init({
@@ -128,7 +134,8 @@ export class Database {
     }
 
     /**
-     * 
+     * @author
+     * @since
      * @param sessiontoken 
      * @param ubid 
      */
@@ -137,7 +144,8 @@ export class Database {
     }
 
     /**Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
-     * Tim, 22.05.2026
+     * @author Tim
+     * @since 22.05.2026
      */
     public async getBaureihe(ubid: string): Promise<Baureihe | null> {
         return await Baureihe.findOne({
@@ -149,7 +157,8 @@ export class Database {
     }
 
     /** Hinzufügen einer Baureihe in die Datenbank.
-     * Lia, 22.05.2026
+     * @author Lia
+     * @since 22.05.2026
      */
     public async addBaureihe(ubid: string, name: string, beschreibung: string): Promise<boolean | void> {
         const test: number = await Baureihe.count({
@@ -169,7 +178,8 @@ export class Database {
 
     /**
      * Registrieren eines Nutzers auf der Website.
-     * Tim & Lia, 08.05.2026
+     * @author Tim & Lia
+     * @since 08.05.2026
      * @param name Benutzername des Nutzers.
      * @param passworthash Passworthash des Nutzers.
      * @returns True or False, ob das Registrieren funktioniert hat.
@@ -194,7 +204,8 @@ export class Database {
 
     /**
      * Anmelden des Nutzers auf der Website.
-     * Tim & Lia, 08.05.2026
+     * @author Tim & Lia
+     * @since 08.05.2026
      * @param name Benutzername des Nutzers.
      * @param passworthash Passworthash des Nutzers.
      * @returns Gibt das neu vergebene Sessiontoken zurück.
@@ -222,7 +233,8 @@ export class Database {
 
     /**
      * Hinzufügen eines Freundes in die Freundesliste.
-     * Tim & Lia, 05.05.2026
+     * @author Tim & Lia
+     * @since 05.05.2026
      * @param sessiontoken Sessiontoken eines Nutzers.
      * @param uuid User ID eines Nutzers.
      * @returns True or false, on das Hinzufügen erfolgreich war.
@@ -249,7 +261,8 @@ export class Database {
 
     /**
      * Entfernen eines Freundes aus der Freundesliste.
-     * Tim & Lia 05.05.2026
+     * @author Tim & Lia
+     * @since 05.05.2026
      * @param sessiontoken Sessiontoken eines Nutzers.
      * @param uuid UUID eines Nuters.
      * @returns True or False, ob das Löschen erfolgreich war.
@@ -278,16 +291,9 @@ export class Database {
     }
 
     /**
-     * 
-     * @param sessiontoken 
-     */
-    public async getRanking(sessiontoken: string): Promise<void> {
-        
-    }
-
-    /**
      * Gibt eine Liste an allen on einem Nutzer gefundenen Baureihen zurück.
-     * Tim & Lia, 28.04.2026
+     * @author Tim & Lia
+     * @since 28.04.2026
      * @param sessiontoken Sessiontoken eines Nutzers.
      * @returns Liste mit allen Einträgen der Tabelle Baureihe.
      */
@@ -303,7 +309,8 @@ export class Database {
 
     /**
      * Gibt die Gesamtzahl aller gesammelten Baureihen zurück.
-     * Tim & Lia, 28.04.2026
+     * @author Tim & Lia
+     * @since 28.04.2026
      * @returns Zahl der gesamten Baureihen.
      */
     public async getGesamtzahlBaureihen(): Promise <number> {
@@ -323,7 +330,8 @@ export class Database {
 
     /**
      * Sucht einen Nutzer zu einem Sessiontoken.
-     * Tim & Lia, 28.04.2026
+     * @author Tim & Lia
+     * @since 28.04.2026
      * @param sessiontoken Sessiontoken eines Nutzers
      * @returns Gibt die UUID vom Nutzer zurück.
      */

@@ -3,6 +3,12 @@ import { Database } from "./Database";
 import express, { Request, Response, Express } from "express";
 
 export class API {
+    /**
+     * 
+     * @author Tim
+     * @param sequelize 
+     * @param app 
+     */
     constructor(sequelize: Sequelize, app: Express) {
         const db = new Database(sequelize);
 

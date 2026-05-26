@@ -2,13 +2,25 @@ import { Request, Response } from "express";
 import express, { Express } from "express";
 import path from "path";
 
-/* 17.04.2026, Tim + Lia, Die Klasse DeliveryService stellt die einzelnen HTML Seiten für den User zur Verfügung */
+/**
+ * Die Klasse DeliveryService stellt die einzelnen HTML Seiten für den User zur Verfügung
+ * @since 17.04.2026
+ * @author Tim & Lia 
+ */
 export class DeliveryService {
-    
-    /* 17.04.2026, Tim + Lia, Die Paths sind die einzelnen Pfade zu den HTML Seiten, damit der DS diese abrufen und dem User zur Verfügung stellen kann */
+    /**
+     * Die Paths sind die einzelnen Pfade zu den HTML Seiten, damit der DS diese abrufen und dem User zur Verfügung stellen kann
+     * @since 17.04.2026
+     * @author Tim & Lia, 
+     */
     private paths: String[] = ["", "login", "home", "ranking", "baureihen"];
 
-    /* 17.04.2026, Tim + Lia, Der Konstruktor meldet eine Listener bei app an um dann die HTML Seiten bereitzustellen*/
+    /**
+     * Der Konstruktor meldet eine Listener bei app an um dann die HTML Seiten bereitzustellen
+     * @since 17.04.2026
+     * @author Tim & Lia 
+     * @param app 
+     */
     constructor(app: Express) {
         for(let urlpath of this.paths) {
             app.get(`/${urlpath}`, (req: Request, res: Response) => {

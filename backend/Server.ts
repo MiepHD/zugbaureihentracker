@@ -8,7 +8,8 @@ export class Server {
 
     /**
      * Konstruktor für den Server; Starten des Servers; Übergeben des Delivery Service
-     * Tim & Lia, 14.04.2026
+     * @author Tim & Lia
+     * @since 14.04.2026
      */
     constructor() {
         this.app.listen(this.PORT, () => {
