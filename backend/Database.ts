@@ -64,7 +64,18 @@ export class Database {
             sequelize,
             modelName: 'Freundesliste',
         });
-        Nutzer.belongsToMany(Nutzer, { as: "zu", through: Freundesliste });
+        Nutzer.belongsToMany(Nutzer, {
+            as: "Freunde",
+            through: Freundesliste,
+            foreignKey: {
+                name: "von",
+                allowNull: false
+            },
+            otherKey: {
+                name: "zu",
+                allowNull: false
+            }
+        });
 
         Baureihe.init({
             ubid: {
@@ -85,7 +96,7 @@ export class Database {
         });
 
         Aktivitaet.init({
-            ubid: {
+            uuid: {
                 type: DataTypes.UUIDV4,
                 allowNull: false,
                 references: {
@@ -93,7 +104,7 @@ export class Database {
                     key: 'uuid',
                 },
             },
-            uuid: {
+            ubid: {
                 type: DataTypes.UUIDV4,
                 allowNull: false,
                 references: {
@@ -106,8 +117,14 @@ export class Database {
             sequelize,
             modelName: 'Aktivitaet',
         });
-        Nutzer.belongsToMany(Baureihe, { through: Aktivitaet });
-        this.sequelize.sync();
+        Aktivitaet.belongsTo(Baureihe, {
+            foreignKey: "ubid"
+        });
+
+        Aktivitaet.belongsTo(Nutzer, {
+            foreignKey: "uuid"
+        });
+        await this.sequelize.sync();
     }
 
     /**

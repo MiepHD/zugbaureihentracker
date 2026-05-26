@@ -1,8 +1,7 @@
 import { Sequelize } from "sequelize";
 import { Database } from "../backend/Database";
 import { Baureihe } from "../backend/models/Baureihe";
-import { expect, test, beforeAll, assertType } from 'vitest';
-import { beforeEach } from "node:test";
+import { expect, test, beforeAll, beforeEach } from 'vitest';
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
@@ -46,7 +45,7 @@ test("Baureihe hinzufügen", async () => {
 
 test("Anzahl der Baureihen abfragen", async () => {
     await db.addBaureihe("a", "b", "c");
-    expect(await db.getGesamtzahlBaureihen()).toBe(2);
+    expect(await db.getGesamtzahlBaureihen()).toBe(1);
 });
 
 test("Account registrieren", async () => {
