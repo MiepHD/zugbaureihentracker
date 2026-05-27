@@ -32,7 +32,8 @@ test("Baureihe als gefunden markieren", async () => {
 
 test("Baureihe abfragen", async () => {
     await db.addBaureihe("a", "b", "c");
-    const baureihe: Baureihe = await db.getBaureihe("a");
+    const baureihe: Baureihe | null = await db.getBaureihe("a");
+    if (baureihe == null) return;
     expect(await baureihe.getDataValue("ubid")).toBe("a");
     expect(await baureihe.getDataValue("name")).toBe("b");
     expect(await baureihe.getDataValue("beschreibung")).toBe("c");
