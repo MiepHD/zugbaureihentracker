@@ -1,3 +1,0 @@
-class LoginSeite extends Seite {
-    
-}

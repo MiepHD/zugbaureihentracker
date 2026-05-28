@@ -1,5 +1,7 @@
 import express, { Express } from "express";
 import { DeliveryService } from "./DeliveryService";
+import { API } from "./API";
+import { Sequelize } from "sequelize";
 
 export class Server {
 
@@ -16,6 +18,9 @@ export class Server {
             console.log(`Server läuft auf http://localhost:${this.PORT}`);
         });
         const ds: DeliveryService = new DeliveryService(this.app);
+        const api: API = new API(new Sequelize({
+            /** Add Sequelize settings for database connection here */
+        }), this.app);
     }
 
 }

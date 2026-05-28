@@ -12,7 +12,7 @@ export class API {
     constructor(sequelize: Sequelize, app: Express) {
         const db = new Database(sequelize);
 
-        app.put("/api/baureiheAlsGefundenMarkieren", express.json(), async (req: Request, res: Response) => {
+        app.post("/api/baureiheAlsGefundenMarkieren", express.json(), async (req: Request, res: Response) => {
             const data = JSON.parse(await req.body);
             res.send(`{ success: ${await db.baureiheAlsGefundenMarkieren(data.sessiontoken, data.ubid)}}`);
         });

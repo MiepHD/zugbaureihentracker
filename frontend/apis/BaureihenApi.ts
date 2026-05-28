@@ -1,3 +1,0 @@
-class BaureiehnApi extends Api {
-    
-}

@@ -1,3 +1,0 @@
-class RankingApi extends Api {
-
-}

@@ -1,3 +1,0 @@
-class LoginApi extends Api {
-    
-}

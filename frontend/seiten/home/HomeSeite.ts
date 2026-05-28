@@ -1,3 +1,0 @@
-class HomeSeite extends Seite {
-    
-}

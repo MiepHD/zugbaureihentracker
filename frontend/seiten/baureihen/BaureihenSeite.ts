@@ -1,3 +1,0 @@
-class BaureihenSeite extends Seite {
-    
-}
