@@ -13,7 +13,7 @@ export class DeliveryService {
      * @since 17.04.2026
      * @author Tim & Lia, 
      */
-    private paths: String[] = ["", "login", "home", "ranking", "baureihen"];
+    private paths: String[] = ["", "login", "home", "ranking", "baureihen", "registrieren"];
 
     /**
      * Der Konstruktor meldet eine Listener bei app an um dann die HTML Seiten bereitzustellen

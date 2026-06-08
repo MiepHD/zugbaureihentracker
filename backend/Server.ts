@@ -18,9 +18,19 @@ export class Server {
             console.log(`Server läuft auf http://localhost:${this.PORT}`);
         });
         const ds: DeliveryService = new DeliveryService(this.app);
-        const api: API = new API(new Sequelize({
-            /** Add Sequelize settings for database connection here */
-        }), this.app);
+        const api: API = new API(new Sequelize(
+            'appdb',
+            'appuser',
+            'secret123',
+            {
+                host: 'localhost',
+                port: 3306,
+                dialect: 'mariadb',
+                dialectOptions: {
+                    connectTimeout: 1000,
+                },
+            }
+        ), this.app);
     }
 
 }
