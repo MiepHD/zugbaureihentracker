@@ -133,15 +133,27 @@ export class Database {
         await this.sequelize.sync();
     }
 
-    /**
-     * @author
-     * @since
+    /** Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
+     * @author Tim
+     * @since 08.06.2026
      * @param sessiontoken 
      * @param ubid 
      */
-    public async baureiheAlsGefundenMarkieren(sessiontoken: string, ubid: string): Promise<boolean | void> {
-        
-    }
+    public async baureiheAlsGefundenMarkieren(token: string, ubid: string): Promise<boolean> {
+        const uuid = await this.getNutzer(token);
+        if (!uuid) {
+            return false;
+        }
+        const baureihe = await this.getBaureihe(ubid);
+        if (!baureihe) {
+            return false;
+        }
+        const neueAktivitaet = await Aktivitaet.create({
+            uuid: uuid,
+            ubid: baureihe.getDataValue("ubid"),
+        });
+        return neueAktivitaet !== null;
+}
 
     /**Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
      * @author Tim
@@ -153,7 +165,6 @@ export class Database {
                 ubid: ubid,
             }
         });
-
     }
 
     /** Hinzufügen einer Baureihe in die Datenbank.
