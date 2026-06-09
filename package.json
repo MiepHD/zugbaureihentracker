@@ -18,6 +18,7 @@
   "dependencies": {
     "@types/sequelize": "^4.28.20",
     "express": "^5.2.1",
+    "mariadb": "^3.5.2",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
   }

@@ -29,6 +29,7 @@ export class API {
 
         app.post("/api/anmelden", express.json(), async (req: Request, res: Response) => {
             const data = JSON.parse(await req.body);
+            console.log("${data.name}${data.passworthash}");
             res.send(`{ sessiontoken: ${await db.anmelden(data.name, data.passworthash)}}`);
         });
         
