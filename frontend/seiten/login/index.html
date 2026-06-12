@@ -2,7 +2,7 @@
 <html
   lang="en"
   data-ws-project="bec8855c-55e9-4771-a61c-c7ea686a8110"
-  data-ws-last-published="2026-06-07T14:03:08.917Z"
+  data-ws-last-published="2026-06-08T19:18:32.978Z"
 >
   <head>
     <link
@@ -17,7 +17,6 @@
     <meta property="og:type" content="website" />
     <meta name="robots" content="noindex, nofollow" />
     <meta property="twitter:card" content="summary_large_image" />
-    <script src="LoginSeite.js" defer></script>
     <title>Untitled</title>
   </head>
   <body class="w-element ct4nam1">
@@ -25,9 +24,11 @@
     <form class="w-element cr4fvfc">
       <p class="w-element c1om5cls">Melden sie sich auf der Seite an:</p>
       <p class="w-element cwr8nfl c102jjjj c1immebf">E-Mail eingeben</p>
-      <input class="w-element c1o20x6o" />
+      <input id="e-mail(account-search)" class="w-element c1o20x6o" />
       <p class="w-element cwr8nfl c102jjjj c1immebf">Passwort eingeben</p>
-      <input class="w-element c1o20x6o" type="password" /><button class="w-element">
+      <input id="password(account-search)" class="w-element c1o20x6o" /><button
+        class="w-element"
+      >
         anmelden
       </button>
       <p class="w-element">Sie haben noch keine Konto? Klicken sie hier:</p>
@@ -66,13 +67,13 @@
       {}
     </script>
     <script
-      src="/assets/entries/entry-server-routing.CAfKpbpx.js"
+      src="/assets/entries/entry-server-routing.rSZw869M.js"
       type="module"
       async
     ></script>
     <link
       rel="modulepreload"
-      href="/assets/entries/pages_login-page.vcv-7ILX.js"
+      href="/assets/entries/pages_login-page.DaAohtSB.js"
       as="script"
       type="text/javascript"
     /><link
@@ -86,5 +87,49 @@
       as="script"
       type="text/javascript"
     />
+
+</script>
+// Testdatenbank
+const users = [
+    {
+        email: "max@example.com",
+        password: "Max123"
+    },
+    {
+        email: "anna@example.com",
+        password: "Anna456"
+    },
+    {
+        email: "tom@example.com",
+        password: "Tom789"
+    },
+    {
+        email: "lisa@example.com",
+        password: "Lisa321"
+    },
+    {
+        email: "paul@example.com",
+        password: "Paul654"
+    }
+];
+
+// Login-Funktion
+function login() {
+
+    const email = document.getElementById("e-mail(account-search)").value;
+    const password = document.getElementById("password(account-search)").value;
+
+    const user = users.find(
+        u => u.email === email && u.password === password
+    );
+
+    if (user) {
+        console.log("LOGIN OK");
+    } else {
+        console.log("LOGIN FEHLER");
+    }
+}
+</script>
   </body>
 </html>
+
