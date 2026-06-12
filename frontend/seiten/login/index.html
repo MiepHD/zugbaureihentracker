@@ -17,20 +17,17 @@
     <meta property="og:type" content="website" />
     <meta name="robots" content="noindex, nofollow" />
     <meta property="twitter:card" content="summary_large_image" />
-    <title>Untitled</title>
+    <title>Anmeldeseite</title>
   </head>
   <body class="w-element ct4nam1">
     <h1 class="w-element">Willkommen beim Baureihentracker!</h1>
-    <form class="w-element cr4fvfc">
-      <p class="w-element c1om5cls">Melden sie sich auf der Seite an:</p>
-      <p class="w-element cwr8nfl c102jjjj c1immebf">E-Mail eingeben</p>
-      <input id="e-mail(account-search)" class="w-element c1o20x6o" />
-      <p class="w-element cwr8nfl c102jjjj c1immebf">Passwort eingeben</p>
-      <input id="password(account-search)" class="w-element c1o20x6o" /><button
-        class="w-element"
-      >
-        anmelden
-      </button>
+    <form action="/action_page.php" method="post">
+      <label for="fname">Benutzername:</label>
+      <input type="text" id="fname" name="username"><br><br>
+      <label for="lname">Passwort:</label>
+      <input type="password" id="lname" name="passwort"><br><br>
+      <input type="submit" value="anmelden">
+    
       <p class="w-element">Sie haben noch keine Konto? Klicken sie hier:</p>
       <button class="w-element">registrieren</button>
     </form>
@@ -88,7 +85,7 @@
       type="text/javascript"
     />
 
-</script>
+<script>
 // Testdatenbank
 const users = [
     {
@@ -120,13 +117,14 @@ function login() {
     const password = document.getElementById("password(account-search)").value;
 
     const user = users.find(
-        u => u.email === email && u.password === password
+        u => u.email === email &&
+             u.password === password
     );
 
     if (user) {
-        console.log("LOGIN OK");
+        alert("Login erfolgreich! Willkommen " + user.email);
     } else {
-        console.log("LOGIN FEHLER");
+        alert("E-Mail oder Passwort falsch.");
     }
 }
 </script>
