@@ -28,6 +28,6 @@ export class DeliveryService {
                 res.sendFile(path.join(__dirname, `../frontend/seiten/${urlpath}/index.html`));
             });
         }
-        app.use(express.static(path.resolve('../frontend')));
+        app.use(express.static(path.join(__dirname, '../frontend')));
     }
 }

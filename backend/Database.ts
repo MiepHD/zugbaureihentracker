@@ -15,6 +15,7 @@ export class Database {
      */
     constructor(sequelize: Sequelize) {
         this.sequelize = sequelize;
+        this.init();
     }
 
     /**
@@ -23,10 +24,10 @@ export class Database {
      * @since
      */
     async init(){
-        const sequelize = this.sequelize;
         Nutzer.init({
             uuid: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
+                defaultValue: DataTypes.UUIDV4,
                 allowNull: false,
                 primaryKey: true,
             },
@@ -44,7 +45,7 @@ export class Database {
             }
         },
         {
-            sequelize,
+            sequelize: this.sequelize,
             modelName: 'Nutzer',
         });
 
@@ -67,7 +68,7 @@ export class Database {
             }
         },
         {
-            sequelize,
+            sequelize: this.sequelize,
             modelName: 'Freundesliste',
         });
         Nutzer.belongsToMany(Nutzer, {
@@ -97,13 +98,14 @@ export class Database {
             },
         },
         {
-            sequelize,
+            sequelize: this.sequelize,
             modelName: 'Baureihe',
         });
 
         Aktivitaet.init({
             uuid: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
+                defaultValue: DataTypes.UUIDV4,
                 allowNull: false,
                 references: {
                     model: Nutzer,
@@ -111,7 +113,7 @@ export class Database {
                 },
             },
             ubid: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.STRING,
                 allowNull: false,
                 references: {
                     model: Baureihe,
@@ -120,7 +122,7 @@ export class Database {
             },
         },
         {
-            sequelize,
+            sequelize: this.sequelize,
             modelName: 'Aktivitaet',
         });
         Aktivitaet.belongsTo(Baureihe, {
@@ -222,6 +224,7 @@ export class Database {
      * @returns Gibt das neu vergebene Sessiontoken zurück.
      */
     public async anmelden(name: string, passworthash: string): Promise<boolean | string> {
+        console.log(Nutzer.sequelize);
         const test = await Nutzer.count({
             where: {
                 name: name,

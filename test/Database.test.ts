@@ -12,7 +12,6 @@ const sequelize = new Sequelize({
 const db = new Database(sequelize);
 
 beforeAll(async () => {
-    await db.init();
     await sequelize.sync({ force: true });
 });
 

@@ -12,49 +12,52 @@ export class API {
     constructor(sequelize: Sequelize, app: Express) {
         const db = new Database(sequelize);
 
+        app.use(express.urlencoded({ extended: true }));
+        app.use(express.json());
+
         app.post("/api/baureiheAlsGefundenMarkieren", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ success: ${await db.baureiheAlsGefundenMarkieren(data.sessiontoken, data.ubid)}}`);
         });
 
         app.get("/api/getBaureihe", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ Baureihe: ${JSON.stringify(await db.getBaureihe(data.ubid))}}`);
         });
 
         app.post("/api/registrieren", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ success: ${await db.registrieren(data.name, data.passworthash)}}`);
         });
 
         app.post("/api/anmelden", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
-            console.log("${data.name}${data.passworthash}");
-            res.send(`{ sessiontoken: ${await db.anmelden(data.name, data.passworthash)}}`);
+            const data = req.body;
+            console.log(`${data.username}${data.passwort}`);
+            res.send(`{ sessiontoken: ${await db.anmelden(data.username, data.passwort)}}`);
         });
         
         app.post("/api/fuegeFreundHinzu", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ success: ${await db.fuegeFreundHinzu(data.uuid, data.sessiontoken)}}`);
         });
 
         app.delete("/api/entferneFreund", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ success: ${await db.entferneFreund(data.name, data.passworthash)}}`);
         });
 
         app.get("/api/getGefundeneBaureihen", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ Baureihe: ${await db.getGefundeneBaureihen(data.name)}}`);
         });
 
         app.get("/api/getGesamtzahlBaureihen", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ success: ${await db.getGesamtzahlBaureihen()}}`);
         });
 
         app.get("/api/getUUID", express.json(), async (req: Request, res: Response) => {
-            const data = JSON.parse(await req.body);
+            const data = req.body;
             res.send(`{ uuid: ${await db.getUUID(data.sessiontoken)}}`);
         });
     }
