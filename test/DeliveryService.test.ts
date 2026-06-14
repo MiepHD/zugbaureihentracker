@@ -4,7 +4,7 @@ import http from 'http';
 
 //Werk von Lia
 
-const paths: string[] = ["", "login", "home", "ranking", "baureihen"];
+const paths: string[] = ["", "login", "registrieren", "home", "suchergebnis"];
 let server: any;
 
 beforeAll(async () => {
