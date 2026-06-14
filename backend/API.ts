@@ -35,9 +35,9 @@ export class API {
             const data = req.body;
             const success = await db.registrieren(data.username, data.passwort);
             if (success) {
-                res.sendFile(path.join(__dirname, `../frontend/seiten/login/index.html`));
+                res.sendFile(path.join(__dirname, `../frontend/login/index.html`));
             } else {
-                res.sendFile(path.join(__dirname, `../frontend/seiten/registrieren/index.html`));
+                res.sendFile(path.join(__dirname, `../frontend/registrieren/index.html`));
             }
         });
 
@@ -46,13 +46,13 @@ export class API {
             const data = req.body;
             console.log(`${data.username}${data.passwort}`);
             const sessiontoken = await db.anmelden(data.username, data.passwort);
-            if (!sessiontoken) {res.sendFile(path.join(__dirname, `../frontend/seiten/login/index.html`)); return;}
+            if (!sessiontoken) {res.sendFile(path.join(__dirname, `../frontend/login/index.html`)); return;}
             res.cookie("sessiontoken", sessiontoken, {
                 httpOnly: true,
                 sameSite: "lax",
                 secure: false
             });
-            res.sendFile(path.join(__dirname, `../frontend/seiten/home/index.html`));
+            res.sendFile(path.join(__dirname, `../frontend/home/index.html`));
         });
         
         app.post("/api/fuegeFreundHinzu", express.json(), async (req: Request, res: Response) => {
@@ -72,7 +72,7 @@ export class API {
         app.get("/api/getGefundeneBaureihen", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
-            res.send(`{ Baureihe: ${await db.getGefundeneBaureihen(sessiontoken)}}`);
+            res.send(`${JSON.stringify(await db.getGefundeneBaureihen(sessiontoken))}}`);
         });
 
         app.get("/api/getGesamtzahlBaureihen", express.json(), async (req: Request, res: Response) => {
