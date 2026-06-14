@@ -2,10 +2,11 @@ import { expect, test, beforeAll, afterAll } from 'vitest';
 import { Server } from '../backend/Server.js';
 import http from 'http';
 
+//Werk von Lia
+
 const paths: string[] = ["", "login", "home", "ranking", "baureihen"];
 let server: any;
 
-//Tim?
 beforeAll(async () => {
     server = new Server();
     await new Promise<void>((resolve, reject) => {
@@ -20,7 +21,6 @@ beforeAll(async () => {
     });
 });
 
-//Tim?
 afterAll(async () => {
     const maybeServer = server as any;
 
@@ -37,7 +37,6 @@ afterAll(async () => {
     }
 });
 
-//Lia
 for (const path of paths) {
     test(`Server responds to "${path}" directory with 200 OK`, async () => {
         const statusCode = await new Promise<number>((resolve, reject) => {

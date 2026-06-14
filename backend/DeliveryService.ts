@@ -13,7 +13,7 @@ export class DeliveryService {
      * @since 17.04.2026
      * @author Tim & Lia, 
      */
-    private paths: String[] = ["", "login", "home", "ranking", "baureihen", "registrieren"];
+    private paths: String[] = ["", "login", "home", "suchergebnis", "registrieren"];
 
     /**
      * Der Konstruktor meldet eine Listener bei app an um dann die HTML Seiten bereitzustellen
@@ -25,6 +25,10 @@ export class DeliveryService {
         for(let urlpath of this.paths) {
             app.get(`/${urlpath}`, (req: Request, res: Response) => {
                 if (req.path === "/") urlpath = "home";
+
+                const sessiontoken = req.cookies?.sessiontoken;
+                if (sessiontoken == undefined && req.path !== "/registrieren") { urlpath = "login" }
+                
                 res.sendFile(path.join(__dirname, `../frontend/seiten/${urlpath}/index.html`));
             });
         }
