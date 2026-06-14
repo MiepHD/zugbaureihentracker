@@ -18,16 +18,21 @@ export class API {
         app.use(express.json());
         app.use(cookieParser());
 
+        //Lia
         app.post("/api/baureiheAlsGefundenMarkieren", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
-            res.send(`{ success: ${await db.baureiheAlsGefundenMarkieren(sessiontoken, data.ubid)}}`);
+            if(await db.baureiheAlsGefundenMarkieren(sessiontoken, data.ubid)) {
+                res.redirect("/home");
+            } else {
+                res.redirect("/suchergebnis");
+            }
         });
 
         app.get("/api/getBaureihe", express.json(), async (req: Request, res: Response) => {
-            const data = req.body;
-            res.send(`{ Baureihe: ${JSON.stringify(await db.getBaureihe(data.ubid))}}`);
+            const data = req.query;
+            res.send(`${JSON.stringify(await db.getBaureihe(data.ubid as string))}`);
         });
 
         //Lia
@@ -76,8 +81,7 @@ export class API {
         });
 
         app.get("/api/getGesamtzahlBaureihen", express.json(), async (req: Request, res: Response) => {
-            const data = req.body;
-            res.send(`{ success: ${await db.getGesamtzahlBaureihen()}}`);
+            res.send(`${await db.getGesamtzahlBaureihen()}`);
         });
 
         app.post("/api/addBaureihe", express.json(), async (req: Request, res: Response) => {
