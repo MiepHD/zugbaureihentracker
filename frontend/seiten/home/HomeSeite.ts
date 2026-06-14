@@ -3,73 +3,9 @@
  * Von Tim am 12. Juni
  */
 
-const SESSION_COOKIE_NAME = 'sessiontoken';
-const HIDDEN_INPUT_NAME = 'sessiontoken';
-
-function setCookie(name: string, value: string, days = 7): void {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
-}
-
-function getCookie(name: string): string | undefined {
-  const cookiePairs = document.cookie.split(';').map((entry) => entry.trim());
-  const match = cookiePairs.find((entry) => entry.startsWith(`${name}=`));
-  return match ? decodeURIComponent(match.substring(name.length + 1)) : undefined;
-}
-
-function parseServerResponseForSessionToken(): string | undefined {
-  const bodyToken = document.body.dataset.sessiontoken;
-  if (bodyToken) {
-    return bodyToken;
-  }
-
-  const responseElement = document.getElementById('server-response');
-  if (responseElement) {
-    const dataToken = responseElement.getAttribute('data-sessiontoken');
-    if (dataToken) {
-      return dataToken;
-    }
-
-    try {
-      const payload = JSON.parse(responseElement.textContent || 'null');
-      if (payload && typeof payload.sessiontoken === 'string') {
-        return payload.sessiontoken;
-      }
-    } catch {
-      // ignore invalid JSON
-    }
-  }
-
-  const hidden = document.querySelector<HTMLInputElement>(`input[type="hidden"][name="${HIDDEN_INPUT_NAME}"]`);
-  if (hidden && hidden.value) {
-    return hidden.value;
-  }
-
-  return undefined;
-}
-
-function getOrCreateHiddenSessionInput(): HTMLInputElement | null {
-  const form = document.querySelector<HTMLFormElement>('form');
-  if (!form) {
-    return null;
-  }
-
-  let input = form.querySelector<HTMLInputElement>(`input[type="hidden"][name="${HIDDEN_INPUT_NAME}"]`);
-  if (!input) {
-    input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = HIDDEN_INPUT_NAME;
-    input.id = HIDDEN_INPUT_NAME;
-    form.appendChild(input);
-  }
-
-  return input;
-}
-
 function getBaureihenEndpoint(): string {
   const ul = document.querySelector<HTMLUListElement>('ul');
-  return ul?.dataset.source ?? '/api/baureihen';
+  return ul?.dataset.source ?? '/api/getGefundeneBaureihen';
 }
 
 function renderBaureihen(items: unknown): void {
@@ -109,11 +45,6 @@ function requestBaureihen(): void {
   xhr.open('GET', endpoint, true);
   xhr.setRequestHeader('Accept', 'application/json');
 
-  const sessionToken = getCookie(SESSION_COOKIE_NAME);
-  if (sessionToken) {
-    xhr.setRequestHeader('X-Sessiontoken', sessionToken);
-  }
-
   xhr.onreadystatechange = () => {
     if (xhr.readyState !== XMLHttpRequest.DONE) {
       return;
@@ -139,16 +70,5 @@ function requestBaureihen(): void {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const tokenFromServer = parseServerResponseForSessionToken();
-  if (tokenFromServer) {
-    setCookie(SESSION_COOKIE_NAME, tokenFromServer);
-  }
-
-  const hiddenInput = getOrCreateHiddenSessionInput();
-  const sessionToken = getCookie(SESSION_COOKIE_NAME);
-  if (hiddenInput && sessionToken) {
-    hiddenInput.value = sessionToken;
-  }
-
   requestBaureihen();
 });

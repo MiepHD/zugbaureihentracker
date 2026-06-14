@@ -45,7 +45,9 @@ export class API {
         app.post("/api/anmelden", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             console.log(`${data.username}${data.passwort}`);
-            res.cookie("sessiontoken", await db.anmelden(data.username, data.passwort), {
+            const sessiontoken = await db.anmelden(data.username, data.passwort);
+            if (!sessiontoken) {res.sendFile(path.join(__dirname, `../frontend/seiten/login/index.html`)); return;}
+            res.cookie("sessiontoken", sessiontoken, {
                 httpOnly: true,
                 sameSite: "lax",
                 secure: false
@@ -76,6 +78,12 @@ export class API {
         app.get("/api/getGesamtzahlBaureihen", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             res.send(`{ success: ${await db.getGesamtzahlBaureihen()}}`);
+        });
+
+        app.post("/api/addBaureihe", express.json(), async (req: Request, res: Response) => {
+            const data = req.body;
+            if (data.passwort !== "Das Adminpasswort") {res.status(401); res.send(); return; }
+            res.send(`{ success: ${await db.addBaureihe(data.ubid, data.name, data.beschreibung)}}`);
         });
 
         app.get("/api/getUUID", express.json(), async (req: Request, res: Response) => {
