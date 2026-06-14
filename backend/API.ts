@@ -72,7 +72,7 @@ export class API {
         app.get("/api/getGefundeneBaureihen", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
-            res.send(`${JSON.stringify(await db.getGefundeneBaureihen(sessiontoken))}}`);
+            res.send(`${JSON.stringify(await db.getGefundeneBaureihen(sessiontoken))}`);
         });
 
         app.get("/api/getGesamtzahlBaureihen", express.json(), async (req: Request, res: Response) => {
