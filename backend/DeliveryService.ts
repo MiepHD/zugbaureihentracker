@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import express, { Express } from "express";
+import cookieParser from "cookie-parser";
 import path from "path";
 
 /**
@@ -22,12 +23,13 @@ export class DeliveryService {
      * @param app 
      */
     constructor(app: Express) {
+        app.use(cookieParser());
         for(let urlpath of this.paths) {
             app.get(`/${urlpath}`, (req: Request, res: Response) => {
                 if (req.path === "/") urlpath = "home";
 
                 const sessiontoken = req.cookies?.sessiontoken;
-                if (sessiontoken == undefined && req.path !== "/registrieren") { urlpath = "login" }
+                if (sessiontoken == undefined) { urlpath = "login" }
                 
                 res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
             });

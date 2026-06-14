@@ -35,9 +35,9 @@ export class API {
             const data = req.body;
             const success = await db.registrieren(data.username, data.passwort);
             if (success) {
-                res.sendFile(path.join(__dirname, `../frontend/login/index.html`));
+                res.redirect("/login");
             } else {
-                res.sendFile(path.join(__dirname, `../frontend/registrieren/index.html`));
+                res.redirect("/registrieren");
             }
         });
 
@@ -46,13 +46,13 @@ export class API {
             const data = req.body;
             console.log(`${data.username}${data.passwort}`);
             const sessiontoken = await db.anmelden(data.username, data.passwort);
-            if (!sessiontoken) {res.sendFile(path.join(__dirname, `../frontend/login/index.html`)); return;}
+            if (!sessiontoken) {res.redirect("/login"); return;}
             res.cookie("sessiontoken", sessiontoken, {
                 httpOnly: true,
                 sameSite: "lax",
                 secure: false
             });
-            res.sendFile(path.join(__dirname, `../frontend/home/index.html`));
+            res.redirect("/home");
         });
         
         app.post("/api/fuegeFreundHinzu", express.json(), async (req: Request, res: Response) => {
