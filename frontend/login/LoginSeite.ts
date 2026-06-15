@@ -1,4 +1,5 @@
 // LoginSeite.ts
+// Von Tim
 // Wird in login/index.html und registrieren/index.html eingebunden.
 // Hört auf das submit-Event und ersetzt das Passwortfeld durch den SHA-256-Hash.
 

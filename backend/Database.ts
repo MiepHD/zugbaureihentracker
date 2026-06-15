@@ -20,7 +20,7 @@ export class Database {
 
     /**
      * Initialisiert die Tabellen und Relations der Datenbank
-     * @author
+     * @author Tim & Lia
      * @since
      */
     async init(){
