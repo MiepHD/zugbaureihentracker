@@ -4,12 +4,12 @@
  */
 
 function getBaureihenEndpoint(): string {
-  const ul = document.querySelector<HTMLUListElement>('ul');
+  const ul = document.getElementById('liste');
   return ul?.dataset.source ?? '/api/getGefundeneBaureihen';
 }
 
 function renderBaureihen(items: unknown): void {
-  const ul = document.querySelector<HTMLUListElement>('ul');
+  const ul = document.getElementById('liste');
   if (!ul) {
     return;
   }

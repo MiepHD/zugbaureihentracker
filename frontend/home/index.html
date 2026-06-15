@@ -1,3 +1,4 @@
+<!-- Authors: Christoph, Tim-->
 <!doctype html>
 <html lang="de">
   <head>
@@ -14,9 +15,20 @@
   </head>
   <body class="w-element c3vvy8z cis34vq c1n5ec3u c14lsezb c16iexy5 c55wxp9">
     <h1 class="w-element cqje7er c3tynvu cpxxzah c1hlu5oy">Baureihensuche:</h1>
-    <form class="w-element c196ey77 c1ahnqo7">
-      <input class="w-element c1o20x6o" />
-      <button class="w-element">
+    <form 
+      class="w-element c196ey77 c1ahnqo7"
+      action="/suchergebnis" 
+      method="GET"
+    >
+      <input 
+        class="w-element c1o20x6o"
+        type="search"
+        name="ubid"
+      />
+      <button 
+        class="w-element"
+        type="submit"
+      >
         Suchen
       </button>
     </form>
@@ -24,10 +36,6 @@
     <h1 class="w-element cqje7er c3tynvu cpxxzah c1hlu5oy c169y4s5">
       bereits gefundene Baureihen:
     </h1>
-    <ul class="w-element">
-      <li class="w-element">454548 ✔</li>
-      <li class="w-element">678755 ✔</li>
-      <li class="w-element"></li>
-    </ul>
+      <ul class="w-element" id="liste" data-source="/api/getGefundeneBaureihen"></ul>
   </body>
 </html>
