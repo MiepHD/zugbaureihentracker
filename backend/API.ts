@@ -64,14 +64,14 @@ export class API {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
-            res.send(`{ success: ${await db.fuegeFreundHinzu(sessiontoken, data.uuid)}}`);
+            res.send(`{ "success": ${await db.fuegeFreundHinzu(sessiontoken, data.uuid)}}`);
         });
 
         app.delete("/api/entferneFreund", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
-            res.send(`{ success: ${await db.entferneFreund(sessiontoken, data.uuid)}}`);
+            res.send(`{ "success": ${await db.entferneFreund(sessiontoken, data.uuid)}}`);
         });
 
         app.get("/api/getGefundeneBaureihen", express.json(), async (req: Request, res: Response) => {
@@ -87,13 +87,13 @@ export class API {
         app.post("/api/addBaureihe", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             if (data.passwort !== "Das Adminpasswort") {res.status(401); res.send(); return; }
-            res.send(`{ success: ${await db.addBaureihe(data.ubid, data.name, data.beschreibung)}}`);
+            res.send(`{ "success": ${await db.addBaureihe(data.ubid, data.name, data.beschreibung)}}`);
         });
 
         app.get("/api/getUUID", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
-            res.send(`{ uuid: ${await db.getUUID(sessiontoken)}}`);
+            res.send(`{ "uuid": "${await db.getUUID(sessiontoken)}"}`);
         });
     }
 
