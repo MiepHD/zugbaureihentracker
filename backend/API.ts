@@ -38,7 +38,7 @@ export class API {
         //Lia
         app.post("/api/registrieren", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
-            const success = await db.registrieren(data.username, data.passwort);
+            const success = await db.registrieren(data.username, await this.sha256Hex(data.passwort));
             if (success) {
                 res.redirect("/login");
             } else {
@@ -50,7 +50,7 @@ export class API {
         app.post("/api/anmelden", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             console.log(`${data.username}${data.passwort}`);
-            const sessiontoken = await db.anmelden(data.username, data.passwort);
+            const sessiontoken = await db.anmelden(data.username, await this.sha256Hex(data.passwort));
             if (!sessiontoken) {res.redirect("/login"); return;}
             res.cookie("sessiontoken", sessiontoken, {
                 httpOnly: true,
@@ -95,5 +95,13 @@ export class API {
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             res.send(`{ uuid: ${await db.getUUID(sessiontoken)}}`);
         });
+    }
+
+    private async sha256Hex(message: string): Promise<string> {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 }
