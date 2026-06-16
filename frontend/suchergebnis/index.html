@@ -21,11 +21,7 @@
     <title>Untitled</title>
   </head>
   <body class="w-element ct4nam1">
-    <button
-      class="w-element c15u21ax c1o4yr1i cw1wen0 c1tdkldx cokgypr c1acqocz c5ffmgh"
-    >
-      zurück zum Hauptmenü
-    </button>
+   <a href="/home">Zurück zum Hauptmenü</a>
     <h1 class="w-element">Deine gesuchte Baureihe:</h1>
     <h1 class="w-element"><i class="w-element">ICE 1 (Baureihe 401)</i></h1>
     <p class="w-element">
@@ -36,9 +32,12 @@
         >Einsatzgebiet</b
       >: Hauptstrecken, oft auf Linien nach Basel/Zürich
     </p>
+    <form action="/api/baureiheAlsGefundenMarkieren" method="post">
+      <input name="ubid" style="visibility: hidden"/>
     <button class="w-element c15u21ax c1o4yr1i cnmfmpr c10yigk6">
       gefunden
     </button>
+    </form>
     <script id="vike_pageContext" type="application/json">
       {
         "_urlRewrite": null,
