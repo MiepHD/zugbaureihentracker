@@ -38,53 +38,10 @@
       gefunden
     </button>
     </form>
-    <script id="vike_pageContext" type="application/json">
-      {
-        "_urlRewrite": null,
-        "pageId": "/pages/suchergebnisse",
-        "routeParams": {},
-        "data": {
-          "url": "https://url/suchergebnisse",
-          "system": {
-            "params": {},
-            "search": {},
-            "origin": "https://url",
-            "pathname": "/suchergebnisse"
-          },
-          "resources": {},
-          "pageMeta": {
-            "title": "Untitled",
-            "description": "",
-            "excludePageFromSearch": true,
-            "language": "",
-            "socialImageAssetName": "!undefined",
-            "socialImageUrl": "",
-            "status": "!undefined",
-            "redirect": "",
-            "content": "!undefined",
-            "custom": []
-          }
-        }
-      }
+    <script>
+      let paramString = urlString.split('?')[1];
+let queryString = new URLSearchParams(paramString);
+const ubid = queryString.entries()[0][1];
     </script>
-    <script id="vike_globalContext" type="application/json">
-      {}
-    </script>
-    <script
-      src="/assets/entries/entry-server-routing.CAfKpbpx.js"
-      type="module"
-      async
-    ></script>
-    <link
-      rel="modulepreload"
-      href="/assets/entries/pages_suchergebnisse.BlVMNchI.js"
-      as="script"
-      type="text/javascript"
-    /><link
-      rel="modulepreload"
-      href="/assets/chunks/chunk-BR75Kv1E.js"
-      as="script"
-      type="text/javascript"
-    />
   </body>
 </html>
