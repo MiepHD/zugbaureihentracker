@@ -1,0 +1,62 @@
+<!doctype html>
+<html
+  lang="en"
+  data-ws-project="bec8855c-55e9-4771-a61c-c7ea686a8110"
+  data-ws-last-published="2026-06-08T19:18:32.978Z"
+>
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/assets/static/app_generated_index-6937cd5a.DJqw5qfJ.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta property="og:url" content="https://url/login-page" />
+    <meta property="og:title" content="Untitled" />
+    <meta property="og:type" content="website" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <title>Anmeldeseite</title>
+  </head>
+  <body class="w-element ct4nam1">
+    <h1 class="w-element">Willkommen beim Baureihentracker!</h1>
+    <form onsubmit="login(); return false;">
+        <label for="email">Benutzername:</label>
+        <input type="text" id="email" name="username"><br><br>
+        
+        <label for="password">Passwort:</label>
+        <input type="password" id="password" name="passwort"><br><br>
+        
+        <input type="submit" value="anmelden">
+      
+        <p class="w-element">Sie haben noch keine Konto? Klicken sie hier:</p>
+        <button type="button" class="w-element">registrieren</button>
+      </form>
+      
+      <script>
+      const users = [
+          { email: "max@example.com", password: "Max123" },
+          { email: "anna@example.com", password: "Anna456" },
+          { email: "tom@example.com", password: "Tom789" }
+      ];
+      
+      function login() {
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+      
+          console.log("Eingegebene E-Mail:", email);
+          console.log("Eingegebenes Passwort:", password);
+      
+          const user = users.find(u => u.email === email && u.password === password);
+      
+          if (user) {
+              console.log("Login erfolgreich! Willkommen " + user.email);
+          } else {
+              console.log("E-Mail oder Passwort falsch.");
+          }
+      }
+      </script>
+      
+</html>
+
