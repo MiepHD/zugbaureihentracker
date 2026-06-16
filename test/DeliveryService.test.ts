@@ -40,7 +40,7 @@ afterAll(async () => {
 for (const path of paths) {
     test(`Server responds to "${path}" directory with 200 OK`, async () => {
         const statusCode = await new Promise<number>((resolve, reject) => {
-            http.get(`http://localhost:3000/${path}`, (res) => {
+            http.get(`http://localhost:3000/${path}/`, (res) => {
                 resolve(res.statusCode || 0);
             }).on('error', reject);
         });
