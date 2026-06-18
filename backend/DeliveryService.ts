@@ -29,9 +29,7 @@ export class DeliveryService {
                 if (req.path === "/") urlpath = "home";
 
                 const sessiontoken = req.cookies?.sessiontoken;
-                if (sessiontoken == undefined) { urlpath = "login" }
-                
-                res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
+                if (sessiontoken == undefined) res.redirect("login"); else res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
             });
         }
         app.use(express.static(path.join(__dirname, '../frontend')));

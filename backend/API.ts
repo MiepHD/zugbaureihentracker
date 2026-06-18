@@ -38,6 +38,7 @@ export class API {
         //Lia
         app.post("/api/registrieren", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
+            if (data.username == "" || data.passwort == "") {res.redirect("/registrieren"); return;}
             const success = await db.registrieren(data.username, await this.sha256Hex(data.passwort));
             if (success) {
                 res.redirect("/login");
@@ -50,6 +51,7 @@ export class API {
         app.post("/api/anmelden", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             console.log(`${data.username}${data.passwort}`);
+            if (data.username == "" || data.passwort == "") {res.redirect("/login"); return;}
             const sessiontoken = await db.anmelden(data.username, await this.sha256Hex(data.passwort));
             if (!sessiontoken) {res.redirect("/login"); return;}
             res.cookie("sessiontoken", sessiontoken, {
