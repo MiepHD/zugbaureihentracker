@@ -1,9 +1,6 @@
+<!-- Christoph -->
 <!doctype html>
-<html
-  lang="en"
-  data-ws-project="bec8855c-55e9-4771-a61c-c7ea686a8110"
-  data-ws-last-published="2026-06-07T14:03:08.917Z"
->
+<html lang="de">
   <head>
     <link
       rel="stylesheet"
@@ -12,96 +9,21 @@
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta property="og:url" content="https://url/registrierseite" />
-    <meta property="og:title" content="Untitled" />
     <meta property="og:type" content="website" />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <title>Untitled</title>
+    <script src="/registrieren/RegistrierenSeite.js" defer></script>
+    <title>Zugsammler | Registrieren</title>
   </head>
-  <body class="w-element ct4nam1">
-    <form id="registerForm" class="w-element cr4fvfc" method="post" action="/api/registrieren">
-      <p class="w-element c1om5cls">Registrieren sie sich auf der Seite:</p>
-      <p class="w-element cwr8nfl c102jjjj c1immebf">Benutzername</p>
-      <input class="w-element c1o20x6o" name="username" />
-      <p class="w-element cwr8nfl c102jjjj c1immebf">Passwort eingeben</p>
-      <input id="password" class="w-element c1o20x6o" type="password" name="passwort" />
-      <p class="w-element cwr8nfl c102jjjj c1immebf">
-        Passwort erneut eingeben
-      </p>
-      <input id="passwordConfirm" class="w-element c1o20x6o" type="password" name="passwortConfirm" />
-      <div id="errorMessage" class="w-element" style="color:red; margin-top:0.5rem;"></div>
-      <button class="w-element" type="submit">
-
-        registrieren
-      </button>
+  <body>
+    <form id="registerForm"  method="post" action="/api/registrieren">
+      <p>Registrieren sie sich auf der Seite:</p>
+      <p>Benutzername</p>
+      <input name="username"/>
+      <p>Passwort eingeben</p>
+      <input id="password" type="password" name="passwort" />
+      <p>Passwort erneut eingeben</p>
+      <input id="passwordConfirm" type="password" name="passwortConfirm" />
+      <div id="errorMessage" style="color:red; margin-top:0.5rem;"></div>
+      <button type="submit">Registrieren</button>
     </form>
-    <script>
-      document.getElementById('registerForm').addEventListener('submit', function (event) {
-        const pass1 = document.getElementById('password').value;
-        const pass2 = document.getElementById('passwordConfirm').value;
-        const errorMessage = document.getElementById('errorMessage');
-
-        if (pass1 !== pass2) {
-          event.preventDefault();
-          errorMessage.textContent = 'Die Passwörter stimmen nicht überein.';
-        } else {
-          errorMessage.textContent = '';
-        }
-      });
-    </script>
-    <script id="vike_pageContext" type="application/json">
-      {
-        "_urlRewrite": null,
-        "pageId": "/pages/registrierseite",
-        "routeParams": {},
-        "data": {
-          "url": "https://url/registrierseite",
-          "system": {
-            "params": {},
-            "search": {},
-            "origin": "https://url",
-            "pathname": "/registrierseite"
-          },
-          "resources": {},
-          "pageMeta": {
-            "title": "Untitled",
-            "description": "",
-            "excludePageFromSearch": true,
-            "language": "",
-            "socialImageAssetName": "!undefined",
-            "socialImageUrl": "",
-            "status": "!undefined",
-            "redirect": "",
-            "content": "",
-            "custom": []
-          }
-        }
-      }
-    </script>
-    <script id="vike_globalContext" type="application/json">
-      {}
-    </script>
-    <script
-      src="/assets/entries/entry-server-routing.CAfKpbpx.js"
-      type="module"
-      async
-    ></script>
-    <link
-      rel="modulepreload"
-      href="/assets/entries/pages_registrierseite.5zPvE1aZ.js"
-      as="script"
-      type="text/javascript"
-    /><link
-      rel="modulepreload"
-      href="/assets/chunks/chunk-BR75Kv1E.js"
-      as="script"
-      type="text/javascript"
-    /><link
-      rel="modulepreload"
-      href="/assets/chunks/chunk-CsmUQT05.js"
-      as="script"
-      type="text/javascript"
-    />
   </body>
 </html>

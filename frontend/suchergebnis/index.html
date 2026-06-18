@@ -1,10 +1,6 @@
 <!-- Authors: Christoph-->
 <!doctype html>
-<html
-  lang="en"
-  data-ws-project="bec8855c-55e9-4771-a61c-c7ea686a8110"
-  data-ws-last-published="2026-06-07T14:03:08.917Z"
->
+<html lang="de">
   <head>
     <link
       rel="stylesheet"
@@ -13,35 +9,21 @@
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta property="og:url" content="https://url/suchergebnisse" />
-    <meta property="og:title" content="Untitled" />
-    <meta property="og:type" content="website" />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <title>Untitled</title>
+    <script src="/suchergebnis/SuchergebnisSeite.js" defer></script>
+    <title>Zugsammler | Suchergebnis</title>
   </head>
-  <body class="w-element ct4nam1">
+  <body >
    <a href="/home">Zurück zum Hauptmenü</a>
-    <h1 class="w-element">Deine gesuchte Baureihe:</h1>
-    <h1 class="w-element"><i class="w-element">ICE 1 (Baureihe 401)</i></h1>
-    <p class="w-element">
-      <b class="w-element">Höchstgeschwindigkeit</b>: 280 km/h<br /><b
-        class="w-element"
-        >Sitzplätze</b
-      >: ca. 640–740 (je nach Ausführung)<br /><b class="w-element"
-        >Einsatzgebiet</b
-      >: Hauptstrecken, oft auf Linien nach Basel/Zürich
+    <h1>Deine gesuchte Baureihe:</h1>
+    <h1><i>ICE 1 (Baureihe 401)</i></h1>
+    <p>
+      <b>Höchstgeschwindigkeit</b>: 280 km/h<br />
+      <b>Sitzplätze</b>: ca. 640–740 (je nach Ausführung)<br />
+      <b>Einsatzgebiet</b>: Hauptstrecken, oft auf Linien nach Basel/Zürich
     </p>
     <form action="/api/baureiheAlsGefundenMarkieren" method="post">
       <input name="ubid" style="visibility: hidden"/>
-    <button class="w-element c15u21ax c1o4yr1i cnmfmpr c10yigk6">
-      gefunden
-    </button>
+      <button>Gefunden</button>
     </form>
-    <script>
-      let paramString = urlString.split('?')[1];
-      let queryString = new URLSearchParams(paramString);
-      const ubid = queryString.entries()[0][1];
-    </script>
   </body>
 </html>

@@ -11,31 +11,18 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta property="og:title" content="Home" />
     <script src="/home/HomeSeite.js" defer></script>
-    <title>Home</title>
+    <title>Zugsammler</title>
   </head>
-  <body class="w-element c3vvy8z cis34vq c1n5ec3u c14lsezb c16iexy5 c55wxp9">
-    <h1 class="w-element cqje7er c3tynvu cpxxzah c1hlu5oy">Baureihensuche:</h1>
-    <form 
-      class="w-element c196ey77 c1ahnqo7"
-      action="/suchergebnis" 
-      method="GET"
-    >
-      <input 
-        class="w-element c1o20x6o"
-        type="search"
-        name="ubid"
-      />
-      <button 
-        class="w-element"
-        type="submit"
-      >
+  <body >
+    <h1>Baureihensuche:</h1>
+    <form action="/suchergebnis" method="GET">
+      <input type="search" name="ubid"/>
+      <button type="submit">
         Suchen
       </button>
     </form>
-    <p class="w-element cz107mm cybvn3h">6-stelliger Baureihencode</p>
-    <h1 class="w-element cqje7er c3tynvu cpxxzah c1hlu5oy c169y4s5">
-      bereits gefundene Baureihen:
-    </h1>
-      <ul class="w-element" id="liste" data-source="/api/getGefundeneBaureihen"></ul>
+    <p>6-stelliger Baureihencode</p>
+    <h1>bereits gefundene Baureihen:</h1>
+    <ul id="liste" data-source="/api/getGefundeneBaureihen"></ul>
   </body>
 </html>

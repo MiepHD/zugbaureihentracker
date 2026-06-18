@@ -1,10 +1,6 @@
 <!-- Authors: Christoph -->
 <!doctype html>
-<html
-  lang="en"
-  data-ws-project="bec8855c-55e9-4771-a61c-c7ea686a8110"
-  data-ws-last-published="2026-06-08T19:18:32.978Z"
->
+<html lang="de">
   <head>
     <link
       rel="stylesheet"
@@ -13,122 +9,20 @@
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta property="og:url" content="https://url/login-page" />
-    <meta property="og:title" content="Untitled" />
-    <meta property="og:type" content="website" />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta property="twitter:card" content="summary_large_image" />
-    <title>Anmeldeseite</title>
+    <title>Zugsammler | Anmelden</title>
     <script src="/login/LoginSeite.js" defer></script>
   </head>
-  <body class="w-element ct4nam1">
-    <h1 class="w-element">Willkommen beim Baureihentracker!</h1>
+  <body>
+    <h1>Willkommen beim Baureihentracker!</h1>
     <form action="/api/anmelden" method="post">
       <label for="fname">Benutzername:</label>
       <input type="text" id="fname" name="username"><br><br>
       <label for="lname">Passwort:</label>
       <input type="password" id="lname" name="passwort"><br><br>
       <input type="submit" value="anmelden">
-      <p class="w-element">Sie haben noch keine Konto? Klicken sie hier:</p>
-      <a class="w-element" href="/registrieren">registrieren</a>
+      <p>Sie haben noch kein Konto? Klicken Sie hier:</p>
+      <a href="/registrieren">Registrieren</a>
     </form>
-    <script id="vike_pageContext" type="application/json">
-      {
-        "_urlRewrite": null,
-        "pageId": "/pages/login-page",
-        "routeParams": {},
-        "data": {
-          "url": "https://url/login-page",
-          "system": {
-            "params": {},
-            "search": {},
-            "origin": "https://url",
-            "pathname": "/login-page"
-          },
-          "resources": {},
-          "pageMeta": {
-            "title": "Untitled",
-            "description": "",
-            "excludePageFromSearch": true,
-            "language": "",
-            "socialImageAssetName": "!undefined",
-            "socialImageUrl": "",
-            "status": "!undefined",
-            "redirect": "",
-            "content": "",
-            "custom": []
-          }
-        }
-      }
-    </script>
-    <script id="vike_globalContext" type="application/json">
-      {}
-    </script>
-    <script
-      src="/assets/entries/entry-server-routing.rSZw869M.js"
-      type="module"
-      async
-    ></script>
-    <link
-      rel="modulepreload"
-      href="/assets/entries/pages_login-page.DaAohtSB.js"
-      as="script"
-      type="text/javascript"
-    /><link
-      rel="modulepreload"
-      href="/assets/chunks/chunk-BR75Kv1E.js"
-      as="script"
-      type="text/javascript"
-    /><link
-      rel="modulepreload"
-      href="/assets/chunks/chunk-CsmUQT05.js"
-      as="script"
-      type="text/javascript"
-    />
-
-<script>
-// Testdatenbank
-const users = [
-    {
-        email: "max@example.com",
-        password: "Max123"
-    },
-    {
-        email: "anna@example.com",
-        password: "Anna456"
-    },
-    {
-        email: "tom@example.com",
-        password: "Tom789"
-    },
-    {
-        email: "lisa@example.com",
-        password: "Lisa321"
-    },
-    {
-        email: "paul@example.com",
-        password: "Paul654"
-    }
-];
-
-// Login-Funktion
-function login() {
-
-    const email = document.getElementById("e-mail(account-search)").value;
-    const password = document.getElementById("password(account-search)").value;
-
-    const user = users.find(
-        u => u.email === email &&
-             u.password === password
-    );
-
-    if (user) {
-        alert("Login erfolgreich! Willkommen " + user.email);
-    } else {
-        alert("E-Mail oder Passwort falsch.");
-    }
-}
-</script>
   </body>
 </html>
 
