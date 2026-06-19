@@ -17,11 +17,11 @@
     <form id="registerForm"  method="post" action="/api/registrieren">
       <p>Registrieren sie sich auf der Seite:</p>
       <p>Benutzername</p>
-      <input name="username"/>
+      <input name="username" required/>
       <p>Passwort eingeben</p>
-      <input id="password" type="password" name="passwort" />
+      <input id="password" type="password" name="passwort" required/>
       <p>Passwort erneut eingeben</p>
-      <input id="passwordConfirm" type="password" name="passwortConfirm" />
+      <input id="passwordConfirm" type="password" name="passwortConfirm" required/>
       <div id="errorMessage" style="color:red; margin-top:0.5rem;"></div>
       <button type="submit">Registrieren</button>
     </form>

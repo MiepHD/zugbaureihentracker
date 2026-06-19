@@ -29,7 +29,7 @@ export class API {
             if(await db.baureiheAlsGefundenMarkieren(sessiontoken, data.ubid)) {
                 res.redirect("/home");
             } else {
-                res.redirect("/suchergebnis");
+                res.redirect(`/suchergebnis?ubid=${data.ubid}`);
             }
         });
 
@@ -44,7 +44,7 @@ export class API {
 
         /**
          * Lia
-         * Gibt die Anfrage des Servers, eine Registrierung durchzuführen an die Datenbank weiter, damit diese einen neuen Nutzer speichern kann. Bei Erfol weiterleitung zur Login Seite, sonst auf Registrieren Seite bleiben.
+         * Gibt die Anfrage des Servers, eine Registrierung durchzuführen an die Datenbank weiter, damit diese einen neuen Nutzer speichern kann. Bei Erfolg Weiterleitung zur Login Seite, sonst auf Registrieren Seite bleiben.
          */
         app.post("/api/registrieren", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
@@ -102,7 +102,13 @@ export class API {
         app.post("/api/addBaureihe", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             if (data.passwort !== "Das Adminpasswort") {res.status(401); res.send(); return; }
-            res.send(`{ "success": ${await db.addBaureihe(data.ubid, data.name, data.beschreibung)}}`);
+            const success = await db.addBaureihe(data.ubid, data.name, data.beschreibung);
+            if (success == true) {
+                res.redirect("/add");
+            } else {
+                res.send(`{ "success": ${success}}`);
+            }
+            
         });
 
         app.get("/api/getUUID", express.json(), async (req: Request, res: Response) => {
