@@ -6,7 +6,7 @@ import path from "path";
 
 export class API {
     /**
-     * 
+     * Konstruktor der API; sendet Requests von vom Frontend aufgerufene Methoden an den Server und schickt die Antwort wieder zurück.
      * @author Tim
      * @param sequelize 
      * @param app 
@@ -18,7 +18,10 @@ export class API {
         app.use(express.json());
         app.use(cookieParser());
 
-        //Lia
+        /**
+         * Lia
+         * Gibt die Request, eine Baureihe als gefunden zu markieren an die Datenbank weiter und je nach Anwort Redirected entweder auf die Home Seite oder auf die Suchergebnis Seite.
+         */
         app.post("/api/baureiheAlsGefundenMarkieren", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
@@ -30,12 +33,19 @@ export class API {
             }
         });
 
+        /**
+         * Lia
+         * Gibt die Request die Information zu einer Baureihe zu bekommen an die Datenbank weiter
+         */
         app.get("/api/getBaureihe", express.json(), async (req: Request, res: Response) => {
             const data = req.query;
             res.send(`${JSON.stringify(await db.getBaureihe(data.ubid as string))}`);
         });
 
-        //Lia
+        /**
+         * Lia
+         * Gibt die Anfrage des Servers, eine Registrierung durchzuführen an die Datenbank weiter, damit diese einen neuen Nutzer speichern kann. Bei Erfol weiterleitung zur Login Seite, sonst auf Registrieren Seite bleiben.
+         */
         app.post("/api/registrieren", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             if (data.username == "" || data.passwort == "") {res.redirect("/registrieren"); return;}
@@ -47,7 +57,10 @@ export class API {
             }
         });
 
-        //Lia
+        /**
+         * Lia
+         * Gibt die des Servers einen Login durchzuführen an die Datenbank weiter 
+         */
         app.post("/api/anmelden", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             console.log(`${data.username}${data.passwort}`);
@@ -99,6 +112,11 @@ export class API {
         });
     }
 
+    /**
+     * @author Tim
+     * @param message Hasht das Passwort
+     * @returns gehashtes Passwort
+     */
     private async sha256Hex(message: string): Promise<string> {
         const encoder = new TextEncoder();
         const data = encoder.encode(message);

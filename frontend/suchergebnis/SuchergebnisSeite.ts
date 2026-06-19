@@ -3,12 +3,12 @@
  */
 let paramString = location.href.split('?')[1];
 let queryString = new URLSearchParams(paramString);
-const ubid = queryString.entries()[0].value;
+const ubid = queryString.get("ubid");
 
-(document.querySelector("input") as HTMLInputElement).value = ubid;
+if (ubid) (document.querySelector("input") as HTMLInputElement).value = ubid;
 
  const xhr = new XMLHttpRequest();
-  xhr.open('GET', "/api/getGefundeneBaureihen", true);
+  xhr.open('GET', "/api/getBaureihe?" + paramString, true);
   xhr.setRequestHeader('Accept', 'application/json');
 
   xhr.onreadystatechange = () => {
@@ -21,9 +21,8 @@ const ubid = queryString.entries()[0].value;
     }
 
       const response = JSON.parse(xhr.responseText);
-      response.beschreibung
-      document.querySelector("p").innerHTML = response.beschreibung;
-      document.querySelector("i").innerHTML = response.name;
+      (document.querySelector("p") as HTMLElement).innerHTML = response.beschreibung;
+      (document.querySelector("i") as HTMLElement).innerHTML = response.name;
      
   };
 
