@@ -1,9 +1,10 @@
 /* Lia */
 body {
+    padding: 4ch;
     margin: auto;
     
-    width: max-content;
-    height: max-content;
+    width: fit-content;
+    height: fit-content;
     
     position: absolute;
     top:0;
