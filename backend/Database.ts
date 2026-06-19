@@ -150,6 +150,13 @@ export class Database {
         if (!baureihe) {
             return false;
         }
+        const test = await Aktivitaet.count({
+            where: {
+                uuid: uuid,
+                ubid: baureihe.getDataValue("ubid"),
+            }
+        });
+        if (test > 0) return false;
         const neueAktivitaet = await Aktivitaet.create({
             uuid: uuid,
             ubid: baureihe.getDataValue("ubid"),
