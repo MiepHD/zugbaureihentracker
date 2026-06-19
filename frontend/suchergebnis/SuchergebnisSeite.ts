@@ -21,6 +21,13 @@ if (ubid) (document.querySelector("input") as HTMLInputElement).value = ubid;
     }
 
       const response = JSON.parse(xhr.responseText);
+
+      if (response == null) {
+        (document.querySelector("p") as HTMLElement).innerHTML = "";
+        (document.querySelector("i") as HTMLElement).innerHTML = "Baureihe wurde nicht gefunden :(";
+        (document.querySelector("button") as HTMLElement).style.setProperty("visibility", "hidden");
+      }
+
       (document.querySelector("p") as HTMLElement).innerHTML = response.beschreibung;
       (document.querySelector("i") as HTMLElement).innerHTML = response.name;
      
