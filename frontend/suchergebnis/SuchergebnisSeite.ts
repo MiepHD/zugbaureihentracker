@@ -3,7 +3,7 @@
  */
 let paramString = location.href.split('?')[1];
 let queryString = new URLSearchParams(paramString);
-const ubid = queryString.entries()[0][1];
+const ubid = queryString.entries()[0].value;
 
 (document.querySelector("input") as HTMLInputElement).value = ubid;
 
