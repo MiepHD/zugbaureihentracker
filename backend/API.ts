@@ -18,6 +18,15 @@ export class API {
         app.use(express.json());
         app.use(cookieParser());
 
+        app.get("/logout", express.json(), async (req: Request, res: Response) => {
+            res.clearCookie("sessiontoken", {
+                httpOnly: true,
+                sameSite: "lax",
+                secure: false
+            });
+            res.redirect("/login");
+        });
+
         /**
          * Lia
          * Gibt die Request, eine Baureihe als gefunden zu markieren an die Datenbank weiter und je nach Anwort Redirected entweder auf die Home Seite oder auf die Suchergebnis Seite.

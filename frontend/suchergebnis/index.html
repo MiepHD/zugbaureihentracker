@@ -13,17 +13,15 @@
     <title>Zugsammler | Suchergebnis</title>
   </head>
   <body >
-   <a href="/home">Zurück zum Hauptmenü</a>
-    <h1>Deine gesuchte Baureihe:</h1>
+   <a href="/home" style="position: absolute; left: 1ch; top: 1ch;">Zurück</a>
     <h1><i>ICE 1 (Baureihe 401)</i></h1>
     <p>
       <b>Höchstgeschwindigkeit</b>: 280 km/h<br />
       <b>Sitzplätze</b>: ca. 640–740 (je nach Ausführung)<br />
       <b>Einsatzgebiet</b>: Hauptstrecken, oft auf Linien nach Basel/Zürich
     </p>
-    <form action="/api/baureiheAlsGefundenMarkieren" method="post">
-      <input name="ubid" style="visibility: hidden"/>
-      <button>Gefunden</button>
+    <form action="/api/baureiheAlsGefundenMarkieren" method="post" style="display: flex; flex-direction: column;">
+      <input name="ubid" style="display: none"/><button style="align-self: center;">Gefunden</button>
     </form>
   </body>
 </html>

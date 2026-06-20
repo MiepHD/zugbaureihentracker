@@ -14,13 +14,13 @@
     <title>Zugsammler | Registrieren</title>
   </head>
   <body>
-    <form id="registerForm"  method="post" action="/api/registrieren">
-      <p>Registrieren sie sich auf der Seite:</p>
-      <p>Benutzername</p>
-      <input name="username" required/>
-      <p>Passwort eingeben</p>
+    <form id="registerForm"  method="post" action="/api/registrieren" class="easyform">
+      <p style="grid-column: 1 / span 2;">Registrieren Sie sich auf der Seite:</p>
+      <label for="benutzername">Benutzername</label>
+      <input name="username" id="benutzername" required/>
+      <label for="password">Passwort eingeben</label>
       <input id="password" type="password" name="passwort" required/>
-      <p>Passwort erneut eingeben</p>
+      <label for="passwordConfirm">Passwort erneut eingeben</label>
       <input id="passwordConfirm" type="password" name="passwortConfirm" required/>
       <div id="errorMessage" style="color:red; margin-top:0.5rem;"></div>
       <button type="submit">Registrieren</button>

@@ -14,7 +14,10 @@
     <title>Zugsammler</title>
   </head>
   <body >
-    <h1>Baureihensuche:</h1>
+    <form action="/logout" methode="GET" style="position: absolute; right: 1ch; top: 1ch;">
+      <button>Ausloggen</button>
+    </form>
+    <h1>Baureihensuche</h1>
     <form action="/suchergebnis" method="GET">
       <input type="search" name="ubid" required/>
       <button type="submit">
@@ -22,7 +25,7 @@
       </button>
     </form>
     <p>6-stelliger Baureihencode</p>
-    <h1>bereits gefundene Baureihen:</h1>
-    <ul id="liste" data-source="/api/getGefundeneBaureihen"></ul>
+    <h1>Bereits gefundene Baureihen</h1>
+    <ul id="liste" data-source="/api/getGefundeneBaureihen" class="baureihen"></ul>
   </body>
 </html>
