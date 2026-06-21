@@ -2,7 +2,6 @@ import { Sequelize } from "sequelize";
 import { Database } from "./Database";
 import express, { Request, Response, Express } from "express";
 import cookieParser from "cookie-parser";
-import path from "path";
 
 export class API {
     /**

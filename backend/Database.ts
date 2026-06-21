@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, UUIDV4, Transaction } from 'sequelize';
+import { Sequelize, DataTypes, Transaction } from 'sequelize';
 import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
