@@ -1,4 +1,4 @@
-# Zugbaureihenapp
+# Zugbaureihentracker
 <img src="https://github.com/MiepHD/zugbaureihenapp/blob/main/neu2.png" />
 
 # Starting the Server

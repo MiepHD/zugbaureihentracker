@@ -1,5 +1,5 @@
 {
-  "name": "zugbaureihenapp",
+  "name": "Zugbaureihentracker",
   "version": "0.0.1",
   "description": "",
   "main": "backend/Server.js",
