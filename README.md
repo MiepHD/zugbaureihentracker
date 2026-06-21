@@ -1,5 +1,5 @@
 # Zugbaureihentracker
-<img src="https://github.com/MiepHD/zugbaureihenapp/blob/main/neu2.png" />
+<img src="https://github.com/MiepHD/zugbaureihentracker/blob/main/neu2.png" />
 
 # Starting the Server
 
