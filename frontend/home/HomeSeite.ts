@@ -43,34 +43,19 @@ function renderBaureihen(items: unknown): void {
 
 function requestBaureihen(): void {
   const endpoint = getBaureihenEndpoint();
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', endpoint, true);
-  xhr.setRequestHeader('Accept', 'application/json');
-
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState !== XMLHttpRequest.DONE) {
-      return;
+  new XHR().get(endpoint, (response: any) => {
+    if (Array.isArray(response)) {
+      renderBaureihen(response);
+    } else if (response && typeof response === 'object' && Array.isArray((response as Record<string, unknown>).items)) {
+      renderBaureihen((response as Record<string, unknown>).items);
     }
-
-    if (xhr.status !== 200) {
-      return;
-    }
-
-    try {
-      const response = JSON.parse(xhr.responseText);
-      if (Array.isArray(response)) {
-        renderBaureihen(response);
-      } else if (response && typeof response === 'object' && Array.isArray((response as Record<string, unknown>).items)) {
-        renderBaureihen((response as Record<string, unknown>).items);
-      }
-    } catch {
-      // ignore parse errors
-    }
-  };
-
-  xhr.send();
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   requestBaureihen();
+  const xhr = new XHR();
+  xhr.get("/api/getUUID", (response: { uuid: string}) => {
+    (document.getElementById("uuid") as HTMLElement).textContent = response.uuid;
+  });
 });
