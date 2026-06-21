@@ -1,2 +1,8 @@
 # Zugbaureihenapp
-<img width="2211" height="737" alt="neu1" src="https://github.com/user-attachments/assets/4bc88be3-7dc5-4864-a17f-0095d111907d" />
+<img src="https://github.com/MiepHD/zugbaureihenapp/blob/main/neu2.png" />
+
+# Starting the Server
+
+1. Clone git repo
+2. Open git bash inside git repo
+3. Run `./install.sh`
