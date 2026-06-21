@@ -6,7 +6,7 @@ import { Sequelize } from "sequelize";
 export class Server {
 
     private app: Express = express();
-    private PORT: number = 3000;
+    private static PORT: number = 3000;
 
     /**
      * Konstruktor für den Server; Starten des Servers; Übergeben des Delivery Service
@@ -14,8 +14,8 @@ export class Server {
      * @since 14.04.2026
      */
     constructor() {
-        this.app.listen(this.PORT, () => {
-            console.log(`Server läuft auf http://localhost:${this.PORT}`);
+        this.app.listen(Server.PORT, () => {
+            console.log(`Server läuft auf http://localhost:${Server.PORT}`);
         });
         const ds: DeliveryService = new DeliveryService(this.app);
         const api: API = new API(new Sequelize(

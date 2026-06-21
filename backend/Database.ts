@@ -180,7 +180,7 @@ export class Database {
      * @author Lia
      * @since 22.05.2026
      */
-    public async addBaureihe(ubid: string, name: string, beschreibung: string): Promise<boolean | void> {
+    public async addBaureihe(ubid: string, name: string, beschreibung: string): Promise<boolean> {
         const test: number = await Baureihe.count({
             where: {
                 ubid
