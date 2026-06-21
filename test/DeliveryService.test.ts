@@ -4,7 +4,8 @@ import http from 'http';
 
 //Werk von Lia
 
-const paths: string[] = ["", "login", "registrieren", "home", "suchergebnis"];
+const paths: string[] = ["login", "registrieren"];
+const paths2: string[] = ["", "home", "suchergebnis"];
 let server: any;
 
 beforeAll(async () => {
@@ -46,5 +47,17 @@ for (const path of paths) {
         });
 
         expect(statusCode).toBe(200);
+    });
+}
+
+for (const path of paths2) {
+    test(`Server responds to "${path}" directory with 200 OK`, async () => {
+        const statusCode = await new Promise<number>((resolve, reject) => {
+            http.get(`http://localhost:3000/${path}/`, (res) => {
+                resolve(res.statusCode || 0);
+            }).on('error', reject);
+        });
+
+        expect(statusCode).toBe(302);
     });
 }

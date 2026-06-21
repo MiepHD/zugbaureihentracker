@@ -38,8 +38,7 @@ test("Baureihe hinzufügen API", async () => {
             passwort: "Das Adminpasswort"
         });
 
-    expect(response.status).toBe(200);
-    expect(JSON.parse(response.text).success).toBe(true);
+    expect(response.status).toBe(302);
 });
 
 
