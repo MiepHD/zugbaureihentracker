@@ -30,7 +30,7 @@ npm i
 
 echo ""
 echo "6. Source-code kompilieren..."
-tsc
+npx tsc
 
 echo ""
 echo "7. MariaDB starten..."
