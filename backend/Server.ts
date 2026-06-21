@@ -5,6 +5,7 @@ import { Sequelize } from "sequelize";
 import fs from "fs";
 import http from 'http';
 import https from 'https';
+import path from "path";
 
 export class Server {
 
@@ -17,8 +18,8 @@ export class Server {
      */
     constructor() {
         try {
-            const privateKey  = fs.readFileSync('sslcert/privkey.pem', 'utf8');
-            const certificate = fs.readFileSync('sslcert/fullchain.pem', 'utf8');
+            const privateKey  = fs.readFileSync(path.join(__dirname, 'sslcert/privkey.pem'), 'utf8');
+            const certificate = fs.readFileSync(path.join(__dirname, 'sslcert/fullchain.pem'), 'utf8');
             const credentials = {key: privateKey, cert: certificate};
             const httpServer = http.createServer(this.app);
             const httpsServer = https.createServer(credentials, this.app);
