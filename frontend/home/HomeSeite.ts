@@ -26,7 +26,7 @@ function renderBaureihen(items: unknown): void {
     } else if (item && typeof item === 'object') {
       const value = (item as Record<string, unknown>);
       if (typeof value.ubid === 'string') {
-        li.innerHTML = `<a href="/suchergebnis?ubid=${value.ubid}">${value.ubid}</a>`;
+        li.innerHTML = `<a href="/suchergebnis?found=true&ubid=${value.ubid}">${value.ubid}</a>`;
       } else if (typeof value.name === 'string') {
         li.textContent = value.name;
       } else if (typeof value.bezeichnung === 'string') {

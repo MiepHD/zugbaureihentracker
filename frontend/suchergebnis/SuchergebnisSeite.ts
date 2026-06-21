@@ -7,6 +7,10 @@ const ubid = queryString.get("ubid");
 
 if (ubid) (document.querySelector("input") as HTMLInputElement).value = ubid;
 
+const found = queryString.get("found");
+
+if (found) (document.querySelector("button") as HTMLElement).style.setProperty("display", "none");
+
  const xhr = new XMLHttpRequest();
   xhr.open('GET', "/api/getBaureihe?" + paramString, true);
   xhr.setRequestHeader('Accept', 'application/json');
