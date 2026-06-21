@@ -2,7 +2,7 @@
   "name": "zugbaureihenapp",
   "version": "0.0.1",
   "description": "",
-  "main": "backend/main.js",
+  "main": "backend/Server.js",
   "scripts": {
     "test": "vitest"
   },
