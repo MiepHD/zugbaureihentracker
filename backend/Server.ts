@@ -18,7 +18,6 @@ export class Server {
      */
     constructor() {
         try {
-            console.log(path.join(__dirname, 'sslcert/privkey.pem'));
             const privateKey  = fs.readFileSync(path.join(__dirname, 'sslcert/privkey.pem'), 'utf8');
             const certificate = fs.readFileSync(path.join(__dirname, 'sslcert/fullchain.pem'), 'utf8');
             const credentials = {key: privateKey, cert: certificate};
@@ -28,7 +27,8 @@ export class Server {
             httpServer.listen(80);
             httpsServer.listen(443);
             console.log(`Server läuft auf http://localhost:80 & https://localhost:433`);
-        } catch {
+        } catch (e) {
+            console.log(e);
             this.app.listen(80, () => {
                 console.log(`Server läuft auf http://localhost:80`);
             });
