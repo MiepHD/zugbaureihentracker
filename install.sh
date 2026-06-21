@@ -21,23 +21,27 @@ echo "3. Node.js installieren..."
 sudo apt install nodejs
 
 echo ""
-echo "4. Abhängigkeiten installieren..."
+echo "4. NPM installeren"
+sudo apt install npm
+
+echo ""
+echo "5. Abhängigkeiten installieren..."
 npm i
 
 echo ""
-echo "5. Source-code kompilieren..."
+echo "6. Source-code kompilieren..."
 tsc
 
 echo ""
-echo "6. MariaDB starten..."
+echo "7. MariaDB starten..."
 sudo systemctl start mariadb
 
 echo ""
-echo "7. Autostart aktivieren..."
+echo "8. Autostart aktivieren..."
 sudo systemctl enable mariadb
 
 echo ""
-echo "8. Datenbank einrichten..."
+echo "9. Datenbank einrichten..."
 
 sudo mariadb <<EOF
 
