@@ -2,11 +2,13 @@ import express, { Express } from "express";
 import { DeliveryService } from "./DeliveryService";
 import { API } from "./API";
 import { Sequelize } from "sequelize";
+import fs from "fs";
+import http from 'http';
+import https from 'https';
 
 export class Server {
 
     private app: Express = express();
-    private static PORT: number = 3000;
 
     /**
      * Konstruktor für den Server; Starten des Servers; Übergeben des Delivery Service
@@ -14,9 +16,21 @@ export class Server {
      * @since 14.04.2026
      */
     constructor() {
-        this.app.listen(Server.PORT, () => {
-            console.log(`Server läuft auf http://localhost:${Server.PORT}`);
-        });
+        try {
+            const privateKey  = fs.readFileSync('sslcert/privkey.pem', 'utf8');
+            const certificate = fs.readFileSync('sslcert/fullchain.pem', 'utf8');
+            const credentials = {key: privateKey, cert: certificate};
+            const httpServer = http.createServer(this.app);
+            const httpsServer = https.createServer(credentials, this.app);
+
+            httpServer.listen(80);
+            httpsServer.listen(443);
+            console.log(`Server läuft auf http://localhost:80 & https://localhost:433`);
+        } catch {
+            this.app.listen(80, () => {
+                console.log(`Server läuft auf http://localhost:80`);
+            });
+        }
         const ds: DeliveryService = new DeliveryService(this.app);
         const api: API = new API(new Sequelize(
             'appdb',
