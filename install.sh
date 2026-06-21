@@ -3,31 +3,41 @@
 set -e
 
 echo "====================================="
-echo " MariaDB automatische Installation"
+echo " Server automatische Installation"
 echo "====================================="
 
+echo ""
+echo "1. LoginDaten..."
 DB_NAME="appdb"
 DB_USER="appuser"
 DB_PASSWORD="secret123"
-
-echo ""
-echo "1. Pakete aktualisieren..."
-sudo apt update
 
 echo ""
 echo "2. MariaDB installieren..."
 sudo apt install -y mariadb-server
 
 echo ""
-echo "3. MariaDB starten..."
+echo "3. Node.js installieren..."
+sudo apt install nodejs
+
+echo ""
+echo "4. Abhängigkeiten installieren..."
+npm i
+
+echo ""
+echo "5. Source-code kompilieren..."
+tsc
+
+echo ""
+echo "6. MariaDB starten..."
 sudo systemctl start mariadb
 
 echo ""
-echo "4. Autostart aktivieren..."
+echo "7. Autostart aktivieren..."
 sudo systemctl enable mariadb
 
 echo ""
-echo "5. Datenbank einrichten..."
+echo "8. Datenbank einrichten..."
 
 sudo mariadb <<EOF
 
@@ -44,7 +54,7 @@ EOF
 
 echo ""
 echo "====================================="
-echo " Installation abgeschlossen"
+echo " Datenbank Installation abgeschlossen"
 echo "====================================="
 echo ""
 echo "Datenbank:"
@@ -63,3 +73,7 @@ echo ""
 echo "Test:"
 echo "  mariadb -u ${DB_USER} -p ${DB_NAME}"
 echo ""
+
+echo ""
+echo "Server starten... (mit node backend/Server.js)"
+node backend/Server.js
