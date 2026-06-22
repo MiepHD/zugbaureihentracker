@@ -54,8 +54,4 @@ function requestBaureihen(): void {
 
 document.addEventListener('DOMContentLoaded', () => {
   requestBaureihen();
-  const xhr = new XHR();
-  xhr.get("/api/getUUID", (response: { uuid: string}) => {
-    (document.getElementById("uuid") as HTMLElement).textContent = `UUID: ${response.uuid}`;
-  });
 });

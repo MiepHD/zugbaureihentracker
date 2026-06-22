@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Transaction } from 'sequelize';
+import { Sequelize, DataTypes, Transaction, Model } from 'sequelize';
 import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
@@ -63,7 +63,7 @@ export class Database {
 
         Freundesliste.init({
             von: {
-                type: DataTypes.STRING,
+                type: DataTypes.UUIDV4,
                 allowNull: false,
                 references: {
                     model: Nutzer,
@@ -71,7 +71,7 @@ export class Database {
                 },
             },
             zu: {
-                type: DataTypes.STRING,
+                type: DataTypes.UUIDV4,
                 allowNull: false,
                 references: {
                     model: Nutzer,
@@ -142,6 +142,9 @@ export class Database {
         });
 
         Aktivitaet.belongsTo(Nutzer, {
+            foreignKey: "uuid"
+        });
+        Nutzer.hasMany(Aktivitaet, {
             foreignKey: "uuid"
         });
         await this.sequelize.sync();
@@ -322,25 +325,44 @@ export class Database {
      */
     public async entferneFreund(sessiontoken: string, uuid: string): Promise<boolean> {
         const uuid2: string = await this.getNutzer(sessiontoken);
-        const t: Transaction = await this.sequelize.transaction();
-        try {
-            const exit = await Freundesliste.destroy({
-                where: {
-                    von: uuid2,
-                    zu: uuid,
-                },
-                transaction: t,
-            });
-            if (exit > 1) {
-                await t.rollback();
-                throw new Error("Mehr als ein Eintrag gelöscht – Rollback durchgeführt!");
+        const exit = await Freundesliste.destroy({
+            where: {
+                von: uuid2,
+                zu: uuid,
             }
-            await t.commit();
-            return exit === 1;
-        } catch (err) {
-            await t.rollback();
-            throw err;
-        }
+        });
+        return exit > 0;
+    }
+
+    /**
+     * 
+     */
+    public async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Nutzer | null> {
+        return await Nutzer.findOne({
+            where: {
+                sessiontoken: sessiontoken,
+            },
+            // Wir wollen nur die Freunde und deren Daten, nicht die Daten des anfragenden Nutzers selbst
+            attributes: [], 
+            include: [
+                {
+                    model: Nutzer,
+                    as: 'Freunde',
+                    // Schließt die IDs aus der Freundesliste-Zwischentabelle (von/zu) aus den Rohdaten aus
+                    through: { attributes: [] }, 
+                    // Hier wählen wir nur den Namen des Freundes aus, den du anzeigen möchtest
+                    attributes: ['name', 'uuid'], 
+                    include: [
+                        {
+                            model: Aktivitaet,
+                            // Verhindert, dass leere Freunde (die keine Aktivität haben) im Ergebnis auftauchen
+                            required: true, 
+                            attributes: ["ubid"], // Wir brauchen die IDs der Aktivitätstabelle nicht im Endergebnis
+                        }
+                    ]
+                }
+            ]
+        });
     }
 
     /**

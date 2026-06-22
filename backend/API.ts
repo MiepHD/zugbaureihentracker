@@ -101,12 +101,20 @@ export class API {
             res.send(`{ "success": ${await db.fuegeFreundHinzu(sessiontoken, data.uuid)}}`);
         });
 
-        app.delete("/api/entferneFreund", express.json(), async (req: Request, res: Response) => {
+        app.post("/api/entferneFreund", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
             res.send(`{ "success": ${await db.entferneFreund(sessiontoken, data.uuid)}}`);
         });
+
+        app.get("/api/baureihenVonFreundenAbrufen", express.json(), async (req: Request, res: Response) => {
+            const sessiontoken = req.cookies.sessiontoken;
+            if (sessiontoken == undefined) {res.status(401); res.send(); return; }
+            let data: any = await db.baureihenVonFreundenAbrufen(sessiontoken);
+            if (data && data.Freunde) data = data.Freunde;
+            res.send(`${JSON.stringify(data)}`);
+        })
 
         app.get("/api/getGefundeneBaureihen", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
