@@ -98,12 +98,17 @@ export class API {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
-            const success = await db.fuegeFreundHinzu(sessiontoken, data.uuid);
-            if (success) {
-                res.redirect("/freunde");
-            } else {
-                res.send(`{ "success": ${success}`);
+            try {
+                const success = await db.fuegeFreundHinzu(sessiontoken, data.uuid);
+                if (success) {
+                    res.redirect("/freunde");
+                } else {
+                    res.send(`{ "success": ${success}`);
+                }
+            } catch (e: any) {
+                res.send((e as Error).message);
             }
+            
         });
 
         app.post("/api/entferneFreund", express.json(), async (req: Request, res: Response) => {

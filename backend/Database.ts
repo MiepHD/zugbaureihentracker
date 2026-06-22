@@ -298,7 +298,7 @@ export class Database {
     public async fuegeFreundHinzu(sessiontoken: string, uuid: string): Promise<boolean> {
         const uuid2 = await this.getUUID(sessiontoken);
         if (!uuid2) {
-            throw new Error("Nutzer nicht gefunden.");
+            throw new Error("Sessiontoken ungültig");
         }
         const test = await Freundesliste.count({
             where: {
@@ -306,6 +306,12 @@ export class Database {
                 zu: uuid,
             }
         });
+        const test2 = await Nutzer.count({
+            where: {
+                uuid
+            }
+        });
+        if (test2 == 0) throw new Error("Nutzer existiert nicht.")
         if(test > 0) return false;
         const entry = await Freundesliste.create({
             von: uuid2,
