@@ -41,6 +41,17 @@ export class API {
             }
         });
 
+        app.post("/api/addInviteCode", express.json(), async (req: Request, res: Response) => {
+            const data = req.body;
+            if (data.passwort !== "Das Adminpasswort") return;
+            const success = await db.addinvitecode(data.code as string);
+            if (success) {
+                res.redirect("/invite");
+            } else {
+                res.send("Error");
+            }
+        })
+
         /**
          * Lia
          * Gibt die Request die Information zu einer Baureihe zu bekommen an die Datenbank weiter
@@ -56,8 +67,8 @@ export class API {
          */
         app.post("/api/registrieren", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
-            if (data.username == "" || data.passwort == "") {res.redirect("/registrieren"); return;}
-            const success = await db.registrieren(data.username, await this.sha256Hex(data.passwort));
+            if (data.username == "" || data.passwort == "" || data.code == "") {res.redirect("/registrieren"); return;}
+            const success = await db.registrieren(data.username, await this.sha256Hex(data.passwort), data.code);
             if (success) {
                 res.redirect("/login");
             } else {

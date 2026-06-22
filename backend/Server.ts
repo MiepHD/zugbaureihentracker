@@ -29,8 +29,8 @@ export class Server {
             console.log(`Server läuft auf http://localhost:80 & https://localhost:433`);
         } catch (e) {
             console.log(e);
-            this.app.listen(80, () => {
-                console.log(`Server läuft auf http://localhost:80`);
+            this.app.listen(3000, () => {
+                console.log(`Server läuft auf http://localhost:3000`);
             });
         }
         const ds: DeliveryService = new DeliveryService(this.app);

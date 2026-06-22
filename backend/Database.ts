@@ -3,6 +3,7 @@ import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
 import { Aktivitaet } from './models/Aktivitaet';
+import { Registrierungscodes } from './models/Registrierungscodes';
 import { randomUUID } from 'crypto';
 
 export class Database {
@@ -24,6 +25,17 @@ export class Database {
      * @since
      */
     async init(){
+        Registrierungscodes.init({
+            code: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                primaryKey: true,
+            }
+        },
+        {
+            sequelize: this.sequelize,
+            modelName: 'Registrierungscodes',
+        });
         Nutzer.init({
             uuid: {
                 type: DataTypes.UUID,
@@ -135,6 +147,15 @@ export class Database {
         await this.sequelize.sync();
     }
 
+    /**
+     * Einen Einladungscode hinzufügen
+     */
+    public async addinvitecode(code: string): Promise<boolean> {
+        const entry = await Registrierungscodes.create({
+            code
+        });
+        return entry != null;
+    }
     /** Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
      * @author Tim
      * @since 08.06.2026
@@ -204,18 +225,29 @@ export class Database {
      * @param passworthash Passworthash des Nutzers.
      * @returns True or False, ob das Registrieren funktioniert hat.
      */
-    public async registrieren(name: string, passworthash: string): Promise<boolean> {
+    public async registrieren(name: string, passworthash: string, code: string): Promise<boolean> {
         const test: number = await Nutzer.count({
             where: {
                 name: name,
                 passworthash: passworthash,
             }
         });
+        const testcode: number = await Registrierungscodes.count({
+            where: {
+                code
+            }
+        });
         if(test > 0) throw new Error("Nutzer existiert schon.");
+        if(testcode < 1) throw new Error("Code ungültig.");
         const entry: Nutzer = await Nutzer.create({
             uuid: randomUUID(),
             name: name,
             passworthash: passworthash,
+        });
+        await Registrierungscodes.destroy({
+            where: {
+                code
+            }
         });
         await this.sequelize.sync();
         if(entry != null) return true;
