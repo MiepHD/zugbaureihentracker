@@ -36,96 +36,7 @@ async function createInviteCode() {
         });
 }
 
-test("Baureihe hinzufügen API", async () => {
-    const response = await request(app)
-        .post("/api/addBaureihe")
-        .send({
-            ubid: "ab",
-            name: "bb",
-            beschreibung: "cb",
-            passwort: "Das Adminpasswort"
-        });
-
-    expect(response.status).toBe(302);
-});
-
-test("Baureihe abfragen API", async () => {
-    await request(app)
-        .post("/api/addBaureihe")
-        .send({
-            ubid: "a",
-            name: "b",
-            beschreibung: "c",
-            passwort: "Das Adminpasswort"
-        });
-
-    const response = await request(app)
-        .get("/api/getBaureihe")
-        .query({
-            ubid: "a"
-        });
-
-    expect(response.status).toBe(200);
-
-    const baureihe = JSON.parse(response.text);
-
-    expect(baureihe.ubid).toBe("a");
-    expect(baureihe.name).toBe("b");
-    expect(baureihe.beschreibung).toBe("c");
-});
-
-test("Gesamtzahl Baureihen API", async () => {
-    await request(app)
-        .post("/api/addBaureihe")
-        .send({
-            ubid: "a",
-            name: "b",
-            beschreibung: "c",
-            passwort: "Das Adminpasswort"
-        });
-
-    const response = await request(app)
-        .get("/api/getGesamtzahlBaureihen");
-
-    expect(response.text).toBe("1");
-});
-
-test("Account registrieren API", async () => {
-    await createInviteCode();
-
-    const response = await request(app)
-        .post("/api/registrieren")
-        .send({
-            username: "abc",
-            passwort: "abc",
-            code: "X"
-        });
-
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/login");
-});
-
-test("Account anmelden API", async () => {
-    await createInviteCode();
-
-    await request(app)
-        .post("/api/registrieren")
-        .send({
-            username: "def",
-            passwort: "def",
-            code: "X"
-        });
-
-    const response = await request(app)
-        .post("/api/anmelden")
-        .send({
-            username: "def",
-            passwort: "def"
-        });
-
-    expect(response.status).toBe(302);
-    expect(response.headers["set-cookie"]).toBeDefined();
-});
+//TODO: logout
 
 test("Baureihe als gefunden markieren API", async () => {
     await request(app)
@@ -167,7 +78,9 @@ test("Baureihe als gefunden markieren API", async () => {
     expect(response.headers.location).toBe("/home");
 });
 
-test("Gefundene Baureihen API", async () => {
+//TODO: addInviteCode
+
+test("Baureihe abfragen API", async () => {
     await request(app)
         .post("/api/addBaureihe")
         .send({
@@ -177,41 +90,56 @@ test("Gefundene Baureihen API", async () => {
             passwort: "Das Adminpasswort"
         });
 
+    const response = await request(app)
+        .get("/api/getBaureihe")
+        .query({
+            ubid: "a"
+        });
+
+    expect(response.status).toBe(200);
+
+    const baureihe = JSON.parse(response.text);
+
+    expect(baureihe.ubid).toBe("a");
+    expect(baureihe.name).toBe("b");
+    expect(baureihe.beschreibung).toBe("c");
+});
+
+test("Account registrieren API", async () => {
+    await createInviteCode();
+
+    const response = await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "abc",
+            passwort: "abc",
+            code: "X"
+        });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/login");
+});
+
+test("Account anmelden API", async () => {
     await createInviteCode();
 
     await request(app)
         .post("/api/registrieren")
         .send({
-            username: "F",
-            passwort: "F",
+            username: "def",
+            passwort: "def",
             code: "X"
         });
 
-    const login = await request(app)
+    const response = await request(app)
         .post("/api/anmelden")
         .send({
-            username: "F",
-            passwort: "F"
+            username: "def",
+            passwort: "def"
         });
 
-    const cookie = login.headers["set-cookie"];
-
-    await request(app)
-        .post("/api/baureiheAlsGefundenMarkieren")
-        .set("Cookie", cookie)
-        .send({
-            ubid: "a"
-        });
-
-    const response = await request(app)
-        .get("/api/getGefundeneBaureihen")
-        .set("Cookie", cookie);
-
-    expect(response.status).toBe(200);
-
-    const baureihen = JSON.parse(response.text);
-
-    expect(baureihen[0].ubid).toBe("a");
+    expect(response.status).toBe(302);
+    expect(response.headers["set-cookie"]).toBeDefined();
 });
 
 test("Freund hinzufügen API", async () => {
@@ -266,37 +194,6 @@ test("Freund hinzufügen API", async () => {
         });
 
     expect(response.text).toContain("/freunde");
-});
-
-test("getUUID API", async () => {
-    await createInviteCode();
-
-    await request(app)
-        .post("/api/registrieren")
-        .send({
-            username: "G",
-            passwort: "G",
-            code: "X"
-        });
-
-    const login = await request(app)
-        .post("/api/anmelden")
-        .send({
-            username: "G",
-            passwort: "G"
-        });
-
-    const cookie = login.headers["set-cookie"];
-
-    const response = await request(app)
-        .get("/api/getUUID")
-        .set("Cookie", cookie);
-
-    expect(response.status).toBe(200);
-
-    const data = JSON.parse(response.text);
-
-    expect(data.uuid).toBeTypeOf("string");
 });
 
 test("Freund entfernen API", async () => {
@@ -362,4 +259,113 @@ test("Freund entfernen API", async () => {
 
     expect(removeResponse.status).toBe(200);
     expect(removeResponse.text).toContain("true");
+});
+
+//TODO: baureihenVonFreundenAbrufen
+
+test("Gefundene Baureihen API", async () => {
+    await request(app)
+        .post("/api/addBaureihe")
+        .send({
+            ubid: "a",
+            name: "b",
+            beschreibung: "c",
+            passwort: "Das Adminpasswort"
+        });
+
+    await createInviteCode();
+
+    await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "F",
+            passwort: "F",
+            code: "X"
+        });
+
+    const login = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "F",
+            passwort: "F"
+        });
+
+    const cookie = login.headers["set-cookie"];
+
+    await request(app)
+        .post("/api/baureiheAlsGefundenMarkieren")
+        .set("Cookie", cookie)
+        .send({
+            ubid: "a"
+        });
+
+    const response = await request(app)
+        .get("/api/getGefundeneBaureihen")
+        .set("Cookie", cookie);
+
+    expect(response.status).toBe(200);
+
+    const baureihen = JSON.parse(response.text);
+
+    expect(baureihen[0].ubid).toBe("a");
+});
+
+test("Gesamtzahl Baureihen API", async () => {
+    await request(app)
+        .post("/api/addBaureihe")
+        .send({
+            ubid: "a",
+            name: "b",
+            beschreibung: "c",
+            passwort: "Das Adminpasswort"
+        });
+
+    const response = await request(app)
+        .get("/api/getGesamtzahlBaureihen");
+
+    expect(response.text).toBe("1");
+});
+
+test("Baureihe hinzufügen API", async () => {
+    const response = await request(app)
+        .post("/api/addBaureihe")
+        .send({
+            ubid: "ab",
+            name: "bb",
+            beschreibung: "cb",
+            passwort: "Das Adminpasswort"
+        });
+
+    expect(response.status).toBe(302);
+});
+
+test("getUUID API", async () => {
+    await createInviteCode();
+
+    await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "G",
+            passwort: "G",
+            code: "X"
+        });
+
+    const login = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "G",
+            passwort: "G"
+        });
+
+    const cookie = login.headers["set-cookie"];
+
+    const response = await request(app)
+        .get("/api/getUUID")
+        .set("Cookie", cookie);
+
+    expect(response.status).toBe(200);
+
+    const data = JSON.parse(response.text);
+
+    expect(data.uuid).toBeTypeOf("string");
 });

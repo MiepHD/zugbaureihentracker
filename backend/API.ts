@@ -50,7 +50,7 @@ export class API {
             } else {
                 res.send("Error");
             }
-        })
+        });
 
         /**
          * Lia

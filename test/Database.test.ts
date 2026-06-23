@@ -22,6 +22,8 @@ beforeEach(async () => {
     });
 });
 
+//TODO: logout, addInviteCode, baureihenVonFreundenAbrufen
+
 test("Baureihe als gefunden markieren", async () => {
     await db.addBaureihe("a", "b", "c");
     await db.addinvitecode("X")
