@@ -26,7 +26,7 @@ export class Nutzer extends Table {
             },
             admin: {
                 type: DataTypes.BOOLEAN,
-                defaultValue: true,
+                defaultValue: false,
                 allowNull: false,
             }
         },
