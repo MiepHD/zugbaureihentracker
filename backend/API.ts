@@ -6,7 +6,6 @@ import fs from "fs";
 import path from "path";
 
 export class API {
-    private adminpasswort: string;
     /**
      * Konstruktor der API; sendet Requests von vom Frontend aufgerufene Methoden an den Server und schickt die Antwort wieder zurück.
      * @author Tim
@@ -14,12 +13,13 @@ export class API {
      * @param app 
      */
     constructor(sequelize: Sequelize, app: Express) {
+        let adminpasswort;
         try {
-            this.adminpasswort = fs.readFileSync(path.join(__dirname, 'config/pass.txt'), 'utf8');
+            adminpasswort = fs.readFileSync(path.join(__dirname, 'config/pass.txt'), 'utf8');
         } catch {
-            this.adminpasswort = "Das Adminpasswort";
+            adminpasswort = "Das Adminpasswort";
         }
-        console.log("Das Adminpasswort ist: " + this.adminpasswort);
+        console.log("Das Adminpasswort ist: " + adminpasswort);
         const db = new Database(sequelize);
 
         app.use(express.urlencoded({ extended: true }));
@@ -52,7 +52,7 @@ export class API {
 
         app.post("/api/addInviteCode", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
-            if (data.passwort !== this.adminpasswort) {res.status(401); res.send(); return; }
+            if (data.passwort !== adminpasswort) {res.status(401); res.send(); return; }
             const success = await db.addinvitecode(data.code as string);
             if (success) {
                 res.redirect("/invite");
@@ -156,7 +156,7 @@ export class API {
 
         app.post("/api/addBaureihe", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
-            if (data.passwort !== this.adminpasswort) {res.status(401); res.send(); return; }
+            if (data.passwort !== adminpasswort) {res.status(401); res.send(); return; }
             const success = await db.addBaureihe(data.ubid, data.name, data.beschreibung);
             if (success == true) {
                 res.redirect("/add");
