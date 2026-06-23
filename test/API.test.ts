@@ -27,6 +27,14 @@ beforeEach(async () => {
     });
 });
 
+async function createInviteCode() {
+    await request(app)
+        .post("/api/addInviteCode")
+        .send({
+            code: "X",
+            passwort: "Das Adminpasswort"
+        });
+}
 
 test("Baureihe hinzufügen API", async () => {
     const response = await request(app)
@@ -40,7 +48,6 @@ test("Baureihe hinzufügen API", async () => {
 
     expect(response.status).toBe(302);
 });
-
 
 test("Baureihe abfragen API", async () => {
     await request(app)
@@ -67,7 +74,6 @@ test("Baureihe abfragen API", async () => {
     expect(baureihe.beschreibung).toBe("c");
 });
 
-
 test("Gesamtzahl Baureihen API", async () => {
     await request(app)
         .post("/api/addBaureihe")
@@ -84,26 +90,30 @@ test("Gesamtzahl Baureihen API", async () => {
     expect(response.text).toBe("1");
 });
 
-
 test("Account registrieren API", async () => {
+    await createInviteCode();
+
     const response = await request(app)
         .post("/api/registrieren")
         .send({
             username: "abc",
-            passwort: "abc"
+            passwort: "abc",
+            code: "X"
         });
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/login");
 });
 
-
 test("Account anmelden API", async () => {
+    await createInviteCode();
+
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "def",
-            passwort: "def"
+            passwort: "def",
+            code: "X"
         });
 
     const response = await request(app)
@@ -117,7 +127,6 @@ test("Account anmelden API", async () => {
     expect(response.headers["set-cookie"]).toBeDefined();
 });
 
-
 test("Baureihe als gefunden markieren API", async () => {
     await request(app)
         .post("/api/addBaureihe")
@@ -128,11 +137,14 @@ test("Baureihe als gefunden markieren API", async () => {
             passwort: "Das Adminpasswort"
         });
 
+    await createInviteCode();
+
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "A",
-            passwort: "A"
+            passwort: "A",
+            code: "X"
         });
 
     const login = await request(app)
@@ -155,7 +167,6 @@ test("Baureihe als gefunden markieren API", async () => {
     expect(response.headers.location).toBe("/home");
 });
 
-
 test("Gefundene Baureihen API", async () => {
     await request(app)
         .post("/api/addBaureihe")
@@ -166,11 +177,14 @@ test("Gefundene Baureihen API", async () => {
             passwort: "Das Adminpasswort"
         });
 
+    await createInviteCode();
+
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "F",
-            passwort: "F"
+            passwort: "F",
+            code: "X"
         });
 
     const login = await request(app)
@@ -200,20 +214,25 @@ test("Gefundene Baureihen API", async () => {
     expect(baureihen[0].ubid).toBe("a");
 });
 
-
 test("Freund hinzufügen API", async () => {
+    await createInviteCode();
+
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "A",
-            passwort: "A"
+            passwort: "A",
+            code: "X"
         });
+
+    await createInviteCode();
 
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "B",
-            passwort: "B"
+            passwort: "B",
+            code: "X"
         });
 
     const loginA = await request(app)
@@ -246,15 +265,18 @@ test("Freund hinzufügen API", async () => {
             uuid
         });
 
-    expect(response.text).toContain("true");
+    expect(response.text).toContain("/freunde");
 });
 
 test("getUUID API", async () => {
+    await createInviteCode();
+
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "G",
-            passwort: "G"
+            passwort: "G",
+            code: "X"
         });
 
     const login = await request(app)
@@ -278,24 +300,26 @@ test("getUUID API", async () => {
 });
 
 test("Freund entfernen API", async () => {
-    // Nutzer D registrieren
+    await createInviteCode();
+
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "D",
-            passwort: "D"
+            passwort: "D",
+            code: "X"
         });
 
-    // Nutzer E registrieren
+    await createInviteCode();
+
     await request(app)
         .post("/api/registrieren")
         .send({
             username: "E",
-            passwort: "E"
+            passwort: "E",
+            code: "X"
         });
 
-
-    // D anmelden
     const loginD = await request(app)
         .post("/api/anmelden")
         .send({
@@ -305,8 +329,6 @@ test("Freund entfernen API", async () => {
 
     const cookieD = loginD.headers["set-cookie"];
 
-
-    // E anmelden, um UUID zu bekommen
     const loginE = await request(app)
         .post("/api/anmelden")
         .send({
@@ -316,16 +338,12 @@ test("Freund entfernen API", async () => {
 
     const cookieE = loginE.headers["set-cookie"];
 
-
-    // UUID von E holen
     const uuidResponse = await request(app)
         .get("/api/getUUID")
         .set("Cookie", cookieE);
 
     const uuidE = JSON.parse(uuidResponse.text).uuid;
 
-
-    // Freund hinzufügen
     const addResponse = await request(app)
         .post("/api/fuegeFreundHinzu")
         .set("Cookie", cookieD)
@@ -333,12 +351,10 @@ test("Freund entfernen API", async () => {
             uuid: uuidE
         });
 
-    expect(addResponse.text).toContain("true");
+    expect(addResponse.text).toContain("/freunde");
 
-
-    // Freund entfernen
     const removeResponse = await request(app)
-        .delete("/api/entferneFreund")
+        .post("/api/entferneFreund")
         .set("Cookie", cookieD)
         .send({
             uuid: uuidE
