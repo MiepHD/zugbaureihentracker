@@ -2,8 +2,11 @@ import { Sequelize } from "sequelize";
 import { Database } from "./Database";
 import express, { Request, Response, Express } from "express";
 import cookieParser from "cookie-parser";
+import fs from "fs";
+import path from "path";
 
 export class API {
+    private adminpasswort: string;
     /**
      * Konstruktor der API; sendet Requests von vom Frontend aufgerufene Methoden an den Server und schickt die Antwort wieder zurück.
      * @author Tim
@@ -11,6 +14,11 @@ export class API {
      * @param app 
      */
     constructor(sequelize: Sequelize, app: Express) {
+        try {
+            this.adminpasswort = fs.readFileSync(path.join(__dirname, 'config/pass.txt'), 'utf8');
+        } catch {
+            this.adminpasswort = "Das Adminpasswort";
+        }
         const db = new Database(sequelize);
 
         app.use(express.urlencoded({ extended: true }));
@@ -43,7 +51,7 @@ export class API {
 
         app.post("/api/addInviteCode", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
-            if (data.passwort !== "Das Adminpasswort") return;
+            if (data.passwort !== this.adminpasswort) return;
             const success = await db.addinvitecode(data.code as string);
             if (success) {
                 res.redirect("/invite");
@@ -147,7 +155,7 @@ export class API {
 
         app.post("/api/addBaureihe", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
-            if (data.passwort !== "Das Adminpasswort") {res.status(401); res.send(); return; }
+            if (data.passwort !== this.adminpasswort) {res.status(401); res.send(); return; }
             const success = await db.addBaureihe(data.ubid, data.name, data.beschreibung);
             if (success == true) {
                 res.redirect("/add");
