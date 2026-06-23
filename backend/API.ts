@@ -52,6 +52,7 @@ export class API {
 
         app.post("/api/addInviteCode", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
+            console.log(`${data.password} und ${adminpasswort}`);
             if (data.passwort !== adminpasswort) {res.status(401); res.send(); return; }
             const success = await db.addinvitecode(data.code as string);
             if (success) {
