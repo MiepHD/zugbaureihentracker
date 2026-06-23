@@ -63,7 +63,7 @@ export class Database {
 
         Freundesliste.init({
             von: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
                 allowNull: false,
                 references: {
                     model: Nutzer,
@@ -71,7 +71,7 @@ export class Database {
                 },
             },
             zu: {
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
                 allowNull: false,
                 references: {
                     model: Nutzer,
@@ -154,6 +154,7 @@ export class Database {
      * Einen Einladungscode hinzufügen
      */
     public async addinvitecode(code: string): Promise<boolean> {
+        if (await Registrierungscodes.count({where: {code}}) > 0) return false;
         const entry = await Registrierungscodes.create({
             code
         });
@@ -349,20 +350,20 @@ export class Database {
                 sessiontoken: sessiontoken,
             },
             // Wir wollen nur die Freunde und deren Daten, nicht die Daten des anfragenden Nutzers selbst
-            attributes: [], 
+            attributes: ["uuid"], 
             include: [
                 {
                     model: Nutzer,
                     as: 'Freunde',
                     // Schließt die IDs aus der Freundesliste-Zwischentabelle (von/zu) aus den Rohdaten aus
-                    through: { attributes: [] }, 
+                    through: { attributes: ["von", "zu"] }, 
                     // Hier wählen wir nur den Namen des Freundes aus, den du anzeigen möchtest
                     attributes: ['name', 'uuid'], 
                     include: [
                         {
                             model: Aktivitaet,
                             // Verhindert, dass leere Freunde (die keine Aktivität haben) im Ergebnis auftauchen
-                            required: true, 
+                            required: false, 
                             attributes: ["ubid"], // Wir brauchen die IDs der Aktivitätstabelle nicht im Endergebnis
                         }
                     ]

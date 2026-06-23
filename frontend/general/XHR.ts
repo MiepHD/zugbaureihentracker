@@ -14,7 +14,13 @@ class XHR {
             if (this.xhr.status !== 200) {
             return;
             }
-            const response = JSON.parse(this.xhr.responseText);
+            let response = null;
+            try {
+                response = JSON.parse(this.xhr.responseText);
+            } catch {
+                response = this.xhr.responseText;
+            }
+            
             callback(response);
         };
         this.xhr.send();

@@ -103,3 +103,44 @@ test("getUUID", async () => {
     const sessiontokenA: string | boolean = await db.anmelden("G", "G");
     if (typeof sessiontokenA == "string") expect(await db.getUUID(sessiontokenA)).toBeTypeOf("string");
 });
+
+test("InviteCode hinzufügen", async () => {
+    const result = await db.addinvitecode("TEST123");
+    expect(result).toBe(true);
+
+    // optional: doppelt verhindern testen
+    const second = await db.addinvitecode("TEST123");
+    expect(second).toBe(false); // oder false, je nach gewünschter Logik
+});
+
+test("Baureihen von Freunden abrufen (DB)", async () => {
+    await db.addBaureihe("a", "b", "c");
+
+    await db.addinvitecode("X");
+    await db.registrieren("A", "A", "X");
+    await db.addinvitecode("X");
+    await db.registrieren("B", "B", "X");
+
+    const tokenA = await db.anmelden("A", "A");
+    const tokenB = await db.anmelden("B", "B");
+
+    if (typeof tokenA !== "string" || typeof tokenB !== "string") return;
+
+    const uuidB = await db.getUUID(tokenB);
+
+    await db.fuegeFreundHinzu(tokenA, uuidB);
+    await db.baureiheAlsGefundenMarkieren(tokenB, "a");
+
+    const result = await db.baureihenVonFreundenAbrufen(tokenA);
+
+    expect(result).not.toBeNull();
+
+    // Sequelize Struktur ist verschachtelt:
+    const freunde = (result as any)?.Freunde;
+
+    expect(freunde).toBeDefined();
+    expect(freunde.length).toBeGreaterThan(0);
+
+    const aktivitaeten = freunde[0]?.Aktivitaets;
+    expect(aktivitaeten?.length ?? 0).toBeGreaterThan(0);
+});

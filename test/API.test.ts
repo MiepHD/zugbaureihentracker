@@ -36,7 +36,33 @@ async function createInviteCode() {
         });
 }
 
-//TODO: logout
+test("Logout API", async () => {
+    await createInviteCode();
+
+    await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "LogoutUser",
+            passwort: "LogoutUser",
+            code: "X"
+        });
+
+    const login = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "LogoutUser",
+            passwort: "LogoutUser"
+        });
+
+    const cookie = login.headers["set-cookie"];
+
+    const response = await request(app)
+        .get("/logout")
+        .set("Cookie", cookie);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/login");
+});
 
 test("Baureihe als gefunden markieren API", async () => {
     await request(app)
@@ -78,7 +104,17 @@ test("Baureihe als gefunden markieren API", async () => {
     expect(response.headers.location).toBe("/home");
 });
 
-//TODO: addInviteCode
+test("addInviteCode API", async () => {
+    const response = await request(app)
+        .post("/api/addInviteCode")
+        .send({
+            code: "TESTCODE",
+            passwort: "Das Adminpasswort"
+        });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/invite");
+});
 
 test("Baureihe abfragen API", async () => {
     await request(app)
@@ -184,7 +220,7 @@ test("Freund hinzufügen API", async () => {
         .get("/api/getUUID")
         .set("Cookie", cookieB);
 
-    const uuid = JSON.parse(uuidResponse.text).uuid;
+    const uuid = uuidResponse.text;
 
     const response = await request(app)
         .post("/api/fuegeFreundHinzu")
@@ -239,7 +275,7 @@ test("Freund entfernen API", async () => {
         .get("/api/getUUID")
         .set("Cookie", cookieE);
 
-    const uuidE = JSON.parse(uuidResponse.text).uuid;
+    const uuidE = uuidResponse.text;
 
     const addResponse = await request(app)
         .post("/api/fuegeFreundHinzu")
@@ -256,12 +292,103 @@ test("Freund entfernen API", async () => {
         .send({
             uuid: uuidE
         });
-
-    expect(removeResponse.status).toBe(200);
-    expect(removeResponse.text).toContain("true");
+    
+    expect(removeResponse.text).toContain("/freunde");
 });
 
-//TODO: baureihenVonFreundenAbrufen
+test("Baureihen von Freunden abrufen API", async () => {
+    const addBaureihe = await request(app)
+        .post("/api/addBaureihe")
+        .send({
+            ubid: "a",
+            name: "b",
+            beschreibung: "c",
+            passwort: "Das Adminpasswort"
+        });
+
+    expect(addBaureihe.text).toContain("/add");
+
+    await createInviteCode();
+
+    const regA = await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "UserA",
+            passwort: "UserA",
+            code: "X"
+        });
+
+    expect(regA.text).toContain("/login");
+
+    await createInviteCode();
+
+    const regB = await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "UserB",
+            passwort: "UserB",
+            code: "X"
+        });
+
+    expect(regB.text).toContain("/login");
+
+    const loginA = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "UserA",
+            passwort: "UserA"
+        });
+
+    expect(loginA.text).toContain("/home");
+    expect(loginA.headers["set-cookie"]).toBeDefined();
+
+    const loginB = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "UserB",
+            passwort: "UserB"
+        });
+
+    expect(loginB.text).toContain("/home");
+    expect(loginB.headers["set-cookie"]).toBeDefined();
+
+    const cookieA = loginA.headers["set-cookie"];
+    const cookieB = loginB.headers["set-cookie"];
+
+    const uuidResponse = await request(app)
+        .get("/api/getUUID")
+        .set("Cookie", cookieB);
+
+    expect(uuidResponse.status).toBe(200);
+    expect(uuidResponse.text).toBeTruthy();
+
+    const uuidB = uuidResponse.text;
+
+    const freundHinzufuegen = await request(app)
+        .post("/api/fuegeFreundHinzu")
+        .set("Cookie", cookieA)
+        .send({
+            uuid: uuidB
+        });
+
+    expect(freundHinzufuegen.text).toContain("/freunde");
+
+    const gefundenMarkieren = await request(app)
+        .post("/api/baureiheAlsGefundenMarkieren")
+        .set("Cookie", cookieB)
+        .send({
+            ubid: "a"
+        });
+
+    expect(gefundenMarkieren.text).toContain("/home");
+
+    const response = await request(app)
+        .get("/api/baureihenVonFreundenAbrufen")
+        .set("Cookie", cookieA);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("a");
+});
 
 test("Gefundene Baureihen API", async () => {
     await request(app)
@@ -365,7 +492,5 @@ test("getUUID API", async () => {
 
     expect(response.status).toBe(200);
 
-    const data = JSON.parse(response.text);
-
-    expect(data.uuid).toBeTypeOf("string");
+    expect(response.text).toBeTypeOf("string");
 });

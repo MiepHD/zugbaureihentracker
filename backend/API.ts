@@ -115,7 +115,16 @@ export class API {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
-            res.send(`{ "success": ${await db.entferneFreund(sessiontoken, data.uuid)}}`);
+            try {
+                const success = await db.entferneFreund(sessiontoken, data.uuid);
+                if (success) {
+                    res.redirect("/freunde");
+                } else {
+                    res.send(`{ "success": ${success}`);
+                }
+            } catch (e: any) {
+                res.send((e as Error).message);
+            }
         });
 
         app.get("/api/baureihenVonFreundenAbrufen", express.json(), async (req: Request, res: Response) => {
@@ -151,7 +160,7 @@ export class API {
         app.get("/api/getUUID", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
-            res.send(`{ "uuid": "${await db.getUUID(sessiontoken)}"}`);
+            res.send(await db.getUUID(sessiontoken));
         });
     }
 
