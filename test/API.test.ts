@@ -15,7 +15,7 @@ beforeAll(async () => {
     });
 
     app = express();
-    new API(sequelize, app);
+    new API(sequelize, app, "Das Adminpasswort");
 
     await sequelize.sync({ force: true });
 });

@@ -46,7 +46,7 @@ export class Server {
                     connectTimeout: 1000,
                 },
             }
-        ), this.app);
+        ), this.app, null);
     }
 
 }

@@ -4,6 +4,10 @@ import express, { Request, Response, Express } from "express";
 import cookieParser from "cookie-parser";
 import fs from "fs";
 import path from "path";
+import { Registrierungscodes } from "./models/Registrierungscodes";
+import { Baureihe } from "./models/Baureihe";
+import { Freundesliste } from "./models/Freundesliste";
+import { Nutzer } from "./models/Nutzer";
 
 export class API {
     /**
@@ -12,14 +16,14 @@ export class API {
      * @param sequelize 
      * @param app 
      */
-    constructor(sequelize: Sequelize, app: Express) {
-        let adminpasswort;
-        try {
+    constructor(sequelize: Sequelize, app: Express, adminpasswort: string | null) {
+        if (!adminpasswort) try {
             adminpasswort = fs.readFileSync(path.join(__dirname, 'config/pass.txt'), 'utf8').replace("\n", "");
         } catch {
             adminpasswort = "Das Adminpasswort";
         }
         const db = new Database(sequelize);
+        db.init();
 
         app.use(express.urlencoded({ extended: true }));
         app.use(express.json());
@@ -42,7 +46,7 @@ export class API {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
-            if(await db.baureiheAlsGefundenMarkieren(sessiontoken, data.ubid)) {
+            if(await Baureihe.alsGefundenMarkieren(sessiontoken, data.ubid)) {
                 res.redirect("/home");
             } else {
                 res.redirect(`/suchergebnis?ubid=${data.ubid}`);
@@ -52,7 +56,7 @@ export class API {
         app.post("/api/addInviteCode", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             if (data.passwort !== adminpasswort) {res.status(401); res.send(); return; }
-            const success = await db.addinvitecode(data.code as string);
+            const success = await Registrierungscodes.add(data.code as string);
             if (success) {
                 res.redirect("/invite");
             } else {
@@ -66,7 +70,7 @@ export class API {
          */
         app.get("/api/getBaureihe", express.json(), async (req: Request, res: Response) => {
             const data = req.query;
-            res.send(`${JSON.stringify(await db.getBaureihe(data.ubid as string))}`);
+            res.send(`${JSON.stringify(await Baureihe.get(data.ubid as string))}`);
         });
 
         /**
@@ -76,7 +80,7 @@ export class API {
         app.post("/api/registrieren", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             if (data.username == "" || data.passwort == "" || data.code == "") {res.redirect("/registrieren"); return;}
-            const success = await db.registrieren(data.username, await this.sha256Hex(data.passwort), data.code);
+            const success = await Nutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
             if (success) {
                 res.redirect("/login");
             } else {
@@ -92,7 +96,7 @@ export class API {
             const data = req.body;
             console.log(`${data.username}${data.passwort}`);
             if (data.username == "" || data.passwort == "") {res.redirect("/login"); return;}
-            const sessiontoken = await db.anmelden(data.username, await this.sha256Hex(data.passwort));
+            const sessiontoken = await Nutzer.getSessiontoken(data.username, await this.sha256Hex(data.passwort));
             if (!sessiontoken) {res.redirect("/login"); return;}
             res.cookie("sessiontoken", sessiontoken, {
                 httpOnly: true,
@@ -107,7 +111,7 @@ export class API {
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
             try {
-                const success = await db.fuegeFreundHinzu(sessiontoken, data.uuid);
+                const success = await Freundesliste.add(sessiontoken, data.uuid);
                 if (success) {
                     res.redirect("/freunde");
                 } else {
@@ -124,7 +128,7 @@ export class API {
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
             const data = req.body;
             try {
-                const success = await db.entferneFreund(sessiontoken, data.uuid);
+                const success = await Freundesliste.remove(sessiontoken, data.uuid);
                 if (success) {
                     res.redirect("/freunde");
                 } else {
@@ -150,13 +154,13 @@ export class API {
         });
 
         app.get("/api/getGesamtzahlBaureihen", express.json(), async (req: Request, res: Response) => {
-            res.send(`${await db.getGesamtzahlBaureihen()}`);
+            res.send(`${await Baureihe.getCount()}`);
         });
 
         app.post("/api/addBaureihe", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
             if (data.passwort !== adminpasswort) {res.status(401); res.send(); return; }
-            const success = await db.addBaureihe(data.ubid, data.name, data.beschreibung);
+            const success = await Baureihe.add(data.ubid, data.name, data.beschreibung);
             if (success == true) {
                 res.redirect("/add");
             } else {
@@ -168,7 +172,7 @@ export class API {
         app.get("/api/getUUID", express.json(), async (req: Request, res: Response) => {
             const sessiontoken = req.cookies.sessiontoken;
             if (sessiontoken == undefined) {res.status(401); res.send(); return; }
-            res.send(await db.getUUID(sessiontoken));
+            res.send(await Nutzer.getUUID(sessiontoken));
         });
     }
 

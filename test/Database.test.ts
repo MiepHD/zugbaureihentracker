@@ -1,18 +1,21 @@
 import { Sequelize } from "sequelize";
 import { Database } from "../backend/Database";
 import { Baureihe } from "../backend/models/Baureihe";
-import { expect, test, beforeAll, beforeEach } from 'vitest';
+import { expect, test, beforeEach, beforeAll } from 'vitest';
+import { Nutzer } from "../backend/models/Nutzer";
+import { Freundesliste } from "../backend/models/Freundesliste";
+import { Aktivitaet } from "../backend/models/Aktivitaet";
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: ':memory:',
-    logging: false,
+    logging: true,
 });
 
 const db = new Database(sequelize);
 
 beforeAll(async () => {
-    await sequelize.sync({ force: true });
+    await db.init();
 });
 
 beforeEach(async () => {
@@ -22,19 +25,18 @@ beforeEach(async () => {
     });
 });
 
-//TODO: logout, addInviteCode, baureihenVonFreundenAbrufen
 
 test("Baureihe als gefunden markieren", async () => {
-    await db.addBaureihe("a", "b", "c");
-    await db.addinvitecode("X")
-    await db.registrieren("A", "A", "X");
-    const sessiontokenA: string | boolean = await db.anmelden("A", "A");
-    if (typeof sessiontokenA == "string") expect(await db.baureiheAlsGefundenMarkieren(sessiontokenA, "a")).toBe(true);
+    await db.baureihe.add("a", "b", "c");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("A", "A", "X");
+    const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("A", "A");
+    if (typeof sessiontokenA == "string") expect(await db.baureihe.alsGefundenMarkieren(sessiontokenA, "a")).toBe(true);
 });
 
 test("Baureihe abfragen", async () => {
-    await db.addBaureihe("a", "b", "c");
-    const baureihe: Baureihe | null = await db.getBaureihe("a");
+    await db.baureihe.add("a", "b", "c");
+    const baureihe: Baureihe | null = await db.baureihe.get("a");
     if (baureihe == null) return;
     expect(await baureihe.getDataValue("ubid")).toBe("a");
     expect(await baureihe.getDataValue("name")).toBe("b");
@@ -42,94 +44,94 @@ test("Baureihe abfragen", async () => {
 })
 
 test("Baureihe hinzufügen", async () => {
-    expect(await db.addBaureihe("ab", "bb", "cb")).toBe(true);
+    expect(await db.baureihe.add("ab", "bb", "cb")).toBe(true);
 });
 
 
 test("Anzahl der Baureihen abfragen", async () => {
-    await db.addBaureihe("a", "b", "c");
-    expect(await db.getGesamtzahlBaureihen()).toBe(1);
+    await db.baureihe.add("a", "b", "c");
+    expect(await db.baureihe.getCount()).toBe(1);
 });
 
 test("Account registrieren", async () => {
-    await db.addinvitecode("X");
-    expect(await db.registrieren("abc", "abc", "X")).toBe(true);
+    await db.registrierungscodes.add("X");
+    expect(await db.nutzer.add("abc", "abc", "X")).toBe(true);
 });
 
 test("Account anmelden", async () => {
-    await db.addinvitecode("X");
-    await db.registrieren("def", "def", "X")
-    expect(await db.anmelden("def", "def")).toBeTypeOf("string");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("def", "def", "X")
+    expect(await db.nutzer.getSessiontoken("def", "def")).toBeTypeOf("string");
 });
 
 test("Freund hinzufügen", async () => {
-    await db.addinvitecode("X");
-    await db.registrieren("C", "C", "X");
-    await db.addinvitecode("X");
-    await db.registrieren("B", "B", "X");
-    const sessiontokenA: string | boolean = await db.anmelden("C", "C");
-    const sessiontokenB: string | boolean = await db.anmelden("B", "B");
-    if (typeof sessiontokenA == "string" && typeof sessiontokenB == "string") expect(await db.fuegeFreundHinzu(sessiontokenA, await db.getUUID(sessiontokenB))).toBe(true);
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("C", "C", "X");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("B", "B", "X");
+    const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("C", "C");
+    const sessiontokenB: string | boolean = await db.nutzer.getSessiontoken("B", "B");
+    if (typeof sessiontokenA == "string" && typeof sessiontokenB == "string") expect(await db.freundesliste.add(sessiontokenA, await db.nutzer.getUUID(sessiontokenB))).toBe(true);
 });
 
 test("Freund entfernen", async () => {
-    await db.addinvitecode("X");
-    await db.registrieren("D", "D", "X");
-    await db.addinvitecode("X");
-    await db.registrieren("E", "E", "X");
-    const sessiontokenA: string | boolean = await db.anmelden("D", "D");
-    const sessiontokenB: string | boolean = await db.anmelden("E", "E");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("D", "D", "X");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("E", "E", "X");
+    const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("D", "D");
+    const sessiontokenB: string | boolean = await db.nutzer.getSessiontoken("E", "E");
     if (typeof sessiontokenA == "string" && typeof sessiontokenB == "string") {
-        await db.fuegeFreundHinzu(sessiontokenA, await db.getUUID(sessiontokenB));
-        expect(await db.entferneFreund(sessiontokenA, await db.getUUID(sessiontokenB))).toBe(true)
+        await db.freundesliste.add(sessiontokenA, await db.nutzer.getUUID(sessiontokenB));
+        expect(await db.freundesliste.remove(sessiontokenA, await db.nutzer.getUUID(sessiontokenB))).toBe(true)
     }
 });
 
 test("Gefundene Baureihen auslesen", async () => {
-    await db.addBaureihe("a", "b", "c");
-    await db.addinvitecode("X");
-    await db.registrieren("F", "F", "X");
-    const sessiontokenA: string | boolean = await db.anmelden("F", "F");
+    await db.baureihe.add("a", "b", "c");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("F", "F", "X");
+    const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("F", "F");
     if (typeof sessiontokenA == "string") {
-        await db.baureiheAlsGefundenMarkieren(sessiontokenA, "a");
+        await db.baureihe.alsGefundenMarkieren(sessiontokenA, "a");
         const baureihen: Baureihe[] = await db.getGefundeneBaureihen(sessiontokenA);
         expect(baureihen[0].getDataValue("ubid")).toBe("a");
     }
 });
 
 test("getUUID", async () => {
-    await db.addinvitecode("X");
-    await db.registrieren("G", "G", "X");
-    const sessiontokenA: string | boolean = await db.anmelden("G", "G");
-    if (typeof sessiontokenA == "string") expect(await db.getUUID(sessiontokenA)).toBeTypeOf("string");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("G", "G", "X");
+    const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("G", "G");
+    if (typeof sessiontokenA == "string") expect(await db.nutzer.getUUID(sessiontokenA)).toBeTypeOf("string");
 });
 
 test("InviteCode hinzufügen", async () => {
-    const result = await db.addinvitecode("TEST123");
+    const result = await db.registrierungscodes.add("TEST123");
     expect(result).toBe(true);
 
     // optional: doppelt verhindern testen
-    const second = await db.addinvitecode("TEST123");
+    const second = await db.registrierungscodes.add("TEST123");
     expect(second).toBe(false); // oder false, je nach gewünschter Logik
 });
 
 test("Baureihen von Freunden abrufen (DB)", async () => {
-    await db.addBaureihe("a", "b", "c");
+    await db.baureihe.add("a", "b", "c");
 
-    await db.addinvitecode("X");
-    await db.registrieren("A", "A", "X");
-    await db.addinvitecode("X");
-    await db.registrieren("B", "B", "X");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("A", "A", "X");
+    await db.registrierungscodes.add("X");
+    await db.nutzer.add("B", "B", "X");
 
-    const tokenA = await db.anmelden("A", "A");
-    const tokenB = await db.anmelden("B", "B");
+    const tokenA = await db.nutzer.getSessiontoken("A", "A");
+    const tokenB = await db.nutzer.getSessiontoken("B", "B");
 
     if (typeof tokenA !== "string" || typeof tokenB !== "string") return;
 
-    const uuidB = await db.getUUID(tokenB);
+    const uuidB = await db.nutzer.getUUID(tokenB);
 
-    await db.fuegeFreundHinzu(tokenA, uuidB);
-    await db.baureiheAlsGefundenMarkieren(tokenB, "a");
+    await db.freundesliste.add(tokenA, uuidB);
+    await db.baureihe.alsGefundenMarkieren(tokenB, "a");
 
     const result = await db.baureihenVonFreundenAbrufen(tokenA);
 
