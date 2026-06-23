@@ -15,11 +15,10 @@ export class API {
     constructor(sequelize: Sequelize, app: Express) {
         let adminpasswort;
         try {
-            adminpasswort = fs.readFileSync(path.join(__dirname, 'config/pass.txt'), 'utf8');
+            adminpasswort = fs.readFileSync(path.join(__dirname, 'config/pass.txt'), 'utf8').replace("\n", "");
         } catch {
             adminpasswort = "Das Adminpasswort";
         }
-        console.log("Das Adminpasswort ist: " + adminpasswort);
         const db = new Database(sequelize);
 
         app.use(express.urlencoded({ extended: true }));
@@ -52,7 +51,6 @@ export class API {
 
         app.post("/api/addInviteCode", express.json(), async (req: Request, res: Response) => {
             const data = req.body;
-            console.log(`${data.passwort} und ${adminpasswort}`);
             if (data.passwort !== adminpasswort) {res.status(401); res.send(); return; }
             const success = await db.addinvitecode(data.code as string);
             if (success) {
