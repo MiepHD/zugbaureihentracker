@@ -1,10 +1,11 @@
-import { Sequelize, DataTypes, Transaction, Model } from 'sequelize';
+import { Sequelize, Model } from 'sequelize';
 import { Nutzer } from './models/Nutzer';
 import { Freundesliste } from './models/Freundesliste';
 import { Baureihe } from './models/Baureihe';
 import { Aktivitaet } from './models/Aktivitaet';
 import { Registrierungscodes } from './models/Registrierungscodes';
 import { randomUUID } from 'crypto';
+import { Table } from './models/Table';
 
 export class Database {
     private sequelize: Sequelize;
@@ -25,128 +26,13 @@ export class Database {
      * @since
      */
     async init(){
-        Registrierungscodes.init({
-            code: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                primaryKey: true,
-            }
-        },
-        {
-            sequelize: this.sequelize,
-            modelName: 'Registrierungscodes',
-        });
-        Nutzer.init({
-            uuid: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
-                allowNull: false,
-                primaryKey: true,
-            },
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                unique: true,
-            },
-            passworthash: {
-                type: DataTypes.STRING,
-                allowNull: false,
-            },
-            sessiontoken: {
-                type: DataTypes.STRING,
-            }
-        },
-        {
-            sequelize: this.sequelize,
-            modelName: 'Nutzer',
-        });
-
-        Freundesliste.init({
-            von: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                references: {
-                    model: Nutzer,
-                    key: 'uuid',
-                },
-            },
-            zu: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                references: {
-                    model: Nutzer,
-                    key: 'uuid',
-                },
-            }
-        },
-        {
-            sequelize: this.sequelize,
-            modelName: 'Freundesliste',
-        });
-        Nutzer.belongsToMany(Nutzer, {
-            as: "Freunde",
-            through: Freundesliste,
-            foreignKey: {
-                name: "von",
-                allowNull: false
-            },
-            otherKey: {
-                name: "zu",
-                allowNull: false
-            }
-        });
-
-        Baureihe.init({
-            ubid: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                primaryKey: true,
-            },
-            name: {
-                type: DataTypes.STRING,
-            },
-            beschreibung: {
-                type: DataTypes.STRING,
-            },
-        },
-        {
-            sequelize: this.sequelize,
-            modelName: 'Baureihe',
-        });
-
-        Aktivitaet.init({
-            uuid: {
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUIDV4,
-                allowNull: false,
-                references: {
-                    model: Nutzer,
-                    key: 'uuid',
-                },
-            },
-            ubid: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                references: {
-                    model: Baureihe,
-                    key: 'ubid',
-                },
-            },
-        },
-        {
-            sequelize: this.sequelize,
-            modelName: 'Aktivitaet',
-        });
-        Aktivitaet.belongsTo(Baureihe, {
-            foreignKey: "ubid"
-        });
-
-        Aktivitaet.belongsTo(Nutzer, {
-            foreignKey: "uuid"
-        });
-        Nutzer.hasMany(Aktivitaet, {
-            foreignKey: "uuid"
-        });
+        const models: typeof Table[] = [Registrierungscodes, Nutzer, Freundesliste, Baureihe, Aktivitaet];
+        for (const model of models) {
+            model.initialize(this.sequelize);
+        }
+        for (const model of models) {
+            model.initRelations(this.sequelize);
+        }
         await this.sequelize.sync();
     }
 
