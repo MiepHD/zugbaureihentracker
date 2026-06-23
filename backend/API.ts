@@ -19,6 +19,7 @@ export class API {
         } catch {
             this.adminpasswort = "Das Adminpasswort";
         }
+        console.log("Das Adminpasswort ist: " + this.adminpasswort);
         const db = new Database(sequelize);
 
         app.use(express.urlencoded({ extended: true }));
