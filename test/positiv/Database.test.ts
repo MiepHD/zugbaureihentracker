@@ -1,10 +1,10 @@
 import { Sequelize } from "sequelize";
-import { Database } from "../backend/Database";
-import { Baureihe } from "../backend/models/Baureihe";
+import { Database } from "../../backend/Database";
+import { Baureihe } from "../../backend/models/Baureihe";
 import { expect, test, beforeEach, beforeAll } from 'vitest';
-import { Nutzer } from "../backend/models/Nutzer";
-import { Freundesliste } from "../backend/models/Freundesliste";
-import { Aktivitaet } from "../backend/models/Aktivitaet";
+import { Nutzer } from "../../backend/models/Nutzer";
+import { Freundesliste } from "../../backend/models/Freundesliste";
+import { Aktivitaet } from "../../backend/models/Aktivitaet";
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',

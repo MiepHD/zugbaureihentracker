@@ -1,6 +1,6 @@
 import { expect, test, beforeAll, afterAll } from 'vitest';
 import http from 'http';
-import { DeliveryService } from '../backend/DeliveryService.js';
+import { DeliveryService } from '../../backend/DeliveryService.js';
 import express, { Express } from "express";
 
 //Werk von Lia
