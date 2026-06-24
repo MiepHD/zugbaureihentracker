@@ -10,8 +10,6 @@ export class Nutzer {
     }
 
     async logout(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
         res.clearCookie("sessiontoken", {
             httpOnly: true,
             sameSite: "lax",

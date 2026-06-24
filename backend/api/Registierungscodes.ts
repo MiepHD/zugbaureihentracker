@@ -8,13 +8,12 @@ import { API } from "./API";
 export class Registrierungscodes {
     async add(req: Request, res: Response, isAuthenticated: boolean) {
         const data = req.body;
-        if (!isAuthenticated) {
-            const sessiontoken = await API.checkSessiontoken(req, res);
-            if (sessiontoken == null) return;
-            if (!await DBNutzer.isElevated(sessiontoken)) {res.status(401); res.send(); return; }
-        }
-        
         try {
+            if (!isAuthenticated) {
+                const sessiontoken = await API.checkSessiontoken(req, res);
+                if (sessiontoken == null) return;
+                if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung, Registrierungscodes zu erstellen.");
+            }
             await DBRegistrierungscodes.add(data.code as string);
             res.redirect("/invite");
         } catch (e: unknown) {
