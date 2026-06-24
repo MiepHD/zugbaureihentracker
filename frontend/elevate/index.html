@@ -9,15 +9,18 @@
       type="text/css"
       href="/general/all.css"
     />
+    <script src="/general/ErrorHandler.js" defer></script>
     <title>Zugbaureihentracker | Elevate</title>
 </head>
 <body>
-    <a href="/home" class="back">Zurück</a>
-    <form action="/api/elevate" method="post" class="easyform">
-        <label for="passwort">Adminpasswort:</label>
-        <input type="password" id="passwort" name="passwort" required>
-        <div></div>
-        <button>Hinzufügen</button>
-    </form>
+    <main>
+        <a href="/home" class="back">Zurück</a>
+        <form action="/api/elevate" method="post" class="easyform">
+            <label for="passwort">Adminpasswort:</label>
+            <input type="password" id="passwort" name="passwort" required>
+            <div></div>
+            <button>Hinzufügen</button>
+        </form>
+    </main>
 </body>
 </html>

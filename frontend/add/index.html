@@ -9,19 +9,22 @@
       type="text/css"
       href="/general/all.css"
     />
+    <script src="/general/ErrorHandler.js" defer></script>
     <title>Zugbaureihentracker | Baureihe hinzufügen</title>
 </head>
 <body>
-    <a href="/home" class="back">Zurück</a>
-    <form action="/api/addBaureihe" method="post" class="easyform">
-        <label for="ubid">UBID:</label>
-        <input type="text" id="ubid" name="ubid" required>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name">
-        <label for="beschreibung">Beschreibung<br> (unterstützt HTML):</label>
-        <textarea id="beschreibung" name="beschreibung"></textarea>
-        <div></div>
-        <button>Hinzufügen</button>
-    </form>
+    <main>
+        <a href="/home" class="back">Zurück</a>
+        <form action="/api/addBaureihe" method="post" class="easyform">
+            <label for="ubid">UBID:</label>
+            <input type="text" id="ubid" name="ubid" required>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            <label for="beschreibung">Beschreibung<br> (unterstützt HTML):</label>
+            <textarea id="beschreibung" name="beschreibung"></textarea>
+            <div></div>
+            <button>Hinzufügen</button>
+        </form>
+    </main>
 </body>
 </html>

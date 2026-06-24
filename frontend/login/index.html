@@ -9,20 +9,23 @@
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Zugbaureihentracker | Anmelden</title>
     <script src="/login/LoginSeite.js" defer></script>
+    <script src="/general/ErrorHandler.js" defer></script>
+    <title>Zugbaureihentracker | Anmelden</title>
   </head>
   <body>
-    <h1>Willkommen beim Zugbaureihentracker!</h1>
-    <form action="/api/anmelden" method="post" class="easyform">
-      <label for="fname">Benutzername:</label>
-      <input type="text" id="fname" name="username" required>
-      <label for="lname">Passwort:</label>
-      <input type="password" id="lname" name="passwort" required>
-      <br/>
-      <input type="submit" value="Anmelden">
-    </form>
-    <p>Sie haben noch kein Konto? Klicken Sie hier: <a href="/registrieren">Registrieren</a></p>
+    <main>
+      <h1>Willkommen beim Zugbaureihentracker!</h1>
+      <form action="/api/anmelden" method="post" class="easyform">
+        <label for="fname">Benutzername:</label>
+        <input type="text" id="fname" name="username" required>
+        <label for="lname">Passwort:</label>
+        <input type="password" id="lname" name="passwort" required>
+        <br/>
+        <input type="submit" value="Anmelden">
+      </form>
+      <p>Sie haben noch kein Konto? Klicken Sie hier: <a href="/registrieren">Registrieren</a></p>
+    </main>
   </body>
 </html>
 

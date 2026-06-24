@@ -10,17 +10,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/general/XHR.js" defer></script>
     <script src="/freunde/FreundesSeite.js" defer></script>
+    <script src="/general/ErrorHandler.js" defer></script>
     <title>Zugbaureihentracker | Freunde</title>
 </head>
 <body>
-    <a href="/home" class="back">Zurück</a>
-    <h1>Gefundene Baureihen Ihrer Freunde</h1>
-    <ul>
+    <main>
+        <a href="/home" class="back">Zurück</a>
+        <h1>Gefundene Baureihen Ihrer Freunde</h1>
+        <ul>
 
-    </ul>
-    <form action="/api/fuegeFreundHinzu" method="post">
-        <input name="uuid" /><button>Hinzufügen</button>
-    </form>
-    <p id="uuid"></p>
+        </ul>
+        <form action="/api/fuegeFreundHinzu" method="post">
+            <input name="uuid" /><button>Hinzufügen</button>
+        </form>
+        <p id="uuid"></p>
+    </main>
 </body>
 </html>

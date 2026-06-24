@@ -8,16 +8,19 @@
     />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/general/ErrorHandler.js" defer></script>
     <title>Zugbaureihentracker | Invite</title>
 </head>
 <body>
-    <form action="/api/addInviteCode" method="POST" class="easyform">
-        <label for="code">Code</label>
-        <input id="code" name="code" />
-        <label for="passwort">Das Adminpasswort</label>
-        <input id="passwort" name="passwort" type="password"/>
-        <div></div>
-        <button>Hinzufügen</button>
-    </form>
+    <main>
+        <form action="/api/addInviteCode" method="POST" class="easyform">
+            <label for="code">Code</label>
+            <input id="code" name="code" />
+            <label for="passwort">Das Adminpasswort</label>
+            <input id="passwort" name="passwort" type="password"/>
+            <div></div>
+            <button>Hinzufügen</button>
+        </form>
+    </main>
 </body>
 </html>

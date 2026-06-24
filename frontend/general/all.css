@@ -1,5 +1,5 @@
 /* Lia */
-body {
+main {
     padding: 4ch;
     margin: auto;
     
@@ -42,4 +42,13 @@ h1 {
     position: absolute;
     left: 1ch;
     top: 1ch;
+}
+
+.errorMessage {
+    position: absolute;
+    bottom: 1ch;
+    left: 1ch;
+    right: 1ch;
+    padding: 2ch;
+    background-color: lightcoral;
 }
