@@ -1,6 +1,7 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import { Nutzer } from './Nutzer';
 import { Table } from './Table';
+import { Aktivitaet } from './Aktivitaet';
 
 export class Freundesliste extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -81,4 +82,31 @@ export class Freundesliste extends Table {
         return exit > 0;
     }
 
+    public static async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Nutzer | null> {
+        return await Nutzer.findOne({
+            where: {
+                sessiontoken: sessiontoken,
+            },
+            // Wir wollen nur die Freunde und deren Daten, nicht die Daten des anfragenden Nutzers selbst
+            attributes: ["uuid"], 
+            include: [
+                {
+                    model: Nutzer,
+                    as: 'Freunde',
+                    // Schließt die IDs aus der Freundesliste-Zwischentabelle (von/zu) aus den Rohdaten aus
+                    through: { attributes: ["von", "zu"] }, 
+                    // Hier wählen wir nur den Namen des Freundes aus, den du anzeigen möchtest
+                    attributes: ['name', 'uuid'], 
+                    include: [
+                        {
+                            model: Aktivitaet,
+                            // Verhindert, dass leere Freunde (die keine Aktivität haben) im Ergebnis auftauchen
+                            required: false, 
+                            attributes: ["ubid"], // Wir brauchen die IDs der Aktivitätstabelle nicht im Endergebnis
+                        }
+                    ]
+                }
+            ]
+        });
+    }
 }

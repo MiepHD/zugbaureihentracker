@@ -148,4 +148,26 @@ export class Nutzer extends Table {
         });
         return await user?.getDataValue("uuid");
     }
+
+    public static async elevate(sessiontoken: string): Promise<boolean> {
+        const user = await Nutzer.findOne({
+            where: {
+                sessiontoken
+            }
+        });
+        if (!user) return false;
+        user.setDataValue("admin", true);
+        await user.save();
+        return true;
+    }
+
+    public static async isElevated(sessiontoken: string): Promise<boolean> {
+        const test = await Nutzer.count({
+            where: {
+                sessiontoken,
+                admin: true
+            }
+        });
+        return test != 0;
+    }
 }

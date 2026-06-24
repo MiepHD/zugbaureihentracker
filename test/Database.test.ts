@@ -31,7 +31,7 @@ test("Baureihe als gefunden markieren", async () => {
     await db.registrierungscodes.add("X");
     await db.nutzer.add("A", "A", "X");
     const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("A", "A");
-    if (typeof sessiontokenA == "string") expect(await db.baureihe.alsGefundenMarkieren(sessiontokenA, "a")).toBe(true);
+    if (typeof sessiontokenA == "string") expect(await db.aktivitaet.alsGefundenMarkieren(sessiontokenA, "a")).toBe(true);
 });
 
 test("Baureihe abfragen", async () => {
@@ -93,8 +93,8 @@ test("Gefundene Baureihen auslesen", async () => {
     await db.nutzer.add("F", "F", "X");
     const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("F", "F");
     if (typeof sessiontokenA == "string") {
-        await db.baureihe.alsGefundenMarkieren(sessiontokenA, "a");
-        const baureihen: Baureihe[] = await db.getGefundeneBaureihen(sessiontokenA);
+        await db.aktivitaet.alsGefundenMarkieren(sessiontokenA, "a");
+        const baureihen: Baureihe[] = await db.aktivitaet.getGefundeneBaureihen(sessiontokenA);
         expect(baureihen[0].getDataValue("ubid")).toBe("a");
     }
 });
@@ -131,9 +131,9 @@ test("Baureihen von Freunden abrufen (DB)", async () => {
     const uuidB = await db.nutzer.getUUID(tokenB);
 
     await db.freundesliste.add(tokenA, uuidB);
-    await db.baureihe.alsGefundenMarkieren(tokenB, "a");
+    await db.aktivitaet.alsGefundenMarkieren(tokenB, "a");
 
-    const result = await db.baureihenVonFreundenAbrufen(tokenA);
+    const result = await db.freundesliste.baureihenVonFreundenAbrufen(tokenA);
 
     expect(result).not.toBeNull();
 

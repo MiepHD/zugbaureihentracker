@@ -24,36 +24,6 @@ export class Baureihe extends Table {
         });
     }
 
-    /** Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
-     * @author Tim
-     * @since 08.06.2026
-     * @param sessiontoken 
-     * @param ubid 
-     */
-    public static async alsGefundenMarkieren(token: string, ubid: string): Promise<boolean> {
-        const uuid = await Nutzer.getNutzer(token);
-        if (!uuid) {
-            return false;
-        }
-        const baureihe = await this.get(ubid);
-        if (!baureihe) {
-            return false;
-        }
-        const test = await Aktivitaet.count({
-            where: {
-                uuid: uuid,
-                ubid: baureihe.getDataValue("ubid"),
-            }
-        });
-        if (test > 0) return false;
-        const neueAktivitaet = await Aktivitaet.create({
-            uuid: uuid,
-            ubid: baureihe.getDataValue("ubid"),
-        });
-        return neueAktivitaet !== null;
-    }
-
-
     /**Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
      * @author Tim
      * @since 22.05.2026

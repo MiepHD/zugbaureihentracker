@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import { DeliveryService } from "./DeliveryService";
-import { API } from "./API";
+import { API } from "./api/API";
 import { Sequelize } from "sequelize";
 import fs from "fs";
 import http from 'http';
@@ -46,7 +46,8 @@ export class Server {
                     connectTimeout: 1000,
                 },
             }
-        ), this.app, null);
+        ), null);
+        api.init(this.app);
     }
 
 }

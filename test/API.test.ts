@@ -1,8 +1,8 @@
 import { Sequelize } from "sequelize";
 import express, { Express } from "express";
-import request from "supertest";
+import request, { Response } from "supertest";
 import { beforeAll, beforeEach, expect, test } from "vitest";
-import { API } from "../backend/API";
+import { API } from "../backend/api/API";
 
 let app: Express;
 let sequelize: Sequelize;
@@ -15,7 +15,8 @@ beforeAll(async () => {
     });
 
     app = express();
-    new API(sequelize, app, "Das Adminpasswort");
+    const api = new API(sequelize, "Das Adminpasswort");
+    await api.init(app);
 
     await sequelize.sync({ force: true });
 });
@@ -65,15 +66,6 @@ test("Logout API", async () => {
 });
 
 test("Baureihe als gefunden markieren API", async () => {
-    await request(app)
-        .post("/api/addBaureihe")
-        .send({
-            ubid: "a",
-            name: "b",
-            beschreibung: "c",
-            passwort: "Das Adminpasswort"
-        });
-
     await createInviteCode();
 
     await request(app)
@@ -92,6 +84,22 @@ test("Baureihe als gefunden markieren API", async () => {
         });
 
     const cookie = login.headers["set-cookie"];
+
+    await request(app)
+        .post("/api/elevate")
+        .set("Cookie", cookie)
+        .send({
+            passwort: "Das Adminpasswort"
+        });
+
+    await request(app)
+        .post("/api/addBaureihe")
+        .set("Cookie", cookie)
+        .send({
+            ubid: "a",
+            name: "b",
+            beschreibung: "c",
+        });
 
     const response = await request(app)
         .post("/api/baureiheAlsGefundenMarkieren")
@@ -117,17 +125,44 @@ test("addInviteCode API", async () => {
 });
 
 test("Baureihe abfragen API", async () => {
+    await createInviteCode();
+
+    await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "F",
+            passwort: "F",
+            code: "X"
+        });
+
+    const login = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "F",
+            passwort: "F"
+        });
+
+    const cookie = login.headers["set-cookie"];
+
+    await request(app)
+        .post("/api/elevate")
+        .set("Cookie", cookie)
+        .send({
+            passwort: "Das Adminpasswort"
+        });
+    
     await request(app)
         .post("/api/addBaureihe")
+        .set("Cookie", cookie)
         .send({
             ubid: "a",
             name: "b",
             beschreibung: "c",
-            passwort: "Das Adminpasswort"
         });
 
     const response = await request(app)
         .get("/api/getBaureihe")
+        .set("Cookie", cookie)
         .query({
             ubid: "a"
         });
@@ -297,17 +332,6 @@ test("Freund entfernen API", async () => {
 });
 
 test("Baureihen von Freunden abrufen API", async () => {
-    const addBaureihe = await request(app)
-        .post("/api/addBaureihe")
-        .send({
-            ubid: "a",
-            name: "b",
-            beschreibung: "c",
-            passwort: "Das Adminpasswort"
-        });
-
-    expect(addBaureihe.text).toContain("/add");
-
     await createInviteCode();
 
     const regA = await request(app)
@@ -355,6 +379,24 @@ test("Baureihen von Freunden abrufen API", async () => {
     const cookieA = loginA.headers["set-cookie"];
     const cookieB = loginB.headers["set-cookie"];
 
+    await request(app)
+        .post("/api/elevate")
+        .set("Cookie", cookieA)
+        .send({
+            passwort: "Das Adminpasswort"
+        });
+
+    const addBaureihe = await request(app)
+        .post("/api/addBaureihe")
+        .set("Cookie", cookieA)
+        .send({
+            ubid: "a",
+            name: "b",
+            beschreibung: "c",
+        });
+
+    expect(addBaureihe.text).toContain("/add");
+
     const uuidResponse = await request(app)
         .get("/api/getUUID")
         .set("Cookie", cookieB);
@@ -391,15 +433,6 @@ test("Baureihen von Freunden abrufen API", async () => {
 });
 
 test("Gefundene Baureihen API", async () => {
-    await request(app)
-        .post("/api/addBaureihe")
-        .send({
-            ubid: "a",
-            name: "b",
-            beschreibung: "c",
-            passwort: "Das Adminpasswort"
-        });
-
     await createInviteCode();
 
     await request(app)
@@ -420,6 +453,22 @@ test("Gefundene Baureihen API", async () => {
     const cookie = login.headers["set-cookie"];
 
     await request(app)
+        .post("/api/elevate")
+        .set("Cookie", cookie)
+        .send({
+            passwort: "Das Adminpasswort"
+        });
+
+    await request(app)
+        .post("/api/addBaureihe")
+        .set("Cookie", cookie)
+        .send({
+            ubid: "a",
+            name: "b",
+            beschreibung: "c",
+        });
+
+    await request(app)
         .post("/api/baureiheAlsGefundenMarkieren")
         .set("Cookie", cookie)
         .send({
@@ -438,29 +487,82 @@ test("Gefundene Baureihen API", async () => {
 });
 
 test("Gesamtzahl Baureihen API", async () => {
+    await createInviteCode();
+
+    await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "F",
+            passwort: "F",
+            code: "X"
+        });
+
+    const login = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "F",
+            passwort: "F"
+        });
+
+    const cookie = login.headers["set-cookie"];
+
+    await request(app)
+        .post("/api/elevate")
+        .set("Cookie", cookie)
+        .send({
+            passwort: "Das Adminpasswort"
+        });
+
     await request(app)
         .post("/api/addBaureihe")
+        .set("Cookie", cookie)
         .send({
             ubid: "a",
             name: "b",
             beschreibung: "c",
+        });
+
+    const response = await request(app)
+        .get("/api/getGesamtzahlBaureihen")
+        .set("Cookie", cookie);
+
+    expect(response.text).toBe("1");
+});
+ 
+test("Baureihe hinzufügen API", async () => {
+    await createInviteCode();
+
+    await request(app)
+        .post("/api/registrieren")
+        .send({
+            username: "F",
+            passwort: "F",
+            code: "X"
+        });
+
+    const login = await request(app)
+        .post("/api/anmelden")
+        .send({
+            username: "F",
+            passwort: "F"
+        });
+
+    const cookie = login.headers["set-cookie"];
+
+    await request(app)
+        .post("/api/elevate")
+        .set("Cookie", cookie)
+        .send({
             passwort: "Das Adminpasswort"
         });
 
     const response = await request(app)
-        .get("/api/getGesamtzahlBaureihen");
-
-    expect(response.text).toBe("1");
-});
-
-test("Baureihe hinzufügen API", async () => {
-    const response = await request(app)
         .post("/api/addBaureihe")
+        .set("Cookie", cookie)
         .send({
             ubid: "ab",
             name: "bb",
             beschreibung: "cb",
-            passwort: "Das Adminpasswort"
         });
 
     expect(response.status).toBe(302);
