@@ -18,12 +18,14 @@ export class Registrierungscodes extends Table {
 
     /**
      * Einen Einladungscode hinzufügen
+     * @throws Code bereits registriert.
+     * @throws Code konnte nicht hinzugefügt werden.
      */
-    public static async add(code: string): Promise<boolean> {
-        if (await Registrierungscodes.count({where: {code}}) > 0) return false;
+    public static async add(code: string): Promise<void> {
+        if (await Registrierungscodes.count({where: {code}}) > 0) throw Error("Code bereits registriert.");
         const entry = await Registrierungscodes.create({
             code
         });
-        return entry != null;
+        if (entry == null) throw Error("Code konnte nicht hinzugefügt werden.");
     }
 }

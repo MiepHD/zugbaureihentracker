@@ -14,11 +14,11 @@ export class Registrierungscodes {
             if (!await DBNutzer.isElevated(sessiontoken)) {res.status(401); res.send(); return; }
         }
         
-        const success = await DBRegistrierungscodes.add(data.code as string);
-        if (success) {
+        try {
+            await DBRegistrierungscodes.add(data.code as string);
             res.redirect("/invite");
-        } else {
-            res.send("Error");
+        } catch (e: unknown) {
+            res.redirect("/invite?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 }

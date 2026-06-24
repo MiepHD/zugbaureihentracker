@@ -46,7 +46,7 @@ export class Aktivitaet extends Table {
      * @param ubid 
      */
     public static async alsGefundenMarkieren(token: string, ubid: string): Promise<boolean> {
-        const uuid = await Nutzer.getNutzer(token);
+        const uuid = await Nutzer.getUUID(token);
         if (!uuid) {
             return false;
         }
@@ -76,7 +76,7 @@ export class Aktivitaet extends Table {
      * @returns Liste mit allen Einträgen der Tabelle Baureihe.
      */
     public static async getGefundeneBaureihen(sessiontoken: string): Promise<Baureihe[]> {
-        const uuid = await Nutzer.getNutzer(sessiontoken);
+        const uuid: string = await Nutzer.getUUID(sessiontoken);
         return Aktivitaet.findAll({
             where: {
                 uuid: uuid,

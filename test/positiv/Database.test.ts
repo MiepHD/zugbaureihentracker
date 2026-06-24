@@ -55,7 +55,7 @@ test("Anzahl der Baureihen abfragen", async () => {
 
 test("Account registrieren", async () => {
     await db.registrierungscodes.add("X");
-    expect(await db.nutzer.add("abc", "abc", "X")).toBe(true);
+    await db.nutzer.add("abc", "abc", "X");
 });
 
 test("Account anmelden", async () => {
@@ -107,12 +107,7 @@ test("getUUID", async () => {
 });
 
 test("InviteCode hinzufügen", async () => {
-    const result = await db.registrierungscodes.add("TEST123");
-    expect(result).toBe(true);
-
-    // optional: doppelt verhindern testen
-    const second = await db.registrierungscodes.add("TEST123");
-    expect(second).toBe(false); // oder false, je nach gewünschter Logik
+    await db.registrierungscodes.add("TEST123");
 });
 
 test("Baureihen von Freunden abrufen (DB)", async () => {

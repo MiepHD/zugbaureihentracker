@@ -26,12 +26,12 @@ export class Nutzer {
      */
     async registrieren(req: Request, res: Response) {
         const data = req.body;
-        if (data.username == "" || data.passwort == "" || data.code == "") {res.redirect("/registrieren"); return;}
-        const success = await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
-        if (success) {
+        try {
+            if (data.username == "" || data.passwort == "" || data.code == "") throw Error("Nutzername, Passwort oder Code leer.");
+            await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
             res.redirect("/login");
-        } else {
-            res.redirect("/registrieren");
+        } catch (e) {
+            res.redirect("registrieren?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 
@@ -41,32 +41,45 @@ export class Nutzer {
      */
     async anmelden(req: Request, res: Response) {
         const data = req.body;
-        console.log(`${data.username}${data.passwort}`);
-        if (data.username == "" || data.passwort == "") {res.redirect("/login"); return;}
-        const sessiontoken = await DBNutzer.getSessiontoken(data.username, await this.sha256Hex(data.passwort));
-        if (!sessiontoken) {res.redirect("/login"); return;}
-        res.cookie("sessiontoken", sessiontoken, {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: false
-        });
-        res.redirect("/home");
+        if (data.username == "" || data.passwort == "") {
+            res.redirect("/login?errorMessage=" + encodeURIComponent("Nutzername oder Passwort ist leer."));
+            return;
+        }
+        try {
+            const sessiontoken = await DBNutzer.getSessiontoken(
+                data.username, 
+                await this.sha256Hex(data.passwort)
+            );
+            res.cookie("sessiontoken", sessiontoken, {
+                httpOnly: true,
+                sameSite: "lax",
+                secure: false
+            });
+            res.redirect("/home");
+        } catch (e) {
+            res.redirect("/login?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
     }
 
     async getUUID(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
-        res.send(await DBNutzer.getUUID(sessiontoken));
+        try {
+            res.send(await DBNutzer.getUUID(sessiontoken));
+        } catch (e: unknown) {
+            res.redirect("/logout");
+            console.warn((e as Error).message);
+        }
     }
 
     async elevate(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
-        const success = await DBNutzer.elevate(req.cookies.sessiontoken);
-        if (success) {
+        try {
+            await DBNutzer.elevate(req.cookies.sessiontoken);
             res.redirect("/home");
-        } else {
-            res.send(success);
+        } catch (e: unknown) {
+            res.redirect("/elevate?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 
@@ -91,9 +104,11 @@ export class Nutzer {
      */
     static async checkSessiontoken(req: Request, res: Response): Promise<string | null> {
         const sessiontoken = req.cookies.sessiontoken;
-        if (sessiontoken == undefined || await DBNutzer.getNutzer(sessiontoken) == null) {
-            res.status(401);
-            res.send();
+        try {
+            if (sessiontoken == undefined) throw new Error();
+            await DBNutzer.getNutzer(sessiontoken)
+        } catch {
+            res.redirect("/logout");
             return null;
         }
         return sessiontoken;

@@ -63,14 +63,16 @@ export class Nutzer extends Table {
      * @since 28.04.2026
      * @param sessiontoken Sessiontoken eines Nutzers
      * @returns Gibt die UUID vom Nutzer zurück.
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
      */
-    static async getNutzer(sessiontoken: string): Promise<string> {
+    static async getNutzer(sessiontoken: string): Promise<Nutzer> {
         const nutzer = await Nutzer.findOne({
             where: {
                 sessiontoken: sessiontoken,
             },
         });
-        return nutzer?.getDataValue("uuid");
+        if (!nutzer) throw new Error("Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.");
+        return nutzer;
     }
 
 
@@ -81,12 +83,14 @@ export class Nutzer extends Table {
      * @param name Benutzername des Nutzers.
      * @param passworthash Passworthash des Nutzers.
      * @returns True or False, ob das Registrieren funktioniert hat.
+     * @throws Nutzername existiert schon.
+     * @throws Code ungültig.
+     * @throws Nutzer konnte nicht erstellt werden.
      */
-    public static async add(name: string, passworthash: string, code: string): Promise<boolean> {
+    public static async add(name: string, passworthash: string, code: string): Promise<void> {
         const test: number = await Nutzer.count({
             where: {
                 name: name,
-                passworthash: passworthash,
             }
         });
         const testcode: number = await Registrierungscodes.count({
@@ -94,21 +98,22 @@ export class Nutzer extends Table {
                 code
             }
         });
-        if(test > 0) throw new Error("Nutzer existiert schon.");
+        if(test > 0) throw new Error("Nutzername existiert schon.");
         if(testcode < 1) throw new Error("Code ungültig.");
         const entry: Nutzer = await Nutzer.create({
             uuid: randomUUID(),
             name: name,
             passworthash: passworthash,
         });
-        await Registrierungscodes.destroy({
+        if (!entry) throw new Error("Nutzer konnte nicht erstellt werden.")
+        const isDestroyed = await Registrierungscodes.destroy({
             where: {
                 code
             }
         });
+        if (isDestroyed < 1) console.warn("Registrierungscode konnte nach erfolgreicher Registrierung nicht gelöscht werden.");
         await this.sequelize?.sync();
-        if(entry != null) return true;
-        throw new Error("Registrieren nicht möglich.");
+        if(entry == null) throw new Error("Registrieren nicht möglich.");
     }
 
     /**
@@ -118,47 +123,51 @@ export class Nutzer extends Table {
      * @param name Benutzername des Nutzers.
      * @param passworthash Passworthash des Nutzers.
      * @returns Gibt das neu vergebene Sessiontoken zurück.
+     * @throws Nutzername oder Passwort falsch.
+     * @throws Nutzer konnte nicht aus Datenbank gelesen werden.
      */
-    public static async getSessiontoken(name: string, passworthash: string): Promise<boolean | string> {
+    public static async getSessiontoken(name: string, passworthash: string): Promise<string> {
         const test = await Nutzer.count({
             where: {
                 name: name,
                 passworthash: passworthash,
             }
         });
-        if(test == 0) return false;
-        if(test > 1) throw new Error("Nutzer doppelt vorhanden.");
+        if(test == 0) throw new Error("Nutzername oder Passwort falsch.");
+        if(test > 1) console.warn(`Der Benutzer "${name}" ist doppelt vorhanden.`);
         const entry = await Nutzer.findOne({
             where: {
                 name: name,
                 passworthash: passworthash,
             }
         });
+        if(!entry) throw new Error("Nutzer konnte nicht aus Datenbank gelesen werden.");
         const sessiontoken: string = randomUUID();
-        entry?.setDataValue("sessiontoken", sessiontoken);
-        await entry?.save();
+        entry.setDataValue("sessiontoken", sessiontoken);
+        await entry.save();
         return sessiontoken;
     }
 
+    /**
+     * 
+     * @param sessiontoken 
+     * @returns 
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     */
     public static async getUUID(sessiontoken: string): Promise<string> {
-        const user = await Nutzer.findOne({
-            where: {
-                sessiontoken: sessiontoken
-            }
-        });
-        return await user?.getDataValue("uuid");
+        const user = await this.getNutzer(sessiontoken);
+        return await user.getDataValue("uuid");
     }
 
-    public static async elevate(sessiontoken: string): Promise<boolean> {
-        const user = await Nutzer.findOne({
-            where: {
-                sessiontoken
-            }
-        });
-        if (!user) return false;
+    /**
+     * 
+     * @param sessiontoken 
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     */
+    public static async elevate(sessiontoken: string): Promise<void> {
+        const user = await this.getNutzer(sessiontoken);
         user.setDataValue("admin", true);
         await user.save();
-        return true;
     }
 
     public static async isElevated(sessiontoken: string): Promise<boolean> {

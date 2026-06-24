@@ -72,7 +72,7 @@ export class Freundesliste extends Table {
      * @returns True or False, ob das Löschen erfolgreich war.
      */
     public static async remove(sessiontoken: string, uuid: string): Promise<boolean> {
-        const uuid2: string = await Nutzer.getNutzer(sessiontoken);
+        const uuid2: string = await Nutzer.getUUID(sessiontoken);
         const exit = await Freundesliste.destroy({
             where: {
                 von: uuid2,
