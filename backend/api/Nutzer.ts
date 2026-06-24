@@ -29,7 +29,7 @@ export class Nutzer {
             await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
             res.redirect("/login");
         } catch (e) {
-            res.redirect("registrieren?errorMessage=" + encodeURIComponent((e as Error).message));
+            res.redirect("/registrieren?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 
