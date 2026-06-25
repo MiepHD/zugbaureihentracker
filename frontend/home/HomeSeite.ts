@@ -37,7 +37,7 @@ function renderBaureihen(items: unknown): void {
     } else {
       li.textContent = String(item);
     }
-    ul.appendChild(li);
+    ul.prepend(li);
   });
 }
 
