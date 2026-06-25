@@ -44,28 +44,26 @@ export class Aktivitaet extends Table {
      * @since 08.06.2026
      * @param sessiontoken 
      * @param ubid 
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws Baureihe konnte nicht gefunden werden.
+     * @throws Baureihe ist bereits als "Gefunden" markiert.
+     * @throws Baureihe konnte nicht als "Gefunden" markiert werden.
      */
-    public static async alsGefundenMarkieren(token: string, ubid: string): Promise<boolean> {
+    public static async alsGefundenMarkieren(token: string, ubid: string): Promise<void> {
         const uuid = await Nutzer.getUUID(token);
-        if (!uuid) {
-            return false;
-        }
         const baureihe = await Baureihe.get(ubid);
-        if (!baureihe) {
-            return false;
-        }
         const test = await Aktivitaet.count({
             where: {
                 uuid: uuid,
                 ubid: baureihe.getDataValue("ubid"),
             }
         });
-        if (test > 0) return false;
+        if (test > 0) throw new Error(`Baureihe ist bereits als "Gefunden" markiert.`);
         const neueAktivitaet = await Aktivitaet.create({
             uuid: uuid,
             ubid: baureihe.getDataValue("ubid"),
         });
-        return neueAktivitaet !== null;
+        if (neueAktivitaet == null) throw new Error(`Baureihe konnte nicht als "Gefunden" markiert werden.`);
     }
 
     /**
@@ -74,10 +72,11 @@ export class Aktivitaet extends Table {
      * @since 28.04.2026
      * @param sessiontoken Sessiontoken eines Nutzers.
      * @returns Liste mit allen Einträgen der Tabelle Baureihe.
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
      */
     public static async getGefundeneBaureihen(sessiontoken: string): Promise<Baureihe[]> {
         const uuid: string = await Nutzer.getUUID(sessiontoken);
-        return Aktivitaet.findAll({
+        return await Aktivitaet.findAll({
             where: {
                 uuid: uuid,
             },

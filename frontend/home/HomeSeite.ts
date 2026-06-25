@@ -48,6 +48,8 @@ function requestBaureihen(): void {
       renderBaureihen(response);
     } else if (response && typeof response === 'object' && Array.isArray((response as Record<string, unknown>).items)) {
       renderBaureihen((response as Record<string, unknown>).items);
+    } else {
+      showError(response);
     }
   });
 }

@@ -10,14 +10,10 @@ export class Freundesliste {
         if (sessiontoken == null) return;
         const data = req.body;
         try {
-            const success = await DBFreundesliste.add(sessiontoken, data.uuid);
-            if (success) {
-                res.redirect("/freunde");
-            } else {
-                res.send(`{ "success": ${success}`);
-            }
+            await DBFreundesliste.add(sessiontoken, data.uuid);
+            res.redirect("/freunde");
         } catch (e: any) {
-            res.send((e as Error).message);
+            res.redirect("/freunde?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 
@@ -26,22 +22,22 @@ export class Freundesliste {
         if (sessiontoken == null) return;
         const data = req.body;
         try {
-            const success = await DBFreundesliste.remove(sessiontoken, data.uuid);
-            if (success) {
-                res.redirect("/freunde");
-            } else {
-                res.send(`{ "success": ${success}`);
-            }
-        } catch (e: any) {
-            res.send((e as Error).message);
+            await DBFreundesliste.remove(sessiontoken, data.uuid);
+            res.redirect("/freunde");
+        } catch (e: unknown) {
+            res.redirect("/freunde?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 
     async baureihenVonFreundenAbrufen(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
-        let data: any = await DBFreundesliste.baureihenVonFreundenAbrufen(sessiontoken);
-        if (data && data.Freunde) data = data.Freunde;
-        res.send(`${JSON.stringify(data)}`);
+        try {
+            let data: any = await DBFreundesliste.baureihenVonFreundenAbrufen(sessiontoken);
+            if (data && data.Freunde) data = data.Freunde;
+            res.send(`${JSON.stringify(data)}`);
+        } catch (e: unknown) {
+            res.send((e as Error).message);
+        }
     }
 }

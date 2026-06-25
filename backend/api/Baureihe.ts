@@ -14,7 +14,12 @@ export class Baureihe {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
         const data = req.query;
-        res.send(`${JSON.stringify(await DBBaureihe.get(data.ubid as string))}`);
+        try {
+            res.send(`${JSON.stringify(await DBBaureihe.get(data.ubid as string))}`);
+        } catch (e: unknown) {
+            res.send((e as Error).message);
+        }
+        
     }
 
     async count(req: Request, res: Response) {
@@ -28,11 +33,11 @@ export class Baureihe {
         if (sessiontoken == null) return;
         if (!await DBNutzer.isElevated(sessiontoken)) {res.status(401); res.send(); return; }
         const data = req.body;
-        const success = await DBBaureihe.add(data.ubid, data.name, data.beschreibung);
-        if (success == true) {
+        try {
+            await DBBaureihe.add(data.ubid, data.name, data.beschreibung);
             res.redirect("/add");
-        } else {
-            res.send(`{ "success": ${success}}`);
+        } catch (e: unknown) {
+            res.redirect("/add?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 }

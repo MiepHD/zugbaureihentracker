@@ -3,6 +3,8 @@ import { Nutzer } from './Nutzer';
 import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
 
+import { Nutzer as DBNutzer } from "../models/Nutzer";
+
 export class Freundesliste extends Table {
     public static initialize(sequelize: Sequelize) {
         Freundesliste.init({
@@ -36,31 +38,30 @@ export class Freundesliste extends Table {
      * @param sessiontoken Sessiontoken eines Nutzers.
      * @param uuid User ID eines Nutzers.
      * @returns True or false, on das Hinzufügen erfolgreich war.
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws Freund ist bereits in Freundesliste.
+     * @throws Freund konnte nicht hinzugefügt werden.
      */
-    public static async add(sessiontoken: string, uuid: string): Promise<boolean> {
+    public static async add(sessiontoken: string, uuid: string): Promise<void> {
         const uuid2 = await Nutzer.getUUID(sessiontoken);
-        if (!uuid2) {
-            throw new Error("Sessiontoken ungültig");
-        }
+        const uuidExists = await DBNutzer.count({
+            where: {
+                uuid
+            }
+        });
+        if (uuidExists == 0) throw new Error("UUID existiert nicht.");
         const test = await Freundesliste.count({
             where: {
                 von: uuid2,
                 zu: uuid,
             }
         });
-        const test2 = await Nutzer.count({
-            where: {
-                uuid
-            }
-        });
-        if (test2 == 0) throw new Error("Nutzer existiert nicht.")
-        if(test > 0) return false;
+        if(test > 0) throw new Error("Freund ist bereits in Freundesliste.");
         const entry = await Freundesliste.create({
             von: uuid2,
             zu: uuid,
         });
-        if(entry != null) return true;
-        throw new Error("Hinzufügen nicht möglich.");
+        if(entry == null) throw new Error("Freund konnte nicht hinzugefügt werden.");
     }
 
     /**
@@ -70,8 +71,10 @@ export class Freundesliste extends Table {
      * @param sessiontoken Sessiontoken eines Nutzers.
      * @param uuid UUID eines Nuters.
      * @returns True or False, ob das Löschen erfolgreich war.
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws Freund konnte nicht entfernt werden.
      */
-    public static async remove(sessiontoken: string, uuid: string): Promise<boolean> {
+    public static async remove(sessiontoken: string, uuid: string): Promise<void> {
         const uuid2: string = await Nutzer.getUUID(sessiontoken);
         const exit = await Freundesliste.destroy({
             where: {
@@ -79,15 +82,21 @@ export class Freundesliste extends Table {
                 zu: uuid,
             }
         });
-        return exit > 0;
+        if (exit == 0) throw Error("Freund konnte nicht entfernt werden.");
     }
 
-    public static async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Nutzer | null> {
-        return await Nutzer.findOne({
+    /**
+     * 
+     * @param sessiontoken 
+     * @returns 
+     * @throws Daten konnten nicht abgefragt werden.
+     */
+    public static async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Nutzer> {
+        const tabelle = await Nutzer.findOne({
             where: {
                 sessiontoken: sessiontoken,
             },
-            // Wir wollen nur die Freunde und deren Daten, nicht die Daten des anfragenden Nutzers selbst
+            // Hier müssen wir eine Spalte der Tabelle auswählen, da sonst sqlite die Tabellen nicht verbinden kann
             attributes: ["uuid"], 
             include: [
                 {
@@ -95,18 +104,19 @@ export class Freundesliste extends Table {
                     as: 'Freunde',
                     // Schließt die IDs aus der Freundesliste-Zwischentabelle (von/zu) aus den Rohdaten aus
                     through: { attributes: ["von", "zu"] }, 
-                    // Hier wählen wir nur den Namen des Freundes aus, den du anzeigen möchtest
+                    // Hier wählen wir nur den Namen des Freundes aus
                     attributes: ['name', 'uuid'], 
                     include: [
                         {
                             model: Aktivitaet,
-                            // Verhindert, dass leere Freunde (die keine Aktivität haben) im Ergebnis auftauchen
                             required: false, 
-                            attributes: ["ubid"], // Wir brauchen die IDs der Aktivitätstabelle nicht im Endergebnis
+                            attributes: ["ubid"],
                         }
                     ]
                 }
             ]
         });
+        if (tabelle == null) throw Error("Daten konnten nicht abgefragt werden.");
+        return tabelle;
     }
 }

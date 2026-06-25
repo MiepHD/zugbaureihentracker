@@ -27,32 +27,37 @@ export class Baureihe extends Table {
     /**Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
      * @author Tim
      * @since 22.05.2026
+     * @throws Baureihe konnte nicht gefunden werden.
      */
-    public static async get(ubid: string): Promise<Baureihe | null> {
-        return await Baureihe.findOne({
+    public static async get(ubid: string): Promise<Baureihe> {
+        const baureihe = await Baureihe.findOne({
             where: {
                 ubid: ubid,
             }
         });
+        if (baureihe == null || baureihe == undefined) throw new Error("Baureihe konnte nicht gefunden werden.");
+        return baureihe;
     }
 
     /** Hinzufügen einer Baureihe in die Datenbank.
      * @author Lia
      * @since 22.05.2026
+     * @throws Baureihe existiert bereits.
+     * @throws Baureihe konnte nicht erstellt werden.
      */
-    public static async add(ubid: string, name: string, beschreibung: string): Promise<boolean> {
+    public static async add(ubid: string, name: string, beschreibung: string): Promise<void> {
         const test: number = await Baureihe.count({
             where: {
                 ubid
             }
         });
-        if (test > 0) return false;
-        await Baureihe.create({
+        if (test > 0) throw new Error("Baureihe existiert bereits.");
+        const success = await Baureihe.create({
             ubid,
             name,
             beschreibung
         });
-        return true;
+        if (success == null) throw new Error("Baureihe konnte nicht erstellt werden.");
     }
 
     /**

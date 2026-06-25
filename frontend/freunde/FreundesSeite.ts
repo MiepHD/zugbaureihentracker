@@ -1,4 +1,5 @@
 const fill = (data: any) => {
+    if (typeof data == "string") showError(data);
     const list = document.querySelector("ul");
     for (const user of data) {
         for (const baureihe of user.Aktivitaets) {

@@ -13,16 +13,21 @@ export class Aktivitaet {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
         const data = req.body;
-        if(await DBAktivitaet.alsGefundenMarkieren(sessiontoken, data.ubid)) {
+        try {
+            await DBAktivitaet.alsGefundenMarkieren(sessiontoken, data.ubid);
             res.redirect("/home");
-        } else {
-            res.redirect(`/suchergebnis?ubid=${data.ubid}`);
+        } catch (e: unknown) {
+            res.redirect(`/suchergebnis?ubid=${data.ubid}&errorMessage=` + encodeURIComponent((e as Error).message));
         }
     }
 
     async getGefundene(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
-        res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen(sessiontoken))}`);
+        try {
+            res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen(sessiontoken))}`);
+        } catch (e) {
+            res.send((e as Error).message);
+        }
     }
 }
