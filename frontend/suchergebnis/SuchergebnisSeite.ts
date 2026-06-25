@@ -9,10 +9,6 @@ if (ubid) (document.querySelector("input") as HTMLInputElement).value = ubid;
 
 if (ubid) (document.querySelector("b") as HTMLElement).textContent = ubid;
 
-const found = queryString.get("found");
-
-if (found) (document.querySelector("button") as HTMLElement).style.setProperty("display", "none");
-
 new XHR().get("/api/getBaureihe?" + paramString, (response: any) => {
   if (typeof response == "string") {
     showError(response);
@@ -22,6 +18,14 @@ new XHR().get("/api/getBaureihe?" + paramString, (response: any) => {
     return;
   }
 
-  (document.querySelector("p") as HTMLElement).innerHTML = response.beschreibung;
-  (document.querySelector("i") as HTMLElement).innerHTML = response.name;
+  (document.querySelector("p") as HTMLElement).innerHTML = response.baureihe.beschreibung;
+  (document.querySelector("i") as HTMLElement).innerHTML = response.baureihe.name;
+
+  const elem = document.querySelector("button") as HTMLButtonElement;
+  elem.style.setProperty("background-color", "lightgreen");
+  if (response.gefunden === true) {
+    elem.textContent = `Baureihe nicht mehr als "Gefunden" markieren`;
+    elem.style.setProperty("background-color", "lightcoral");
+    (document.querySelector("form") as HTMLFormElement).action = "/api/baureiheAlsNichtGefundenMarkieren";
+  }
 });

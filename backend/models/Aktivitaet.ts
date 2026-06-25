@@ -83,4 +83,40 @@ export class Aktivitaet extends Table {
             include: [Baureihe]
         });
     }
+
+    /**
+     * 
+     * @param ubid 
+     * @param sessiontoken 
+     * @returns 
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     */
+    public static async istGefunden(ubid: string, sessiontoken: string): Promise<boolean> {
+        const found = await Aktivitaet.count({
+            where: {
+                ubid,
+                uuid: await Nutzer.getUUID(sessiontoken),
+            }
+        });
+        return found > 0;
+    }
+
+    public static async alsNichtGefundenMarkieren(token: string, ubid: string): Promise<void> {
+        const uuid = await Nutzer.getUUID(token);
+        const baureihe = await Baureihe.get(ubid);
+        const test = await Aktivitaet.count({
+            where: {
+                uuid: uuid,
+                ubid: baureihe.getDataValue("ubid"),
+            }
+        });
+        if (test == 0) throw new Error(`Baureihe ist bereits als "Nicht-Gefunden" markiert.`);
+        const count = await Aktivitaet.destroy({
+            where: {
+                uuid: uuid,
+                ubid: baureihe.getDataValue("ubid"),
+            }
+        });
+        if (count == 0) throw new Error(`Baureihe konnte nicht als "Nicht-Gefunden" markiert werden.`);
+    }
 }

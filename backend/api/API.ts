@@ -64,6 +64,7 @@ export class API {
 
         const aktivitaet = new Aktivitaet();
         app.post("/api/baureiheAlsGefundenMarkieren", aktivitaet.alsGefundenMarkieren.bind(aktivitaet));
+        app.post("/api/baureiheAlsNichtGefundenMarkieren", aktivitaet.alsNichtGefundenMarkieren.bind(aktivitaet));
         app.get("/api/getGefundeneBaureihen", aktivitaet.getGefundene.bind(aktivitaet));
 
         const freundesliste = new Freundesliste();

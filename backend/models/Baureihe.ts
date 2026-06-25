@@ -1,7 +1,5 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import { Table } from './Table';
-import { Aktivitaet } from './Aktivitaet';
-import { Nutzer } from './Nutzer';
 
 export class Baureihe extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -28,11 +26,12 @@ export class Baureihe extends Table {
      * @author Tim
      * @since 22.05.2026
      * @throws Baureihe konnte nicht gefunden werden.
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
      */
     public static async get(ubid: string): Promise<Baureihe> {
         const baureihe = await Baureihe.findOne({
             where: {
-                ubid: ubid,
+                ubid,
             }
         });
         if (baureihe == null || baureihe == undefined) throw new Error("Baureihe konnte nicht gefunden werden.");

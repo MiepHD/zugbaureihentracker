@@ -31,4 +31,17 @@ export class Aktivitaet {
             res.send((e as Error).message);
         }
     }
+
+    async alsNichtGefundenMarkieren(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.body;
+        try {
+            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
+            await DBAktivitaet.alsNichtGefundenMarkieren(sessiontoken, data.ubid);
+            res.redirect("/home");
+        } catch (e: unknown) {
+            res.redirect(`/suchergebnis?ubid=${data.ubid}&errorMessage=` + encodeURIComponent((e as Error).message));
+        }
+    }
 }

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import { Baureihe as DBBaureihe } from "../models/Baureihe";
 import { Nutzer as DBNutzer } from "../models/Nutzer";
+import { Aktivitaet as DBAktivitaet } from "../models/Aktivitaet";
 
 import { API } from "./API";
 
@@ -15,8 +16,11 @@ export class Baureihe {
         if (sessiontoken == null) return;
         const data = req.query;
         try {
-            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.")
-            res.send(`${JSON.stringify(await DBBaureihe.get(data.ubid as string))}`);
+            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
+            res.send(`{
+                "baureihe": ${JSON.stringify(await DBBaureihe.get(data.ubid as string))},
+                "gefunden": ${await DBAktivitaet.istGefunden((data.ubid as string), sessiontoken)}
+            }`);
         } catch (e: unknown) {
             res.send((e as Error).message);
         }

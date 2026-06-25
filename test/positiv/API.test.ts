@@ -75,7 +75,7 @@ test("Baureihe abfragen API", async () => {
     const response = await request(app).get("/api/getBaureihe").set("Cookie", cookie).query({ ubid: "a" });
     expect(response.status).toBe(200);
     const baureihe = JSON.parse(response.text);
-    expect(baureihe.ubid).toBe("a");
+    expect(baureihe.baureihe.ubid).toBe("a");
 });
 
 test("Account registrieren API", async () => {
