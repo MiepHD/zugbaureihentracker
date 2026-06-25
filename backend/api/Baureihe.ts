@@ -32,9 +32,10 @@ export class Baureihe {
     async add(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
-        if (!await DBNutzer.isElevated(sessiontoken)) {res.status(401); res.send(); return; }
+        
         const data = req.body;
         try {
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Baureihen hinzuzufügen.");
             if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
             if (!API.isValidString(data.name)) throw new Error("Name ist fehlerhaft.");
             if (!API.isValidString(data.beschreibung)) throw new Error("Beschreibung ist fehlerhaft.");
