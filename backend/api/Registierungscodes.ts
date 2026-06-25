@@ -15,7 +15,7 @@ export class Registrierungscodes {
                 if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung, Registrierungscodes zu erstellen.");
             }
             await DBRegistrierungscodes.add(data.code as string);
-            res.redirect("/invite");
+            res.redirect("/invite?successMessage=" + encodeURIComponent("Registrierungscode erfolgreich erstellt."));
         } catch (e: unknown) {
             res.redirect("/invite?errorMessage=" + encodeURIComponent((e as Error).message));
         }

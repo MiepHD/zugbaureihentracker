@@ -30,7 +30,7 @@ export class Nutzer {
             if (!API.isValidString(data.passwort)) throw new Error("Passwort ist fehlerhaft.");
             if (!API.isValidString(data.code)) throw new Error("Code ist fehlerhaft.");
             await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
-            res.redirect("/login");
+            res.redirect("/login?successMessage=" + encodeURIComponent("Registrierung erfolgreich abgeschlossen."));
         } catch (e) {
             res.redirect("/registrieren?errorMessage=" + encodeURIComponent((e as Error).message));
         }
@@ -76,7 +76,7 @@ export class Nutzer {
         if (sessiontoken == null) return;
         try {
             await DBNutzer.elevate(req.cookies.sessiontoken);
-            res.redirect("/home");
+            res.redirect("/home?successMessage=" + encodeURIComponent("Adminrechte erfolgreich erlangt."));
         } catch (e: unknown) {
             res.redirect("/elevate?errorMessage=" + encodeURIComponent((e as Error).message));
         }

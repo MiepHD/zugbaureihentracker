@@ -60,13 +60,13 @@ test("Baureihe als gefunden markieren API", async () => {
     await addTestBaureihe(cookie);
     const response = await request(app).post("/api/baureiheAlsGefundenMarkieren").set("Cookie", cookie).send({ ubid: "a" });
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/home");
+    expect(response.headers.location).toContain("/home?successMessage");
 });
 
 test("addInviteCode API", async () => {
     const response = await request(app).post("/api/addInviteCode").send({ code: "TESTCODE", passwort: "Das Adminpasswort" });
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/invite");
+    expect(response.headers.location).toContain("/invite?successMessage");
 });
 
 test("Baureihe abfragen API", async () => {
@@ -82,7 +82,7 @@ test("Account registrieren API", async () => {
     await createInviteCode();
     const response = await request(app).post("/api/registrieren").send({ username: "abc", passwort: "abc", code: "X" });
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/login");
+    expect(response.headers.location).toContain("/login?successMessage");
 });
 
 test("Account anmelden API", async () => {

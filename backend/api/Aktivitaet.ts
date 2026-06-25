@@ -16,7 +16,7 @@ export class Aktivitaet {
         try {
             if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
             await DBAktivitaet.alsGefundenMarkieren(sessiontoken, data.ubid);
-            res.redirect("/home");
+            res.redirect("/home?successMessage=" + encodeURIComponent(`Baureihe wurde als "Gefunden" markiert.`));
         } catch (e: unknown) {
             res.redirect(`/suchergebnis?ubid=${data.ubid}&errorMessage=` + encodeURIComponent((e as Error).message));
         }
@@ -39,7 +39,7 @@ export class Aktivitaet {
         try {
             if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
             await DBAktivitaet.alsNichtGefundenMarkieren(sessiontoken, data.ubid);
-            res.redirect("/home");
+            res.redirect("/home?successMessage=" + encodeURIComponent("Baureihe wurde erfolgreich aus den gefundenen Baureihen entfernt"));
         } catch (e: unknown) {
             res.redirect(`/suchergebnis?ubid=${data.ubid}&errorMessage=` + encodeURIComponent((e as Error).message));
         }

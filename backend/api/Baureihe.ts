@@ -45,7 +45,7 @@ export class Baureihe {
             if (!API.isValidString(data.beschreibung)) throw new Error("Beschreibung ist fehlerhaft.");
             
             await DBBaureihe.add(data.ubid, data.name, data.beschreibung);
-            res.redirect("/add");
+            res.redirect("/add?successMessage=" + "Baureihe wurde erfolgreich erstellt.");
         } catch (e: unknown) {
             res.redirect("/add?errorMessage=" + encodeURIComponent((e as Error).message));
         }
