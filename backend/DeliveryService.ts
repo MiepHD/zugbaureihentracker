@@ -3,6 +3,8 @@ import express, { Express } from "express";
 import cookieParser from "cookie-parser";
 import path from "path";
 
+import { API } from "./api/API";
+
 /**
  * Die Klasse DeliveryService stellt die einzelnen HTML Seiten für den User zur Verfügung
  * @since 17.04.2026
@@ -14,7 +16,7 @@ export class DeliveryService {
      * @since 17.04.2026
      * @author Tim & Lia, 
      */
-    private paths: String[] = ["", "home", "suchergebnis"];
+    private paths: String[] = ["", "add", "addmany", "elevate", "freunde", "home", "suchergebnis"];
 
     /**
      * Der Konstruktor meldet eine Listener bei app an um dann die HTML Seiten bereitzustellen
@@ -25,13 +27,16 @@ export class DeliveryService {
     constructor(app: Express) {
         app.use(cookieParser());
         for(let urlpath of this.paths) {
-            app.get(`/${urlpath}`, (req: Request, res: Response) => {
-                if (req.path === "/") urlpath = "home";
-
-                const sessiontoken = req.cookies?.sessiontoken;
-                if (sessiontoken == undefined) res.redirect("login"); else res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
-            });
+            app.get(`/${urlpath}`, this.handleRequest.bind(this));
         }
         app.use(express.static(path.join(__dirname, '../frontend')));
+    }
+
+    private async handleRequest(req: Request, res: Response) {
+        let urlpath = req.path;
+        if (req.path === "/") urlpath = "home";
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
     }
 }

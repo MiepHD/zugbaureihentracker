@@ -5,17 +5,18 @@ import { Nutzer as DBNutzer } from "../models/Nutzer";
 import { API } from "./API";
 
 export class Nutzer {
-    constructor() {
-        API.checkSessiontoken = Nutzer.checkSessiontoken;
-    }
-
     async logout(req: Request, res: Response) {
         res.clearCookie("sessiontoken", {
             httpOnly: true,
             sameSite: "lax",
             secure: false
         });
-        res.redirect("/login");
+        const data: any = req.query;
+        if (data.errorMessage) {
+            res.redirect("/login?errorMessage=" + encodeURIComponent(data.errorMessage));
+        } else {
+            res.redirect("/login");
+        }
     }
 
     /**
@@ -103,10 +104,10 @@ export class Nutzer {
     static async checkSessiontoken(req: Request, res: Response): Promise<string | null> {
         const sessiontoken = req.cookies.sessiontoken;
         try {
-            if (sessiontoken == undefined) throw new Error();
+            if (sessiontoken == undefined) throw new Error("Keine gültige Sitzung");
             await DBNutzer.getNutzer(sessiontoken)
-        } catch {
-            res.redirect("/logout");
+        } catch (e: unknown) {
+            res.redirect("/logout?errorMessage=" + encodeURIComponent((e as Error).message));
             return null;
         }
         return sessiontoken;

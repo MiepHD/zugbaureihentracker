@@ -15,7 +15,7 @@ import { Registrierungscodes } from "./Registierungscodes";
 export class API {
     private adminpasswort: string;
     static db: Database;
-    static checkSessiontoken: typeof Nutzer.checkSessiontoken;
+    static checkSessiontoken: typeof Nutzer.checkSessiontoken = Nutzer.checkSessiontoken;
 
     constructor(sequelize: Sequelize, adminpasswort: string | null) {
         if (adminpasswort) {
@@ -35,7 +35,7 @@ export class API {
         app.use(express.urlencoded({ extended: true }));
         app.use(express.json());
         app.use(cookieParser());
-        this.bindListeners(app);
+        await this.bindListeners(app);
     }
 
     public async bindListeners(app: Express) {
