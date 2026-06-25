@@ -52,3 +52,7 @@ h1 {
     padding: 2ch;
     background-color: lightcoral;
 }
+
+button {
+    cursor: pointer;
+}
