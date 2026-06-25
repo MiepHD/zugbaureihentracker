@@ -45,7 +45,10 @@ export class API {
         app.post("/api/anmelden", nutzer.anmelden.bind(nutzer));
         app.get("/api/getUUID", nutzer.getUUID.bind(nutzer));
         app.post("/api/elevate", (req: Request, res: Response) => {
-            if (req.body.passwort !== this.adminpasswort) {res.status(401); res.send(); return; }
+            if (req.body.passwort !== this.adminpasswort) {
+                res.redirect("/elevate?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));
+                return;
+            }
             nutzer.elevate(req, res);
         });
 
@@ -67,5 +70,9 @@ export class API {
         app.post("/api/fuegeFreundHinzu", freundesliste.add.bind(freundesliste));
         app.post("/api/entferneFreund", freundesliste.remove.bind(freundesliste));
         app.get("/api/baureihenVonFreundenAbrufen", freundesliste.baureihenVonFreundenAbrufen.bind(freundesliste));
+    }
+
+    static isValidString(str: unknown) {
+        return str !== null && typeof str === "string" && str !== ""
     }
 }

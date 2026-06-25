@@ -14,7 +14,7 @@ export class Aktivitaet {
         if (sessiontoken == null) return;
         const data = req.body;
         try {
-            if (data.ubid == null || typeof data.ubid != "string" || data.ubid == "") throw new Error("UBID fehlerhaft.");
+            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
             await DBAktivitaet.alsGefundenMarkieren(sessiontoken, data.ubid);
             res.redirect("/home");
         } catch (e: unknown) {

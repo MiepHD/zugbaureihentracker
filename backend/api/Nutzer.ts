@@ -25,7 +25,9 @@ export class Nutzer {
     async registrieren(req: Request, res: Response) {
         const data = req.body;
         try {
-            if (data.username == "" || data.passwort == "" || data.code == "") throw Error("Nutzername, Passwort oder Code leer.");
+            if (!API.isValidString(data.username)) throw new Error("Nutzername ist fehlerhaft.");
+            if (!API.isValidString(data.passwort)) throw new Error("Passwort ist fehlerhaft.");
+            if (!API.isValidString(data.code)) throw new Error("Code ist fehlerhaft.");
             await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
             res.redirect("/login");
         } catch (e) {
@@ -39,11 +41,9 @@ export class Nutzer {
      */
     async anmelden(req: Request, res: Response) {
         const data = req.body;
-        if (data.username == "" || data.passwort == "") {
-            res.redirect("/login?errorMessage=" + encodeURIComponent("Nutzername oder Passwort ist leer."));
-            return;
-        }
         try {
+            if (!API.isValidString(data.username)) throw new Error("Nutzername ist fehlerhaft.");
+            if (!API.isValidString(data.passwort)) throw new Error("Passwort ist fehlerhaft.");
             const sessiontoken = await DBNutzer.getSessiontoken(
                 data.username, 
                 await this.sha256Hex(data.passwort)

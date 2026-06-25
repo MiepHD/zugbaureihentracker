@@ -10,6 +10,7 @@ export class Freundesliste {
         if (sessiontoken == null) return;
         const data = req.body;
         try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
             await DBFreundesliste.add(sessiontoken, data.uuid);
             res.redirect("/freunde");
         } catch (e: any) {
@@ -22,6 +23,7 @@ export class Freundesliste {
         if (sessiontoken == null) return;
         const data = req.body;
         try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
             await DBFreundesliste.remove(sessiontoken, data.uuid);
             res.redirect("/freunde");
         } catch (e: unknown) {

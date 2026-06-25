@@ -15,8 +15,8 @@ export class Baureihe {
         if (sessiontoken == null) return;
         const data = req.query;
         try {
-            if (data.ubid == null || typeof data.ubid != "string" || data.ubid == "") throw new Error("UBID fehlerhaft.")
-            res.send(`${JSON.stringify(await DBBaureihe.get(data.ubid))}`);
+            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.")
+            res.send(`${JSON.stringify(await DBBaureihe.get(data.ubid as string))}`);
         } catch (e: unknown) {
             res.send((e as Error).message);
         }
@@ -35,9 +35,9 @@ export class Baureihe {
         if (!await DBNutzer.isElevated(sessiontoken)) {res.status(401); res.send(); return; }
         const data = req.body;
         try {
-            if (data.ubid == null || typeof data.ubid != "string" || data.ubid == "") throw new Error("UBID fehlerhaft.");
-            if (data.name == null || typeof data.name != "string" || data.name == "") throw new Error("Name fehlerhaft.");
-            if (data.beschreibung == null || typeof data.beschreibung != "string" || data.beschreibung == "") throw new Error("Beschreibung fehlerhaft.");
+            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
+            if (!API.isValidString(data.name)) throw new Error("Name ist fehlerhaft.");
+            if (!API.isValidString(data.beschreibung)) throw new Error("Beschreibung ist fehlerhaft.");
             
             await DBBaureihe.add(data.ubid, data.name, data.beschreibung);
             res.redirect("/add");
