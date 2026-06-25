@@ -24,7 +24,6 @@ export class Baureihe {
         } catch (e: unknown) {
             res.send((e as Error).message);
         }
-        
     }
 
     async count(req: Request, res: Response) {
@@ -48,6 +47,33 @@ export class Baureihe {
             res.redirect("/add?successMessage=" + "Baureihe wurde erfolgreich erstellt.");
         } catch (e: unknown) {
             res.redirect("/add?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
+    }
+
+    async getAll(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        try {
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung alle Baureihen abzufragen.");
+            res.send(`${JSON.stringify(await DBBaureihe.getAll())}`);
+        } catch (e: unknown) {
+            res.send((e as Error).message);
+        }
+    }
+
+    async remove(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        
+        const data = req.body;
+        try {
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Baureihen zu löschen.");
+            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
+            
+            await DBBaureihe.remove(data.ubid);
+            res.redirect("/baureihen?successMessage=" + "Baureihe wurde erfolgreich gelöscht.");
+        } catch (e: unknown) {
+            res.redirect("/baureihen?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 }

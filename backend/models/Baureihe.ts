@@ -69,4 +69,23 @@ export class Baureihe extends Table {
         const n: number = await Baureihe.count();
         return n;
     }
+
+    public static async getAll(): Promise<Baureihe[]> {
+        return await Baureihe.findAll();
+    }
+
+    public static async remove(ubid: string): Promise<void> {
+        const test: number = await Baureihe.count({
+            where: {
+                ubid
+            }
+        });
+        if (test == 0) throw new Error("Baureihe existiert nicht.");
+        const success = await Baureihe.destroy({
+            where: {
+                ubid
+            }
+        });
+        if (success == 0) throw new Error("Baureihe konnte nicht gelöscht werden.");
+    }
 }
