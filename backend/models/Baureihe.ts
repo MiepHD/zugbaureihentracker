@@ -75,6 +75,14 @@ export class Baureihe extends Table {
         return await Baureihe.findAll();
     }
 
+    /**
+     * 
+     * @param ubid 
+     * @param force 
+     * @throws Baureihe existiert nicht.
+     * @throws Baureihe wurde bereits von ${isUsed} Nutzern gefunden. Trotzdem löschen?
+     * @throws Baureihe konnte nicht gelöscht werden.
+     */
     public static async remove(ubid: string, force: boolean): Promise<void> {
         const test: number = await Baureihe.count({
             where: {

@@ -122,13 +122,15 @@ export class Nutzer {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
         const data = req.body;
+        let force = false;
+        if (data.force) force = true;
         try {
             if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
             if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Account zu löschen.");
-            await DBNutzer.remove(data.uuid);
+            await DBNutzer.remove(data.uuid, force);
             res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich gelöscht"));
         } catch (e: unknown) {
-            res.redirect("/elevate?errorMessage=" + encodeURIComponent((e as Error).message));
+            res.redirect("/accounts?errorMessage=" + encodeURIComponent((e as Error).message) + "&uuid=" + data.uuid);
         }
     }
 

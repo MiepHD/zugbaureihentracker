@@ -213,7 +213,13 @@ export class Nutzer extends Table {
         return await Nutzer.findAll();
     }
 
-    public static async remove(uuid: string): Promise<void> {
+    /**
+     * 
+     * @param uuid 
+     * @throws Dieser Nutzer existiert nicht.
+     * @throws Nutzer konnte nicht aus Datenbank gelöscht werden.
+     */
+    public static async remove(uuid: string, force: boolean): Promise<void> {
         const existsNutzer = await Nutzer.count({
             where: {
                 uuid,
@@ -221,6 +227,39 @@ export class Nutzer extends Table {
             }
         });
         if (existsNutzer == 0) throw new Error("Dieser Nutzer existiert nicht.");
+        const isUsed = await Aktivitaet.count({
+            where: {
+                uuid
+            }
+        });
+        const isUsed2 = await Freundesliste.count({
+            where: {
+                von: uuid
+            }
+        });
+        const isUsed3 = await Freundesliste.count({
+            where: {
+                zu: uuid
+            }
+        });
+        if (isUsed > 0 || isUsed2 > 0 || isUsed3 > 0) {
+            if (!force) throw new Error(`Account hat bereits ${isUsed} Baureihen gefunden, wurde von ${isUsed3} Freunden hinzugefügt und hat ${isUsed2} Freunde hinzugefügt. Trotzdem löschen?`);
+            await Aktivitaet.destroy({
+                where: {
+                    uuid
+                }
+            });
+            await Freundesliste.destroy({
+                where: {
+                    von: uuid
+                }
+            });
+            await Freundesliste.destroy({
+                where: {
+                    zu: uuid
+                }
+            });
+        }
         const count = await Nutzer.destroy({
             where: {
                 uuid,
@@ -230,6 +269,12 @@ export class Nutzer extends Table {
         if (count == 0) throw new Error("Nutzer konnte nicht aus Datenbank gelöscht werden.");
     }
 
+    /**
+     * 
+     * @param uuid 
+     * @throws Dieser Nutzer existiert nicht.
+     * @throws Nutzer konnte nicht gefunden werden.
+     */
     public static async removeAdmin(uuid: string): Promise<void> {
         const existsNutzer = await Nutzer.count({
             where: {
