@@ -82,6 +82,20 @@ export class Nutzer {
         }
     }
 
+    async elevateByUUID(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.body;
+        try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Adminrechte zu vergeben.");
+            await DBNutzer.elevateByUUID(data.uuid);
+            res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte hinzugefügt."));
+        } catch (e: unknown) {
+            res.redirect("/accounts?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
+    }
+
     async getAll(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;

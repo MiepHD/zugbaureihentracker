@@ -53,6 +53,13 @@ export class API {
             }
             nutzer.removeAdmin(req, res);
         });
+        app.post("/api/addAdmin", (req: Request, res: Response) => {
+            if (req.body.passwort !== this.adminpasswort) {
+                res.redirect("/accounts?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));
+                return;
+            }
+            nutzer.elevateByUUID(req, res);
+        });
         app.post("/api/elevate", (req: Request, res: Response) => {
             if (req.body.passwort !== this.adminpasswort) {
                 res.redirect("/elevate?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));

@@ -68,10 +68,28 @@ export class Nutzer extends Table {
     static async getNutzer(sessiontoken: string): Promise<Nutzer> {
         const nutzer = await Nutzer.findOne({
             where: {
-                sessiontoken: sessiontoken,
+                sessiontoken,
             },
         });
         if (!nutzer) throw new Error("Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.");
+        return nutzer;
+    }
+
+    /**
+     * Sucht einen Nutzer zu einem Sessiontoken.
+     * @author Tim & Lia
+     * @since 28.04.2026
+     * @param sessiontoken Sessiontoken eines Nutzers
+     * @returns Gibt die UUID vom Nutzer zurück.
+     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     */
+    static async getNutzerByUUID(uuid: string): Promise<Nutzer> {
+        const nutzer = await Nutzer.findOne({
+            where: {
+                uuid,
+            },
+        });
+        if (!nutzer) throw new Error("Zu dieser UUID konnte kein Nutzer gefunden werden.");
         return nutzer;
     }
 
@@ -166,6 +184,17 @@ export class Nutzer extends Table {
      */
     public static async elevate(sessiontoken: string): Promise<void> {
         const user = await this.getNutzer(sessiontoken);
+        user.setDataValue("admin", true);
+        await user.save();
+    }
+
+    /**
+     * 
+     * @param sessiontoken 
+     * @throws Zu dieser UUID konnte kein Nutzer gefunden werden.
+     */
+    public static async elevateByUUID(uuid: string): Promise<void> {
+        const user = await this.getNutzerByUUID(uuid);
         user.setDataValue("admin", true);
         await user.save();
     }
