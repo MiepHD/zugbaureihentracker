@@ -82,6 +82,45 @@ export class Nutzer {
         }
     }
 
+    async getAll(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        try {
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Liste der Accounts abzufragen.");
+            res.send(`${JSON.stringify(await DBNutzer.getAll())}`);
+        } catch (e: unknown) {
+            res.send((e as Error).message);
+        }
+    }
+
+    async remove(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.body;
+        try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Account zu löschen.");
+            await DBNutzer.remove(data.uuid);
+            res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich gelöscht"));
+        } catch (e: unknown) {
+            res.redirect("/elevate?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
+    }
+
+    async removeAdmin(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.body;
+        try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Adminrechte zu entfernen.");
+            await DBNutzer.removeAdmin(data.uuid)
+            res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte entfernt."));
+        } catch (e: unknown) {
+            res.redirect("/accounts?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
+    }
+
     /**
      * @author Tim
      * @param message Hasht das Passwort

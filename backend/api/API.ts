@@ -44,6 +44,15 @@ export class API {
         app.post("/api/registrieren", nutzer.registrieren.bind(nutzer));
         app.post("/api/anmelden", nutzer.anmelden.bind(nutzer));
         app.get("/api/getUUID", nutzer.getUUID.bind(nutzer));
+        app.get("/api/getAccounts", nutzer.getAll.bind(nutzer));
+        app.post("/api/removeAccount", nutzer.remove.bind(nutzer));
+        app.post("/api/removeAdmin", (req: Request, res: Response) => {
+            if (req.body.passwort !== this.adminpasswort) {
+                res.redirect("/accounts?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));
+                return;
+            }
+            nutzer.removeAdmin(req, res);
+        });
         app.post("/api/elevate", (req: Request, res: Response) => {
             if (req.body.passwort !== this.adminpasswort) {
                 res.redirect("/elevate?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));

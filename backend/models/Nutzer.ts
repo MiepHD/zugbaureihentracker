@@ -179,4 +179,42 @@ export class Nutzer extends Table {
         });
         return test != 0;
     }
+
+    public static async getAll(): Promise<Nutzer[]> {
+        return await Nutzer.findAll();
+    }
+
+    public static async remove(uuid: string): Promise<void> {
+        const existsNutzer = await Nutzer.count({
+            where: {
+                uuid,
+                admin: false
+            }
+        });
+        if (existsNutzer == 0) throw new Error("Dieser Nutzer existiert nicht.");
+        const count = await Nutzer.destroy({
+            where: {
+                uuid,
+                admin: false
+            }
+        });
+        if (count == 0) throw new Error("Nutzer konnte nicht aus Datenbank gelöscht werden.");
+    }
+
+    public static async removeAdmin(uuid: string): Promise<void> {
+        const existsNutzer = await Nutzer.count({
+            where: {
+                uuid
+            }
+        });
+        if (existsNutzer == 0) throw new Error("Dieser Nutzer existiert nicht.");
+        const nutzer = await Nutzer.findOne({
+            where: {
+                uuid
+            }
+        });
+        if (nutzer == null) throw new Error("Nutzer konnte nicht gefunden werden.");
+        nutzer.setDataValue("admin", false);
+        await nutzer.save();
+    }
 }
