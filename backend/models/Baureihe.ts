@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import { Table } from './Table';
+import { Aktivitaet } from './Aktivitaet';
 
 export class Baureihe extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -74,13 +75,26 @@ export class Baureihe extends Table {
         return await Baureihe.findAll();
     }
 
-    public static async remove(ubid: string): Promise<void> {
+    public static async remove(ubid: string, force: boolean): Promise<void> {
         const test: number = await Baureihe.count({
             where: {
                 ubid
             }
         });
         if (test == 0) throw new Error("Baureihe existiert nicht.");
+        const isUsed: number = await Aktivitaet.count({
+            where: {
+                ubid
+            }
+        });
+        if (isUsed > 0) {
+            if (!force) throw new Error(`Baureihe wurde bereits von ${isUsed} Nutzern gefunden. Trotzdem löschen?`);
+            await Aktivitaet.destroy({
+                where: {
+                    ubid
+                }
+            });
+        }
         const success = await Baureihe.destroy({
             where: {
                 ubid

@@ -66,14 +66,16 @@ export class Baureihe {
         if (sessiontoken == null) return;
         
         const data = req.body;
+        let force = false;
+        if (data.force) force = true;
         try {
             if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Baureihen zu löschen.");
             if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
             
-            await DBBaureihe.remove(data.ubid);
+            await DBBaureihe.remove(data.ubid, force);
             res.redirect("/baureihen?successMessage=" + "Baureihe wurde erfolgreich gelöscht.");
         } catch (e: unknown) {
-            res.redirect("/baureihen?errorMessage=" + encodeURIComponent((e as Error).message));
+            res.redirect("/baureihen?errorMessage=" + encodeURIComponent((e as Error).message) + "&ubid=" + data.ubid);
         }
     }
 }
