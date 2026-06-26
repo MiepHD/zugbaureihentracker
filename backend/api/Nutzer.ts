@@ -82,6 +82,17 @@ export class Nutzer {
         }
     }
 
+    async isElevated(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        try {
+            const isElevated = await DBNutzer.isElevated(req.cookies.sessiontoken);
+            res.send(`{ "isElevated": ${isElevated} }`);
+        } catch (e: unknown) {
+            res.send((e as Error).message);
+        }
+    }
+
     async elevateByUUID(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
