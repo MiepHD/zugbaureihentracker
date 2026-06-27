@@ -35,7 +35,7 @@ export class Baureihe extends Table {
                 ubid,
             }
         });
-        if (baureihe == null || baureihe == undefined) throw new Error("Baureihe konnte nicht gefunden werden.");
+        if (baureihe == null || baureihe == undefined) throw new Error("Diese Baureihe konnte leider nicht gefunden werden.");
         return baureihe;
     }
 
@@ -51,13 +51,13 @@ export class Baureihe extends Table {
                 ubid
             }
         });
-        if (test > 0) throw new Error("Baureihe existiert bereits.");
+        if (test > 0) throw new Error("Diese Baureihe existiert bereits.");
         const success = await Baureihe.create({
             ubid,
             name,
             beschreibung
         });
-        if (success == null) throw new Error("Baureihe konnte nicht erstellt werden.");
+        if (success == null) throw new Error("Diese Baureihe konnte leider nicht erstellt werden.");
     }
 
     /**
@@ -89,14 +89,14 @@ export class Baureihe extends Table {
                 ubid
             }
         });
-        if (test == 0) throw new Error("Baureihe existiert nicht.");
+        if (test == 0) throw new Error("Diese Baureihe existiert nicht.");
         const isUsed: number = await Aktivitaet.count({
             where: {
                 ubid
             }
         });
         if (isUsed > 0) {
-            if (!force) throw new Error(`Baureihe wurde bereits von ${isUsed} Nutzern gefunden. Trotzdem löschen?`);
+            if (!force) throw new Error(`Diese Baureihe wurde bereits von ${isUsed} Nutzern gefunden. Möchtest Du sie trotzdem löschen?`);
             await Aktivitaet.destroy({
                 where: {
                     ubid
@@ -108,6 +108,6 @@ export class Baureihe extends Table {
                 ubid
             }
         });
-        if (success == 0) throw new Error("Baureihe konnte nicht gelöscht werden.");
+        if (success == 0) throw new Error("Diese Baureihe konnte leider nicht gelöscht werden.");
     }
 }

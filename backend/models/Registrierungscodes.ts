@@ -22,10 +22,10 @@ export class Registrierungscodes extends Table {
      * @throws Code konnte nicht hinzugefügt werden.
      */
     public static async add(code: string): Promise<void> {
-        if (await Registrierungscodes.count({where: {code}}) > 0) throw Error("Code bereits registriert.");
+        if (await Registrierungscodes.count({where: {code}}) > 0) throw Error("Dieser Registrierungscode existiert bereits.");
         const entry = await Registrierungscodes.create({
             code
         });
-        if (entry == null) throw Error("Code konnte nicht hinzugefügt werden.");
+        if (entry == null) throw Error("Dieser Code konnte leider nicht erstellt werden.");
     }
 }

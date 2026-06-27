@@ -49,19 +49,19 @@ export class Freundesliste extends Table {
                 uuid
             }
         });
-        if (uuidExists == 0) throw new Error("UUID existiert nicht.");
+        if (uuidExists == 0) throw new Error("Diese UUID existiert nicht.");
         const test = await Freundesliste.count({
             where: {
                 von: uuid2,
                 zu: uuid,
             }
         });
-        if(test > 0) throw new Error("Freund ist bereits in Freundesliste.");
+        if(test > 0) throw new Error("Diesen Freund hast Du bereits in Deiner Freundesliste.");
         const entry = await Freundesliste.create({
             von: uuid2,
             zu: uuid,
         });
-        if(entry == null) throw new Error("Freund konnte nicht hinzugefügt werden.");
+        if(entry == null) throw new Error("Dieser Freund konnte leider nicht Deiner Freundesliste hinzugefügt werden.");
     }
 
     /**
@@ -82,7 +82,7 @@ export class Freundesliste extends Table {
                 zu: uuid,
             }
         });
-        if (exit == 0) throw Error("Freund konnte nicht entfernt werden.");
+        if (exit == 0) throw Error("Dieser Freund konnte leider nicht aus Deiner Freundesliste entfernt werden.");
     }
 
     /**
@@ -116,7 +116,7 @@ export class Freundesliste extends Table {
                 }
             ]
         });
-        if (tabelle == null) throw Error("Daten konnten nicht abgefragt werden.");
+        if (tabelle == null) throw Error("Die Baureihen Deiner Freunde konnten leider nicht abgefragt werden.");
         return tabelle;
     }
 }

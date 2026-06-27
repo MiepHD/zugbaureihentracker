@@ -71,7 +71,7 @@ export class Nutzer extends Table {
                 sessiontoken,
             },
         });
-        if (!nutzer) throw new Error("Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.");
+        if (!nutzer) throw new Error("Zu diesem Sessiontoken konnte leider kein Nutzer gefunden werden.");
         return nutzer;
     }
 
@@ -89,7 +89,7 @@ export class Nutzer extends Table {
                 uuid,
             },
         });
-        if (!nutzer) throw new Error("Zu dieser UUID konnte kein Nutzer gefunden werden.");
+        if (!nutzer) throw new Error("Zu dieser UUID konnte leider kein Nutzer gefunden werden.");
         return nutzer;
     }
 
@@ -116,14 +116,14 @@ export class Nutzer extends Table {
                 code
             }
         });
-        if(test > 0) throw new Error("Nutzername existiert schon.");
-        if(testcode < 1) throw new Error("Code ungültig.");
+        if(test > 0) throw new Error("Dieser Nutzername ist bereits vergeben.");
+        if(testcode < 1) throw new Error("Der Registrierungscode ist ungültig.");
         const entry: Nutzer = await Nutzer.create({
             uuid: randomUUID(),
             name: name,
             passworthash: passworthash,
         });
-        if (!entry) throw new Error("Nutzer konnte nicht erstellt werden.")
+        if (!entry) throw new Error("Der Nutzer konnte leider nicht erstellt werden.")
         const isDestroyed = await Registrierungscodes.destroy({
             where: {
                 code
@@ -131,7 +131,7 @@ export class Nutzer extends Table {
         });
         if (isDestroyed < 1) console.warn("Registrierungscode konnte nach erfolgreicher Registrierung nicht gelöscht werden.");
         await this.sequelize?.sync();
-        if(entry == null) throw new Error("Registrieren nicht möglich.");
+        if(entry == null) throw new Error("Das Registrieren war leider nicht möglich.");
     }
 
     /**
@@ -151,7 +151,7 @@ export class Nutzer extends Table {
                 passworthash: passworthash,
             }
         });
-        if(test == 0) throw new Error("Nutzername oder Passwort falsch.");
+        if(test == 0) throw new Error("Der Nutzername oder das Passwort ist falsch.");
         if(test > 1) console.warn(`Der Benutzer "${name}" ist doppelt vorhanden.`);
         const entry = await Nutzer.findOne({
             where: {
@@ -159,7 +159,7 @@ export class Nutzer extends Table {
                 passworthash: passworthash,
             }
         });
-        if(!entry) throw new Error("Nutzer konnte nicht aus Datenbank gelesen werden.");
+        if(!entry) throw new Error("Der Nutzer konnte leider nicht aus der Datenbank gelesen werden.");
         const sessiontoken: string = randomUUID();
         entry.setDataValue("sessiontoken", sessiontoken);
         await entry.save();
@@ -243,7 +243,7 @@ export class Nutzer extends Table {
             }
         });
         if (isUsed > 0 || isUsed2 > 0 || isUsed3 > 0) {
-            if (!force) throw new Error(`Account hat bereits ${isUsed} Baureihen gefunden, wurde von ${isUsed3} Freunden hinzugefügt und hat ${isUsed2} Freunde hinzugefügt. Trotzdem löschen?`);
+            if (!force) throw new Error(`Dieser Account hat bereits ${isUsed} Baureihen gefunden, wurde von ${isUsed3} Freunden hinzugefügt und hat ${isUsed2} Freunde hinzugefügt. Willst Du ihn trotzdem löschen?`);
             await Aktivitaet.destroy({
                 where: {
                     uuid
@@ -266,7 +266,7 @@ export class Nutzer extends Table {
                 admin: false
             }
         });
-        if (count == 0) throw new Error("Nutzer konnte nicht aus Datenbank gelöscht werden.");
+        if (count == 0) throw new Error("Der Nutzer konnte leider nicht aus der Datenbank gelöscht werden.");
     }
 
     /**
@@ -287,7 +287,7 @@ export class Nutzer extends Table {
                 uuid
             }
         });
-        if (nutzer == null) throw new Error("Nutzer konnte nicht gefunden werden.");
+        if (nutzer == null) throw new Error("Dieser Nutzer konnte nicht gefunden werden.");
         nutzer.setDataValue("admin", false);
         await nutzer.save();
     }

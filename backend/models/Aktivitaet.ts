@@ -58,12 +58,12 @@ export class Aktivitaet extends Table {
                 ubid: baureihe.getDataValue("ubid"),
             }
         });
-        if (test > 0) throw new Error(`Baureihe ist bereits als "Gefunden" markiert.`);
+        if (test > 0) throw new Error(`Diese Baureihe hast Du bereits gefunden.`);
         const neueAktivitaet = await Aktivitaet.create({
             uuid: uuid,
             ubid: baureihe.getDataValue("ubid"),
         });
-        if (neueAktivitaet == null) throw new Error(`Baureihe konnte nicht als "Gefunden" markiert werden.`);
+        if (neueAktivitaet == null) throw new Error(`Diese Baureihe konnte leider nicht als von Dir "Gefunden" markiert werden.`);
     }
 
     /**
@@ -110,13 +110,13 @@ export class Aktivitaet extends Table {
                 ubid: baureihe.getDataValue("ubid"),
             }
         });
-        if (test == 0) throw new Error(`Baureihe ist bereits als "Nicht-Gefunden" markiert.`);
+        if (test == 0) throw new Error(`Du hast deine "Gefunden"-Markierung bereits von dieser Baureihe entfernt.`);
         const count = await Aktivitaet.destroy({
             where: {
                 uuid: uuid,
                 ubid: baureihe.getDataValue("ubid"),
             }
         });
-        if (count == 0) throw new Error(`Baureihe konnte nicht als "Nicht-Gefunden" markiert werden.`);
+        if (count == 0) throw new Error(`Deine "Gefunden"-Markierung konnte leider nicht von der Baureihe entfernt werden.`);
     }
 }

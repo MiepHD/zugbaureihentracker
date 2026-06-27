@@ -28,7 +28,7 @@ export class Server {
             httpsServer.listen(443);
             console.log(`Server läuft auf http://localhost:80 & https://localhost:433`);
         } catch (e) {
-            console.log(e);
+            console.warn("SSL Verbindung konnte nicht hergesstelt werden. Fallback auf Port 3000");
             this.app.listen(3000, () => {
                 console.log(`Server läuft auf http://localhost:3000`);
             });
