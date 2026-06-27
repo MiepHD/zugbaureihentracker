@@ -5,7 +5,7 @@ main {
     
     width: fit-content;
     height: fit-content;
-    max-height: 100%;
+    max-height: calc(100% - 8ch);
     
     position: absolute;
     top:0;
