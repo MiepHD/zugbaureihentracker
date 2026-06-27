@@ -5,6 +5,7 @@ main {
     
     width: fit-content;
     height: fit-content;
+    max-height: 100%;
     
     position: absolute;
     top:0;
