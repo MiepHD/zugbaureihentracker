@@ -6,6 +6,7 @@ main {
     width: fit-content;
     height: fit-content;
     max-height: calc(100% - 8ch);
+    overflow-y: scroll;
     
     position: absolute;
     top:0;
