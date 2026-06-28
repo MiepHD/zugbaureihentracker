@@ -4,6 +4,7 @@ import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
 
 import { Nutzer as DBNutzer } from "../models/Nutzer";
+import { Baureihe } from './Baureihe';
 
 export class Freundesliste extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -91,30 +92,31 @@ export class Freundesliste extends Table {
      * @returns 
      * @throws Daten konnten nicht abgefragt werden.
      */
-    public static async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Nutzer> {
-        const tabelle = await Nutzer.findOne({
-            where: {
-                sessiontoken: sessiontoken,
-            },
-            // Hier müssen wir eine Spalte der Tabelle auswählen, da sonst sqlite die Tabellen nicht verbinden kann
-            attributes: ["uuid"], 
-            include: [
-                {
+    public static async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Baureihe[]> {
+        const uuid = await Nutzer.getUUID(sessiontoken);
+        const tabelle = await Baureihe.findAll({
+            attributes: ["ubid"],
+            include: [{
+                model: Aktivitaet,
+                attributes: ["uuid"],
+                required: true,
+                include: [{
                     model: Nutzer,
-                    as: 'Freunde',
-                    // Schließt die IDs aus der Freundesliste-Zwischentabelle (von/zu) aus den Rohdaten aus
-                    through: { attributes: ["von", "zu"] }, 
-                    // Hier wählen wir nur den Namen des Freundes aus
-                    attributes: ['name', 'uuid'], 
-                    include: [
-                        {
-                            model: Aktivitaet,
-                            required: false, 
-                            attributes: ["ubid"],
-                        }
-                    ]
-                }
-            ]
+                    required: true, 
+                    attributes: ["name"],
+                    include: [{
+                        model: Nutzer,
+                        as: "WirdGefolgtVon",
+                        through: { attributes: [] },
+                        required: true,
+                        where: {
+                            uuid
+                        },
+                        attributes: []
+                    }]
+                }]
+            }],
+            order: [["ubid", "ASC"]]
         });
         if (tabelle == null) throw Error("Die Baureihen Deiner Freunde konnten leider nicht abgefragt werden.");
         return tabelle;

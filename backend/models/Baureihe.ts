@@ -23,6 +23,12 @@ export class Baureihe extends Table {
         });
     }
 
+    public static initRelations() {
+        Baureihe.hasMany(Aktivitaet, {
+            foreignKey: "ubid"
+        });
+    }
+
     /**Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
      * @author Tim
      * @since 22.05.2026

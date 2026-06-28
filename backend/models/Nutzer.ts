@@ -51,6 +51,18 @@ export class Nutzer extends Table {
                 allowNull: false
             }
         });
+        Nutzer.belongsToMany(Nutzer, {
+            as: "WirdGefolgtVon",
+            through: Freundesliste,
+            foreignKey: {
+                name: "zu",
+                allowNull: false
+            },
+            otherKey: {
+                name: "von",
+                allowNull: false
+            }
+        });
         Nutzer.hasMany(Aktivitaet, {
             foreignKey: "uuid"
         });
