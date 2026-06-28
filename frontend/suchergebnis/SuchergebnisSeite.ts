@@ -1,17 +1,16 @@
 /**
  * Christoph
  */
-let paramString = location.href.split('?')[1];
-let queryString = new URLSearchParams(paramString);
-const ubid = queryString.get("ubid");
+
+const ubid = query.get("ubid");
 
 if (ubid) (document.querySelector("input") as HTMLInputElement).value = ubid;
 
 if (ubid) (document.querySelector("b") as HTMLElement).textContent = ubid;
 
-new XHR().get("/api/getBaureihe?" + paramString, (response: any) => {
+new XHR().get("/api/getBaureihe?" + query.param, (response: any) => {
   if (typeof response == "string") {
-    showError(response);
+    messageHandler.showError(response);
     (document.querySelector("p") as HTMLElement).innerHTML = "";
     (document.querySelector("i") as HTMLElement).innerHTML = "Baureihe wurde nicht gefunden :(";
     (document.querySelector("button") as HTMLElement).style.setProperty("visibility", "hidden");

@@ -1,6 +1,6 @@
 new XHR().get("/api/getAccounts", (response: any) => {
   if (typeof response == "string") {
-    showError(response);
+    messageHandler.showError(response);
     return;
   }
   const list = document.querySelector("ul") as HTMLUListElement;

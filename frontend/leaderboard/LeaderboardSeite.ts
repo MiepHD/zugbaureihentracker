@@ -1,6 +1,6 @@
 let uuid = "";
 const fill2 = (data: any) => {
-    if (typeof data == "string") showError(data);
+    if (typeof data == "string") messageHandler.showError(data);
     const table = document.getElementById("leaderboard");
     for (const user of data) {
           const li = document.createElement("li");

@@ -1,14 +1,12 @@
 /**
  * Christoph
  */
-let paramE = location.href.split('?')[1];
-let queryE = new URLSearchParams(paramE);
 
-if (ubid) (document.getElementById("ubid") as HTMLInputElement).value = queryE.get("ubid") as string;
+if (ubid) (document.getElementById("ubid") as HTMLInputElement).value = query.get("ubid") as string;
 
-new XHR().get("/api/getBaureihe?" + paramE, (response: any) => {
+new XHR().get("/api/getBaureihe?" + query.param, (response: any) => {
   if (typeof response == "string") {
-    showError(response);
+    messageHandler.showError(response);
     return;
   }
 

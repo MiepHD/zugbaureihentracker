@@ -1,9 +1,8 @@
 /**
  * Christoph
  */
-let paramU = location.href.split('?')[1];
-let queryU  = new URLSearchParams(paramU);
-const uuidU = queryU.get("uuid");
+
+const uuidU = query.get("uuid");
 
 if (uuidU) (document.getElementById("uuid") as HTMLInputElement).value = uuidU;
 
@@ -17,7 +16,7 @@ function requestBaureihen2(): void {
       const h2 = document.querySelector("h2") as HTMLElement;
       h2.textContent = (h2.textContent as string).replace("?", ((document.getElementById("liste") as HTMLElement).children.length).toString());
     } else {
-      showError(response);
+      messageHandler.showError(response);
     }
   });
 }

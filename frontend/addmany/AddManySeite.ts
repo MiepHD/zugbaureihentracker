@@ -10,6 +10,6 @@ document.querySelector("button")?.addEventListener("click", (e: Event) => {
             });
         }
     } catch (e) {
-        showError("JSON ungültig.");
+        messageHandler.showError("JSON ungültig.");
     }
 });

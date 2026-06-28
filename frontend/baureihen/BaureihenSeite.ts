@@ -1,6 +1,6 @@
 new XHR().get("/api/getBaureihen", (response: any) => {
   if (typeof response == "string") {
-    showError(response);
+    messageHandler.showError(response);
     return;
   }
   let list = document.querySelector("ul") as HTMLUListElement;
