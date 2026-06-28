@@ -131,7 +131,7 @@ test("Baureihen von Freunden abrufen (DB)", async () => {
     const result = await db.freundesliste.baureihenVonFreundenAbrufen(tokenA);
 
     expect(result).not.toBeNull();
-    expect(result[0].ubid).toBe("a");
+    expect((result[0] as any).ubid).toBe("a");
     expect((result[0] as any).Aktivitaets[0].uuid).toBe(uuidB);
     expect((result[0] as any).Aktivitaets[0].Nutzer.name).toBe("B");
 });
