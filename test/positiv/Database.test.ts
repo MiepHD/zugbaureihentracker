@@ -138,6 +138,6 @@ test("Baureihen von Freunden abrufen (DB)", async () => {
     expect(freunde).toBeDefined();
     expect(freunde.length).toBeGreaterThan(0);
 
-    const aktivitaeten = freunde[0]?.Aktivitaets;
+    const aktivitaeten = freunde[1]?.Aktivitaets;
     expect(aktivitaeten?.length ?? 0).toBeGreaterThan(0);
 });

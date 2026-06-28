@@ -13,8 +13,4 @@ const fill = (data: any) => {
 document.addEventListener('DOMContentLoaded', () => {
   const xhr = new XHR();
   xhr.get("/api/baureihenVonFreundenAbrufen", fill);
-  const xhr2 = new XHR();
-  xhr2.get("/api/getUUID", (response: { uuid: string}) => {
-    (document.getElementById("uuid") as HTMLElement).textContent = `UUID: ${response}`;
-  });
 });

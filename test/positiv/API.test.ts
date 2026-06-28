@@ -99,7 +99,7 @@ test("Freund hinzufügen API", async () => {
     const uuidB = await getUUID(cookieB);
 
     const response = await request(app).post("/api/fuegeFreundHinzu").set("Cookie", cookieA).send({ uuid: uuidB });
-    expect(response.text).toContain("/freunde");
+    expect(response.text).toContain("/leaderboard");
 });
 
 test("Freund entfernen API", async () => {
@@ -109,7 +109,7 @@ test("Freund entfernen API", async () => {
 
     await request(app).post("/api/fuegeFreundHinzu").set("Cookie", cookieD).send({ uuid: uuidE });
     const removeResponse = await request(app).post("/api/entferneFreund").set("Cookie", cookieD).send({ uuid: uuidE });
-    expect(removeResponse.text).toContain("/freunde");
+    expect(removeResponse.text).toContain("/leaderboard");
 });
 
 test("Baureihen von Freunden abrufen API", async () => {
