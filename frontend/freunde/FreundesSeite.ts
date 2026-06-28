@@ -4,7 +4,7 @@ const fill = (data: any) => {
     for (const user of data) {
         for (const baureihe of user.Aktivitaets) {
             const li = document.createElement("li");
-            li.innerHTML = `<b>${baureihe.ubid}</b> <i style="font-size: smaller">durch ${user.name}</i> <form action="/api/entferneFreund" method="post" style="display:inline-block"><input name="uuid" value="${user.uuid}" style="display: none;"><button>Freund entfernen</button></form>`
+            li.innerHTML = `<b>${baureihe.ubid}</b> <i style="font-size: smaller">durch ${user.name}</i>`
             list?.appendChild(li);
         }
     }

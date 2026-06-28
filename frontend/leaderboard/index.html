@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/general/XHR.js" defer></script>
+    <script src="/leaderboard/LeaderboardSeite.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <title>Zugbaureihentracker | Leaderboard</title>
+</head>
+<body>
+    <main>
+        <a href="/home" class="back">Zurück</a>
+        <h1>Leaderboard</h1>
+        <ol id="leaderboard">
+        </ol>
+        <form action="/api/fuegeFreundHinzu" method="post">
+            <input name="uuid" /><button>Hinzufügen</button>
+        </form>
+        <p id="uuid"></p>
+
+        <a href="/freunde">Alle Baureihen ansehen, die Deine Freunde bereits gefunden haben</a>
+    </main>
+</body>
+</html>

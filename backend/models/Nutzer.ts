@@ -118,12 +118,18 @@ export class Nutzer extends Table {
         });
         if(test > 0) throw new Error("Dieser Nutzername ist bereits vergeben.");
         if(testcode < 1) throw new Error("Der Registrierungscode ist ungültig.");
+        const uuid = randomUUID();
         const entry: Nutzer = await Nutzer.create({
-            uuid: randomUUID(),
+            uuid,
             name: name,
             passworthash: passworthash,
         });
-        if (!entry) throw new Error("Der Nutzer konnte leider nicht erstellt werden.")
+        if (!entry) throw new Error("Der Nutzer konnte leider nicht erstellt werden.");
+        const freundschaft = await Freundesliste.create({
+            von: uuid,
+            zu: uuid
+        });
+        if (!freundschaft) console.warn("Freundschaft mit sich selbst konnte bei Registrierung nicht erstellt werden.");
         const isDestroyed = await Registrierungscodes.destroy({
             where: {
                 code

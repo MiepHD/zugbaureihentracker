@@ -91,6 +91,7 @@ export class API {
         app.post("/api/fuegeFreundHinzu", freundesliste.add.bind(freundesliste));
         app.post("/api/entferneFreund", freundesliste.remove.bind(freundesliste));
         app.get("/api/baureihenVonFreundenAbrufen", freundesliste.baureihenVonFreundenAbrufen.bind(freundesliste));
+        app.get("/api/getFriendsLeaderboard", freundesliste.getRanking.bind(freundesliste));
     }
 
     static isValidString(str: unknown) {

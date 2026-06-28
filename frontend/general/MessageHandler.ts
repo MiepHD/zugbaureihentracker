@@ -14,6 +14,10 @@ function showError(message: string) {
         const uuid = query.get("uuid");
         elem.innerHTML += `<form action="/api/removeAccount/" method="post" style="display: inline-block"><input name="uuid" value="${uuid}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`
     }
+    if (message.includes("Zugbaureihentracker | Anmelden")) {
+        document.location = "/login?errorMessage=" + encodeURIComponent("Bitte melde dich (erneut) an.");
+        return;
+    }
     document.body.appendChild(elem);
 }
 if (error) showError(error);

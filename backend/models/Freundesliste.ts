@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes, literal } from 'sequelize';
 import { Nutzer } from './Nutzer';
 import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
@@ -118,5 +118,51 @@ export class Freundesliste extends Table {
         });
         if (tabelle == null) throw Error("Die Baureihen Deiner Freunde konnten leider nicht abgefragt werden.");
         return tabelle;
+    }
+
+    public static async getRanking(sessiontoken: string): Promise<Nutzer> {
+        const uuid = await Nutzer.getUUID(sessiontoken);
+        const test = await Freundesliste.count({
+            where: {
+                von: uuid,
+                zu: uuid
+            }
+        });
+        if (test == 0) await Freundesliste.create({
+            von: uuid,
+            zu: uuid
+        });
+        const tabelle = await Nutzer.findAll({
+            where: {
+                sessiontoken: sessiontoken,
+            },
+            attributes: ["uuid"], 
+            subQuery: false,
+            include: [
+                {
+                    model: Nutzer,
+                    as: 'Freunde',
+                    through: { attributes: ["von", "zu"] }, // Blendet die Zwischentabelle aus
+                    attributes: [
+                        'name', 
+                        'uuid',
+                        // Subquery: Zählt die Aktivitäten direkt für jeden Freund
+                        [
+                            literal(`(
+                                SELECT COUNT(*)
+                                FROM Aktivitaets AS a
+                                WHERE a.uuid = Freunde.uuid
+                            )`),
+                            'score'
+                        ]
+                    ]
+                }
+            ],
+            order: [
+                [literal('`Freunde.score`'), 'DESC'] // Beachte die Backticks passend zu deinem SQL-Dialekt
+            ]
+        });
+        if (tabelle == null) throw Error("Das Freundesleaderboard konnte leider nicht abgefragt werden.");
+        return tabelle[0];
     }
 }
