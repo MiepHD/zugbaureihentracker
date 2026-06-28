@@ -131,13 +131,7 @@ test("Baureihen von Freunden abrufen (DB)", async () => {
     const result = await db.freundesliste.baureihenVonFreundenAbrufen(tokenA);
 
     expect(result).not.toBeNull();
-
-    // Sequelize Struktur ist verschachtelt:
-    const freunde = (result as any)?.Freunde;
-
-    expect(freunde).toBeDefined();
-    expect(freunde.length).toBeGreaterThan(0);
-
-    const aktivitaeten = freunde[1]?.Aktivitaets;
-    expect(aktivitaeten?.length ?? 0).toBeGreaterThan(0);
+    expect(result[0].ubid).toBe("a");
+    expect((result[0] as any).Aktivitaets[0].uuid).toBe(uuidB);
+    expect((result[0] as any).Aktivitaets[0].Nutzer.name).toBe("B");
 });

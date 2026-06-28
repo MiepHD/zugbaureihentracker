@@ -3,6 +3,7 @@ import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
 
 export class Baureihe extends Table {
+    declare ubid: string;
     public static initialize(sequelize: Sequelize) {
         Baureihe.init({
             ubid: {

@@ -36,7 +36,6 @@ export class Freundesliste {
         if (sessiontoken == null) return;
         try {
             let data: any = await DBFreundesliste.baureihenVonFreundenAbrufen(sessiontoken);
-            if (data && data.Freunde) data = data.Freunde;
             res.send(`${JSON.stringify(data)}`);
         } catch (e: unknown) {
             res.send((e as Error).message);
