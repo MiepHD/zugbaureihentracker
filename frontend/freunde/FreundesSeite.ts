@@ -13,7 +13,5 @@ const fill = (data: any) => {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const xhr = new XHR();
-  xhr.get("/api/baureihenVonFreundenAbrufen", fill);
-});
+const xhr = new XHR();
+xhr.get("/api/baureihenVonFreundenAbrufen", fill);

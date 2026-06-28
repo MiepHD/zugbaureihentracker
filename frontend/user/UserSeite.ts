@@ -22,15 +22,13 @@ function requestBaureihen2(): void {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  requestBaureihen2();
-  const xhr2 = new XHR();
-  xhr2.get("/api/getNutzername?uuid=" + encodeURIComponent(uuidU as string), (response: string) => {
-    (document.querySelector("b") as HTMLElement).textContent = response;
-    document.title += " " + response;
-    const h2 = document.querySelector("h2") as HTMLElement;
-    h2.textContent = response + h2.textContent;
-  });
+requestBaureihen2();
+const xhr3 = new XHR();
+xhr3.get("/api/getNutzername?uuid=" + encodeURIComponent(uuidU as string), (response: string) => {
+  (document.querySelector("b") as HTMLElement).textContent = response;
+  document.title += " " + response;
+  const h2 = document.querySelector("h2") as HTMLElement;
+  h2.textContent = response + h2.textContent;
 });
 
 

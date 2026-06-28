@@ -9,12 +9,10 @@ const fill2 = (data: any) => {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const xhr2 = new XHR();
-  xhr2.get("/api/getUUID", (response: string) => {
-    (document.getElementById("uuid") as HTMLElement).textContent = `UUID: ${response}`;
-    uuid = response;
-    const xhr = new XHR();
-    xhr.get("/api/getFriendsLeaderboard", fill2);
-  });
+const xhr2 = new XHR();
+xhr2.get("/api/getUUID", (response: string) => {
+  (document.getElementById("uuid") as HTMLElement).textContent = `UUID: ${response}`;
+  uuid = response;
+  const xhr = new XHR();
+  xhr.get("/api/getFriendsLeaderboard", fill2);
 });

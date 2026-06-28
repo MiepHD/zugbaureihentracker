@@ -16,8 +16,6 @@ new XHR().get("/api/getBaureihe?" + paramE, (response: any) => {
   (document.getElementById("name") as HTMLInputElement).value = response.baureihe.name;
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  (document.querySelector("form") as HTMLFormElement).addEventListener("submit", () => {
-    (document.getElementById("ubid") as HTMLInputElement).removeAttribute("disabled");
-  });
+(document.querySelector("form") as HTMLFormElement).addEventListener("submit", () => {
+  (document.getElementById("ubid") as HTMLInputElement).removeAttribute("disabled");
 });

@@ -16,16 +16,13 @@ function requestBaureihen(): void {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  requestBaureihen();
-
-  new XHR().get("/api/isElevated", (response: any) => {
+requestBaureihen();
+new XHR().get("/api/isElevated", (response: any) => {
   if (typeof response == "string") {
     showError(response);
     return;
   }
   if (response && response.isElevated) (document.getElementById("admin") as HTMLElement).style.setProperty("display", "inline-block");
-});
 });
 
 
