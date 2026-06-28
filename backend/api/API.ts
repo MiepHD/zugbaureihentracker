@@ -80,6 +80,7 @@ export class API {
         app.get("/api/getGesamtzahlBaureihen", baureihe.count.bind(baureihe));
         app.post("/api/addBaureihe", baureihe.add.bind(baureihe));
         app.post("/api/removeBaureihe", baureihe.remove.bind(baureihe));
+        app.post("/api/editBaureihe", baureihe.edit.bind(baureihe));
 
         const aktivitaet = new Aktivitaet();
         app.post("/api/baureiheAlsGefundenMarkieren", aktivitaet.alsGefundenMarkieren.bind(aktivitaet));

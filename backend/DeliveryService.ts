@@ -17,9 +17,9 @@ export class DeliveryService {
      * @since 17.04.2026
      * @author Tim & Lia, 
      */
-    private paths: String[] = ["", "accounts", "add", "addmany", "admin", "baureihen", "elevate", "freunde", "home", "suchergebnis"];
+    private paths: String[] = ["", "accounts", "add", "addmany", "admin", "baureihen", "elevate", "freunde", "home", "suchergebnis", "editor"];
 
-    private restricted: String[] = ["accounts", "add", "addmany", "admin", "baureihen"];
+    private restricted: String[] = ["accounts", "add", "addmany", "admin", "baureihen", "editor"];
 
 
     /**

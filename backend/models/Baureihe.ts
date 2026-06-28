@@ -110,4 +110,22 @@ export class Baureihe extends Table {
         });
         if (success == 0) throw new Error("Diese Baureihe konnte leider nicht gelöscht werden.");
     }
+
+    public static async edit(ubid: string, name: string, beschreibung: string) {
+        const test: number = await Baureihe.count({
+            where: {
+                ubid
+            }
+        });
+        if (test < 1) throw new Error("Diese Baureihe existiert nicht.");
+        const success = await Baureihe.findOne({
+            where: {
+                ubid
+            }
+        });
+        if (success == null) throw new Error("Diese Baureihe konnte leider nicht abgefragt werden.");
+        success.setDataValue("name", name);
+        success.setDataValue("beschreibung", beschreibung);
+        await success.save();
+    }
 }

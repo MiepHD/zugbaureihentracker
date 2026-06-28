@@ -78,4 +78,22 @@ export class Baureihe {
             res.redirect("/baureihen?errorMessage=" + encodeURIComponent((e as Error).message) + "&ubid=" + data.ubid);
         }
     }
+
+    async edit(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        
+        const data = req.body;
+        try {
+            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Baureihen zu ändern.");
+            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
+            if (!API.isValidString(data.name)) throw new Error("Name ist fehlerhaft.");
+            if (!API.isValidString(data.beschreibung)) throw new Error("Beschreibung ist fehlerhaft.");
+            
+            await DBBaureihe.edit(data.ubid, data.name, data.beschreibung);
+            res.redirect("/editor?ubid=" + data.ubid + "&successMessage=" + "Baureihe wurde erfolgreich geändert.");
+        } catch (e: unknown) {
+            res.redirect("/editor?ubid=" + data.ubid + "&?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
+    }
 }
