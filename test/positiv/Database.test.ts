@@ -94,7 +94,8 @@ test("Gefundene Baureihen auslesen", async () => {
     const sessiontokenA: string | boolean = await db.nutzer.getSessiontoken("F", "F");
     if (typeof sessiontokenA == "string") {
         await db.aktivitaet.alsGefundenMarkieren(sessiontokenA, "a");
-        const baureihen: Baureihe[] = await db.aktivitaet.getGefundeneBaureihen(sessiontokenA);
+        const uuid = await db.nutzer.getUUID(sessiontokenA);
+        const baureihen: Baureihe[] = await db.aktivitaet.getGefundeneBaureihen(uuid);
         expect(baureihen[0].getDataValue("ubid")).toBe("a");
     }
 });

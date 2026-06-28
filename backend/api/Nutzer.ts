@@ -66,8 +66,19 @@ export class Nutzer {
         try {
             res.send(await DBNutzer.getUUID(sessiontoken));
         } catch (e: unknown) {
-            res.redirect("/logout");
-            console.warn((e as Error).message);
+            res.send((e as Error).message);
+        }
+    }
+
+    async getNutzername(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.query;
+        try {
+            const uuid = await DBNutzer.getUUID(sessiontoken);
+            res.send((await DBNutzer.getNutzerByUUID((data.uuid ? data.uuid : uuid) as string)).getDataValue("name"));
+        } catch (e: unknown) {
+            res.send((e as Error).message);
         }
     }
 

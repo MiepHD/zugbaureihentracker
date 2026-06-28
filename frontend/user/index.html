@@ -1,0 +1,31 @@
+<!-- Authors: Christoph-->
+<!doctype html>
+<html lang="de">
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/RequestBaureihen.js" defer></script>
+    <script src="/user/UserSeite.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <title>Zugbaureihentracker |</title>
+  </head>
+  <body>
+    <main>
+      <a href onclick="history.back();" class="back">Zurück</a>
+      <h1><b></b></h1>
+      <form action="/api/entferneFreund" method="post">
+        <input name="uuid" id="uuid" style="display: none;">
+        <button>Freund entfernen</button>
+      </form>
+      UUID: <i style="font-size: smaller;"></i>
+      <h2> hat diese ? Baureihen gefunden:</h2>
+      <ul id="liste" class="baureihen"></ul>
+    </main>
+  </body>
+</html>

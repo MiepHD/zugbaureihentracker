@@ -4,7 +4,7 @@ const fill2 = (data: any) => {
     const table = document.getElementById("leaderboard");
     for (const user of data) {
           const li = document.createElement("li");
-          li.innerHTML = `<b>${user.name}</b> mit <i>${user.score}</i> Baureihen ${user.uuid == uuid ? "" : `<form action="/api/entferneFreund" method="post" style="display:inline-block"><input name="uuid" value="${user.uuid}" style="display: none;"><button>Freund entfernen</button></form>`}`
+          li.innerHTML = `<a href="/user?uuid=${encodeURIComponent(user.uuid)}">${user.name}</a> mit <i>${user.score}</i> Baureihen ${user.uuid == uuid ? "" : `<form action="/api/entferneFreund" method="post" style="display:inline-block"><input name="uuid" value="${user.uuid}" style="display: none;"><button>Freund entfernen</button></form>`}`
           table?.appendChild(li);
     }
 }

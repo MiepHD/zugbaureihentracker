@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { Aktivitaet as DBAktivitaet } from "../models/Aktivitaet";
 
 import { API } from "./API";
+import { Nutzer } from "../models/Nutzer";
 
 export class Aktivitaet {
     /**
@@ -25,8 +26,10 @@ export class Aktivitaet {
     async getGefundene(req: Request, res: Response) {
         const sessiontoken = await API.checkSessiontoken(req, res);
         if (sessiontoken == null) return;
+        const data = req.query;
         try {
-            res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen(sessiontoken))}`);
+            const uuid = await Nutzer.getUUID(sessiontoken);
+            res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen((data.uuid ? data.uuid : uuid) as string))}`);
         } catch (e) {
             res.send((e as Error).message);
         }

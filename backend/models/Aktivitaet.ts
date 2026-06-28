@@ -74,11 +74,10 @@ export class Aktivitaet extends Table {
      * @returns Liste mit allen Einträgen der Tabelle Baureihe.
      * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
      */
-    public static async getGefundeneBaureihen(sessiontoken: string): Promise<Baureihe[]> {
-        const uuid: string = await Nutzer.getUUID(sessiontoken);
+    public static async getGefundeneBaureihen(uuid: string): Promise<Baureihe[]> {
         return await Aktivitaet.findAll({
             where: {
-                uuid: uuid,
+                uuid
             },
             include: [Baureihe]
         });

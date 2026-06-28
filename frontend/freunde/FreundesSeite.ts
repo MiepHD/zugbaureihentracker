@@ -4,11 +4,11 @@ const fill = (data: any) => {
     for (const baureihe of data) {
         let users = "";
         for (const user of baureihe.Aktivitaets) {
-            users += `${user.Nutzer.name}, `
+            users += `<a href="/user?uuid=${encodeURIComponent(user.uuid)}">${user.Nutzer.name}</a>, `
         }
         users = users.slice(0, -2);
         const li = document.createElement("li");
-        li.innerHTML = `<b>${baureihe.ubid}</b> <i style="font-size: smaller">durch ${users}</i>`
+        li.innerHTML = `<b><a href="/suchergebnis?ubid=${encodeURIComponent(baureihe.ubid)}">${baureihe.ubid}</a></b> <i style="font-size: smaller">durch ${users}</i>`
         list?.appendChild(li);
     }
 }
