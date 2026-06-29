@@ -4,6 +4,7 @@ import { Aktivitaet as DBAktivitaet } from "../models/Aktivitaet";
 
 import { API } from "./API";
 import { Nutzer } from "../models/Nutzer";
+import { Freundesliste } from "../models/Freundesliste";
 
 export class Aktivitaet {
     /**
@@ -29,7 +30,14 @@ export class Aktivitaet {
         const data = req.query;
         try {
             const uuid = await Nutzer.getUUID(sessiontoken);
-            res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen((data.uuid ? data.uuid : uuid) as string))}`);
+            if (data.uuid) {
+                if(await Freundesliste.sindBefreundet(uuid, data.uuid as string) || await Nutzer.isElevated(sessiontoken)) {
+                    res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen((data.uuid) as string))}`);
+                    return;
+                }
+                throw new Error("Keine Bereichtigung Profil dieses Users abzurufen.");
+            }
+            res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen(uuid))}`);
         } catch (e) {
             res.send((e as Error).message);
         }

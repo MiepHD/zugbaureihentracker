@@ -276,4 +276,15 @@ export class Freundesliste extends Table {
         });
         if (result == 0) throw new Error("Freundschaftsanfrage konnt leider nicht gelöscht werden.");
     }
+
+    public static async sindBefreundet(vonUUID: string, zuUUID: string): Promise<boolean> {
+        const result = await Freundesliste.count({
+            where: {
+                von: vonUUID,
+                zu: zuUUID,
+                isComplete: true
+            }
+        });
+        return result > 0;
+    }
 }

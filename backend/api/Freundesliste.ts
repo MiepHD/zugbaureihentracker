@@ -104,5 +104,4 @@ export class Freundesliste {
             res.redirect("/freundschaftsanfragen?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
-
 }
