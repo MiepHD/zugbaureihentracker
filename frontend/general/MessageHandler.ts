@@ -10,11 +10,11 @@ class MessageHandler {
         const elem = document.createElement("div");
         elem.classList.add("errorMessage");
         elem.textContent = message;
-        if (message.startsWith("Baureihe") && message.includes("Trotzdem löschen?")) {
+        if (message.startsWith("Diese Baureihe") && message.includes("trotzdem löschen?")) {
             const ubid = query.get("ubid");
             elem.innerHTML += `<form action="/api/removeBaureihe/" method="post" style="display: inline-block"><input name="ubid" value="${ubid}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`
         }
-        if (message.startsWith("Account") && message.includes("Trotzdem löschen?")) {
+        if (message.startsWith("Dieser Account") && message.includes("trotzdem löschen?")) {
             const uuid = query.get("uuid");
             elem.innerHTML += `<form action="/api/removeAccount/" method="post" style="display: inline-block"><input name="uuid" value="${uuid}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`
         }
