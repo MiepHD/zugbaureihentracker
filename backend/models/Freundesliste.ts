@@ -222,12 +222,24 @@ export class Freundesliste extends Table {
             }
         });
         if (test == 0) throw new Error("Von diesem Nutzer hast Du keine Freundschaftsanfrage erhalten.");
-        const result = await Freundesliste.create({
-            von: uuid2,
-            zu: uuid,
-            isComplete: true
-        })
-        if (result == null) throw new Error("Freundschaft konnte leider nicht erstellt werden.");
+        const gegenrichtung = await Freundesliste.findOne({
+            where: {
+                von: uuid2,
+                zu: uuid,
+            }
+        });
+        if (gegenrichtung == null) {
+            const result = await Freundesliste.create({
+                von: uuid2,
+                zu: uuid,
+                isComplete: true
+            })
+            if (result == null) throw new Error("Freundschaft konnte leider nicht erstellt werden.");
+        } else {
+            gegenrichtung.setDataValue("isComplete", true);
+            await gegenrichtung.save();
+        }
+        
         const anfrage = await Freundesliste.findOne({
             where: {
                 von: uuid,

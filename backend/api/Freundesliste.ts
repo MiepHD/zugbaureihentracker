@@ -64,7 +64,7 @@ export class Freundesliste {
             await DBFreundesliste.akzeptiereFreundschaftsanfrage(sessiontoken, data.uuid);
             res.redirect("/freundschaftsanfragen?successMessage=" + encodeURIComponent("Freund erfolgreich hinzugefügt."));
         } catch (e: unknown) {
-            res.send((e as Error).message);
+            res.send("/freundschaftsanfragen?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 
