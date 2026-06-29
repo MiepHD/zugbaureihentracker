@@ -5,12 +5,12 @@ const fill2 = (data: any) => {
     const ausgehend = document.getElementById("ausgehend");
     for (const user of data.eingehend) {
           const li = document.createElement("li");
-          li.innerHTML = `<b>${user.eingehendeAnfragen.name}</b> <form action="/api/akzeptiereFreundschaftsanfrage" method="post" style="display:inline-block"><input name="uuid" value="${user.von}" style="display: none;"><button>Anfrage akzeptieren</button></form>`;
+          li.innerHTML = `<b>${user.eingehendeAnfragen.name}</b> <form action="/api/akzeptiereFreundschaftsanfrage" method="post" style="display:inline-block"><input name="uuid" value="${user.von}" style="display: none;"><button>Anfrage akzeptieren</button></form><form action="/api/FreundschaftsanfrageAblehnen" method="post" style="display:inline-block"><input name="uuid" value="${user.von}" style="display: none;"><button>Anfrage ablehnen</button></form>`;
           eingehend?.appendChild(li);
     }
     for (const user of data.ausgehend) {
           const li = document.createElement("li");
-          li.innerHTML = `<b>${user.ausgehendeAnfragen.name}</b>`
+          li.innerHTML = `<b>${user.ausgehendeAnfragen.name}</b><form action="/api/abortFreundschaftsanfrage" method="post" style="display:inline-block"><input name="uuid" value="${user.zu}" style="display: none;"><button>Anfrage zurückziehen</button></form>`
           ausgehend?.appendChild(li);
     }
 }

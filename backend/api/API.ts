@@ -94,6 +94,8 @@ export class API {
         app.get("/api/baureihenVonFreundenAbrufen", freundesliste.baureihenVonFreundenAbrufen.bind(freundesliste));
         app.get("/api/getFriendsLeaderboard", freundesliste.getRanking.bind(freundesliste));
         app.post("/api/akzeptiereFreundschaftsanfrage", freundesliste.akzeptiereFreundschaftsanfrage.bind(freundesliste));
+        app.post("/api/abortFreundschaftsanfrage", freundesliste.abortFreundschaftsanfrage.bind(freundesliste));
+        app.post("/api/FreundschaftsanfrageAblehnen", freundesliste.FreundschaftsanfrageAblehnen.bind(freundesliste));
         app.get("/api/getAusstehendeFreundschaftsanfragen", freundesliste.getAusstehendeFreundschaftsanfragen.bind(freundesliste));
     }
 

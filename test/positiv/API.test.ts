@@ -99,7 +99,7 @@ test("Freund hinzufügen API", async () => {
     const uuidB = await getUUID(cookieB);
 
     const response = await request(app).post("/api/fuegeFreundHinzu").set("Cookie", cookieA).send({ uuid: uuidB });
-    expect(response.text).toContain("/leaderboard");
+    expect(response.text).toContain("/freundschaftsanfragen");
 });
 
 test("Freund entfernen API", async () => {

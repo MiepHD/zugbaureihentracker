@@ -265,4 +265,14 @@ export class Freundesliste extends Table {
             })
         };
     }
+
+    public static async deleteAnfrage(vonUUID: string, zuUUID: string) {
+        const result = await Freundesliste.destroy({
+            where: {
+                von: vonUUID,
+                zu: zuUUID
+            }
+        });
+        if (result == 0) throw new Error("Freundschaftsanfrage konnt leider nicht gelöscht werden.");
+    }
 }

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { Freundesliste as DBFreundesliste } from "../models/Freundesliste";
 
 import { API } from "./API";
+import { Nutzer } from "../models/Nutzer";
 
 export class Freundesliste {
     async add(req: Request, res: Response) {
@@ -12,9 +13,9 @@ export class Freundesliste {
         try {
             if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
             await DBFreundesliste.add(sessiontoken, data.uuid);
-            res.redirect("/leaderboard?successMessage=" + encodeURIComponent("Freund wurde erfolgreich hinzugefügt."));
+            res.redirect("/freundschaftsanfragen?successMessage=" + encodeURIComponent("Freund wurde erfolgreich hinzugefügt."));
         } catch (e: any) {
-            res.redirect("/leaderboard?errorMessage=" + encodeURIComponent((e as Error).message));
+            res.redirect("/freundschaftsanfragen?errorMessage=" + encodeURIComponent((e as Error).message));
         }
     }
 
@@ -77,4 +78,31 @@ export class Freundesliste {
             res.send((e as Error).message);
         }
     }
+
+    async FreundschaftsanfrageAblehnen(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.body;
+        try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
+            await DBFreundesliste.deleteAnfrage(data.uuid, await Nutzer.getUUID(sessiontoken));
+            res.redirect("/freundschaftsanfragen?successMessage=" + encodeURIComponent("Anfrage erfolgreich abgelehnt."));
+        } catch (e: unknown) {
+            res.redirect("/freundschaftsanfragen?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
+    }
+
+    async abortFreundschaftsanfrage(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.body;
+        try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
+            await DBFreundesliste.deleteAnfrage(await Nutzer.getUUID(sessiontoken), data.uuid);
+            res.redirect("/freundschaftsanfragen?successMessage=" + encodeURIComponent("Anfrage erfolgreich zurückgezogen."));
+        } catch (e: unknown) {
+            res.redirect("/freundschaftsanfragen?errorMessage=" + encodeURIComponent((e as Error).message));
+        }
+    }
+
 }
