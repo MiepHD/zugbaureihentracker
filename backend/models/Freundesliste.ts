@@ -159,7 +159,8 @@ export class Freundesliste extends Table {
         });
         if (test == 0) await Freundesliste.create({
             von: uuid,
-            zu: uuid
+            zu: uuid,
+            isComplete: true
         });
         const tabelle = await Nutzer.findAll({
             where: {
