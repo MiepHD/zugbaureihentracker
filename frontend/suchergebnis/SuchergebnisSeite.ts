@@ -22,9 +22,10 @@ new XHR().get("/api/getBaureihe?" + query.param, (response: any) => {
 
   const elem = document.querySelector("button") as HTMLButtonElement;
   elem.style.setProperty("background-color", "lightgreen");
-  if (response.gefunden === true) {
+  if (response.gefunden !== null) {
     elem.textContent = `Baureihe nicht mehr als "Gefunden" markieren`;
     elem.style.setProperty("background-color", "lightcoral");
+    (document.getElementById("gefundenAm") as HTMLElement).textContent = "Du hast diese Baureihe gefunden am " + new Date(response.gefunden).toLocaleString().replace(",", " um");
     (document.querySelector("form") as HTMLFormElement).action = "/api/baureiheAlsNichtGefundenMarkieren";
   }
 });

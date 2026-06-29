@@ -90,14 +90,15 @@ export class Aktivitaet extends Table {
      * @returns 
      * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
      */
-    public static async istGefunden(ubid: string, sessiontoken: string): Promise<boolean> {
-        const found = await Aktivitaet.count({
+    public static async istGefunden(ubid: string, sessiontoken: string): Promise<string | null> {
+        const found = await Aktivitaet.findOne({
             where: {
                 ubid,
                 uuid: await Nutzer.getUUID(sessiontoken),
             }
         });
-        return found > 0;
+        if (found == null) return null;
+        return (found as unknown as { createdAt: string}).createdAt;
     }
 
     public static async alsNichtGefundenMarkieren(token: string, ubid: string): Promise<void> {

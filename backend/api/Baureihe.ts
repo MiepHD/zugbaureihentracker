@@ -19,7 +19,7 @@ export class Baureihe {
             if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
             res.send(`{
                 "baureihe": ${JSON.stringify(await DBBaureihe.get(data.ubid as string))},
-                "gefunden": ${await DBAktivitaet.istGefunden((data.ubid as string), sessiontoken)}
+                "gefunden": ${JSON.stringify(await DBAktivitaet.istGefunden((data.ubid as string), sessiontoken))}
             }`);
         } catch (e: unknown) {
             res.send((e as Error).message);
