@@ -83,7 +83,8 @@ test("Freund entfernen", async () => {
     const sessiontokenB: string | boolean = await db.nutzer.getSessiontoken("E", "E");
     if (typeof sessiontokenA == "string" && typeof sessiontokenB == "string") {
         await db.freundesliste.add(sessiontokenA, await db.nutzer.getUUID(sessiontokenB));
-        await db.freundesliste.remove(sessiontokenA, await db.nutzer.getUUID(sessiontokenB))
+        await db.freundesliste.akzeptiereFreundschaftsanfrage(sessiontokenB, await db.nutzer.getUUID(sessiontokenA));
+        await db.freundesliste.remove(sessiontokenA, await db.nutzer.getUUID(sessiontokenB));
     }
 });
 
@@ -125,8 +126,10 @@ test("Baureihen von Freunden abrufen (DB)", async () => {
     if (typeof tokenA !== "string" || typeof tokenB !== "string") return;
 
     const uuidB = await db.nutzer.getUUID(tokenB);
+    const uuidA = await db.nutzer.getUUID(tokenA);
 
     await db.freundesliste.add(tokenA, uuidB);
+    await db.freundesliste.akzeptiereFreundschaftsanfrage(tokenB, uuidA);
     await db.aktivitaet.alsGefundenMarkieren(tokenB, "a");
 
     const result = await db.freundesliste.baureihenVonFreundenAbrufen(tokenA);

@@ -93,6 +93,8 @@ export class API {
         app.post("/api/entferneFreund", freundesliste.remove.bind(freundesliste));
         app.get("/api/baureihenVonFreundenAbrufen", freundesliste.baureihenVonFreundenAbrufen.bind(freundesliste));
         app.get("/api/getFriendsLeaderboard", freundesliste.getRanking.bind(freundesliste));
+        app.post("/api/akzeptiereFreundschaftsanfrage", freundesliste.akzeptiereFreundschaftsanfrage.bind(freundesliste));
+        app.get("/api/getAusstehendeFreundschaftsanfragen", freundesliste.getAusstehendeFreundschaftsanfragen.bind(freundesliste));
     }
 
     static isValidString(str: unknown) {

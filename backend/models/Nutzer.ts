@@ -139,7 +139,8 @@ export class Nutzer extends Table {
         if (!entry) throw new Error("Der Nutzer konnte leider nicht erstellt werden.");
         const freundschaft = await Freundesliste.create({
             von: uuid,
-            zu: uuid
+            zu: uuid,
+            isComplete: true
         });
         if (!freundschaft) console.warn("Freundschaft mit sich selbst konnte bei Registrierung nicht erstellt werden.");
         const isDestroyed = await Registrierungscodes.destroy({

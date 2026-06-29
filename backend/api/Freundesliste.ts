@@ -53,4 +53,28 @@ export class Freundesliste {
             res.send((e as Error).message);
         }
     }
+
+    async akzeptiereFreundschaftsanfrage(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        const data = req.body;
+        try {
+            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
+            await DBFreundesliste.akzeptiereFreundschaftsanfrage(sessiontoken, data.uuid);
+            res.redirect("/freundschaftsanfragen?successMessage=" + encodeURIComponent("Freund erfolgreich hinzugefügt."));
+        } catch (e: unknown) {
+            res.send((e as Error).message);
+        }
+    }
+
+    async getAusstehendeFreundschaftsanfragen(req: Request, res: Response) {
+        const sessiontoken = await API.checkSessiontoken(req, res);
+        if (sessiontoken == null) return;
+        try {
+            let result: any = await DBFreundesliste.getAusstehendeFreundschaftsanfragen(sessiontoken);
+            res.send(`${JSON.stringify(result)}`);
+        } catch (e: unknown) {
+            res.send((e as Error).message);
+        }
+    }
 }

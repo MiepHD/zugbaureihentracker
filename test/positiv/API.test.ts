@@ -117,8 +117,10 @@ test("Baureihen von Freunden abrufen API", async () => {
     const cookieB = await registerAndLogin("UserB");
     await addTestBaureihe(cookieA);
     const uuidB = await getUUID(cookieB);
+    const uuidA = await getUUID(cookieA);
 
     await request(app).post("/api/fuegeFreundHinzu").set("Cookie", cookieA).send({ uuid: uuidB });
+    await request(app).post("/api/akzeptiereFreundschaftsanfrage").set("Cookie", cookieB).send({ uuid: uuidA });
     await request(app).post("/api/baureiheAlsGefundenMarkieren").set("Cookie", cookieB).send({ ubid: "a" });
 
     const response = await request(app).get("/api/baureihenVonFreundenAbrufen").set("Cookie", cookieA);
