@@ -1,5 +1,8 @@
-import { DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, Sequelize, UniqueConstraintError } from 'sequelize';
+
 import { Table } from './Table';
+
+import { ConflictError } from '../error/ConflictError';
 
 export class Registrierungscodes extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -8,6 +11,7 @@ export class Registrierungscodes extends Table {
                 type: DataTypes.STRING,
                 allowNull: false,
                 primaryKey: true,
+                unique: true,
             }
         },
         {
@@ -18,14 +22,14 @@ export class Registrierungscodes extends Table {
 
     /**
      * Einen Einladungscode hinzufügen
-     * @throws Code bereits registriert.
-     * @throws Code konnte nicht hinzugefügt werden.
+     * @throws ConflictError
      */
     public static async add(code: string): Promise<void> {
-        if (await Registrierungscodes.count({where: {code}}) > 0) throw Error("Dieser Registrierungscode existiert bereits.");
-        const entry = await Registrierungscodes.create({
-            code
-        });
-        if (entry == null) throw Error("Dieser Code konnte leider nicht erstellt werden.");
+        try {
+            await Registrierungscodes.create({ code });
+        } catch (e: unknown) {
+            if (e instanceof UniqueConstraintError) throw new ConflictError("codeExists");
+            throw e;
+        }
     }
 }

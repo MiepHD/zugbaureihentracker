@@ -1,58 +1,48 @@
 import { Request, Response } from "express";
 
 import { Aktivitaet as DBAktivitaet } from "../models/Aktivitaet";
-
-import { API } from "./API";
 import { Nutzer } from "../models/Nutzer";
 import { Freundesliste } from "../models/Freundesliste";
 
+import { API } from "./API";
+
+import { ValidationError } from "../error/ValidationError";
+import { ForbiddenError } from "../error/ForbiddenError";
+
 export class Aktivitaet {
     /**
-     * Lia
      * Gibt die Request, eine Baureihe als gefunden zu markieren an die Datenbank weiter und je nach Anwort Redirected entweder auf die Home Seite oder auf die Suchergebnis Seite.
+     * @author Lia
      */
     async alsGefundenMarkieren(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
         const data = req.body;
-        try {
-            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
-            await DBAktivitaet.alsGefundenMarkieren(sessiontoken, data.ubid);
+        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+            if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
+            await DBAktivitaet.alsGefundenMarkieren(sessiontoken as string, data.ubid);
             res.redirect("/home?successMessage=" + encodeURIComponent(`Baureihe wurde als "Gefunden" markiert.`));
-        } catch (e: unknown) {
-            res.redirect(`/suchergebnis?ubid=${data.ubid}&errorMessage=` + encodeURIComponent((e as Error).message));
-        }
+        });
     }
 
     async getGefundene(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        const data = req.query;
-        try {
-            const uuid = await Nutzer.getUUID(sessiontoken);
+        await API.try(req, res, true, false, async (data, sessiontoken) => {
+            const uuid = await Nutzer.getUUID(sessiontoken as string);
             if (data.uuid) {
-                if(await Freundesliste.sindBefreundet(uuid, data.uuid as string) || await Nutzer.isElevated(sessiontoken)) {
+                if(await Freundesliste.sindBefreundet(uuid, data.uuid as string) || await Nutzer.isElevated(sessiontoken as string)) {
                     res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen((data.uuid) as string))}`);
                     return;
                 }
-                throw new Error("Keine Bereichtigung Profil dieses Users abzurufen.");
+                throw new ForbiddenError("profile");
             }
             res.send(`${JSON.stringify(await DBAktivitaet.getGefundeneBaureihen(uuid))}`);
-        } catch (e) {
-            res.send((e as Error).message);
-        }
+        });
     }
 
     async alsNichtGefundenMarkieren(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
         const data = req.body;
-        try {
-            if (!API.isValidString(data.ubid)) throw new Error("UBID ist fehlerhaft.");
-            await DBAktivitaet.alsNichtGefundenMarkieren(sessiontoken, data.ubid);
+        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+            if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
+            await DBAktivitaet.alsNichtGefundenMarkieren(sessiontoken as string, data.ubid);
             res.redirect("/home?successMessage=" + encodeURIComponent("Baureihe wurde erfolgreich aus den gefundenen Baureihen entfernt"));
-        } catch (e: unknown) {
-            res.redirect(`/suchergebnis?ubid=${data.ubid}&errorMessage=` + encodeURIComponent((e as Error).message));
-        }
+        });
     }
 }

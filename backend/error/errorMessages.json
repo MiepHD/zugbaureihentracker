@@ -1,0 +1,40 @@
+{
+    "ValidationError.ubid": "UBID ist fehlerhaft.",
+    "ValidationError.name": "Name ist fehlerhaft.",
+    "ValidationError.beschreibung": "Beschreibung ist fehlerhaft.",
+    "ValidationError.uuid": "UUID ist fehlerhaft.",
+    "ValidationError.username": "Nutzername ist fehlerhaft.",
+    "ValidationError.passwort": "Passwort ist fehlerhaft.",
+    "ValidationError.code": "Code ist fehlerhaft.",
+
+    "ForbiddenError.profile": "Keine Bereichtigung Profil dieses Users abzurufen.",
+    "ForbiddenError.addBaureihe": "Keine Berechtigung Baureihen hinzuzufügen.",
+    "ForbiddenError.getAllBaureihen": "Keine Berechtigung alle Baureihen abzufragen.",
+    "ForbiddenError.deleteBaureihe": "Keine Berechtigung Baureihen zu löschen.",
+    "ForbiddenError.editBaureihe": "Keine Berechtigung Baureihen zu ändern.",
+    "ForbiddenError.elevateOtherUser": "Keine Berechtigung Adminrechte zu vergeben.",
+    "ForbiddenError.listAccounts": "Keine Berechtigung Liste der Accounts abzufragen.",
+    "ForbiddenError.deleteAccount": "Keine Berechtigung Account zu löschen.",
+    "ForbiddenError.removeElevation": "Keine Berechtigung Adminrechte zu entfernen.",
+    "ForbiddenError.createCode": "Keine Berechtigung, Registrierungscodes zu erstellen.",
+
+    "UnauthorizedError.noSession": "Keine Session gefunden.",
+    "UnauthorizedError.invalidSession": "Diese Session ist ungültig.",
+
+    "ConflictError.alreadyFound": "Diese Baureihe hast Du bereits gefunden.",
+    "ConflictError.baureiheExistiert": "Diese Baureihe existiert bereits.",
+    "ConflictError.baureiheBereitsVerwendet": "Diese Baureihe wurde bereits von %d Nutzern gefunden. Möchtest Du sie trotzdem löschen?",
+    "ConflictError.bereitsBefreundet": "Diesen Freund hast Du bereits in Deiner Freundesliste.",
+    "ConflictError.nutzername": "Dieser Nutzername ist bereits vergeben.",
+    "ConflictError.kontoBereitsVerwendet": "Dieser Account hat bereits %d Baureihen gefunden, wurde von %d Freunden hinzugefügt und hat %d Freunde hinzugefügt. Willst Du ihn trotzdem löschen?",
+    "ConflictError.codeExists": "Dieser Registrierungscode existiert bereits.",
+
+    "NotFoundError.nichtAlsGefundenMarkiert": "Diese Baureihe ist von Dir nicht als gefunden markiert.",
+    "NotFoundError.baureihe": "Diese Baureihe konnte leider nicht gefunden werden.",
+    "NotFoundError.freundschaft": "Dieser Freund existiert nicht in Deiner Freundesliste",
+    "NotFoundError.freundschaftsanfrage": "Diese Freundschaftsanfrage konnte nicht gefunden werden.",
+    "NotFoundError.uuid": "Zu dieser UUID konnte leider kein Nutzer gefunden werden.",
+    "NotFoundError.registrierungscode": "Der Registrierungscode konnte nicht gefunden werden.",
+    "NotFoundError.login": "Es konnte kein Konto zu dieser Kombination aus Benuzername und Passwort gefunden werden.",
+    "NotFoundError.unelevatedUser": "Zu dieser UUID konnte kein Nutzer ohne Adminrechte gefunden werden."
+}

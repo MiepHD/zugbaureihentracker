@@ -12,6 +12,8 @@ import { Nutzer } from "./Nutzer";
 import { Aktivitaet } from "./Aktivitaet";
 import { Registrierungscodes } from "./Registierungscodes";
 
+import { ExpectedError } from "../error/ExpectedError";
+
 export class API {
     private adminpasswort: string;
     static db: Database;
@@ -101,5 +103,37 @@ export class API {
 
     static isValidString(str: unknown) {
         return str !== null && typeof str === "string" && str !== ""
+    }
+
+    /**
+     * @param checkSessiontoken Ob das Sessiontoken überprüft wird. Bei false kommt bei execute als sessiontoken null
+     * @param redirectOnError Beginnt ohne / und endet mit & oder ?. Alternativ kann man auch false übergeben, dass kein redirect ausgeführt wird
+     * @param execute Bekommt die Daten übergeben und ein Sessiontoken falls eines angefordert wurde
+     */
+    static async try(req: Request, res: Response, checkSessiontoken: boolean, redirectOnError: string | boolean, execute: (data: any, sessiontoken: string | null) => Promise<void>) {
+        let data;
+        if (req.method == "GET") data = req.query;
+        else data = req.body;
+        try {
+            if (checkSessiontoken) {
+                const sessiontoken = await API.checkSessiontoken(req, res);
+                if (sessiontoken == null) return;
+                await execute(data, sessiontoken);
+                return;
+            }
+            await execute(data, null); }
+        catch (e: unknown) {
+            if (e instanceof ExpectedError) {
+                res.status(e.statuscode);
+                if (typeof redirectOnError == "boolean" && !redirectOnError) {
+                    res.send(`${e.statuscode}: ${(e as Error).message}`);
+                } else {
+                    res.redirect(
+                        `/${redirectOnError}errorMessage=` +
+                        encodeURIComponent(`${e.statuscode}: ${(e as Error).message}`
+                    ));
+                }
+            }
+        }
     }
 }

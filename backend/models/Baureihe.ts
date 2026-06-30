@@ -1,6 +1,10 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes, UniqueConstraintError } from 'sequelize';
+
 import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
+
+import { NotFoundError } from '../error/NotFoundError';
+import { ConflictError } from '../error/ConflictError';
 
 export class Baureihe extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -9,6 +13,7 @@ export class Baureihe extends Table {
                 type: DataTypes.STRING,
                 allowNull: false,
                 primaryKey: true,
+                unique: true
             },
             name: {
                 type: DataTypes.STRING,
@@ -29,11 +34,11 @@ export class Baureihe extends Table {
         });
     }
 
-    /**Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
+    /**
+     * Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
      * @author Tim
      * @since 22.05.2026
-     * @throws Baureihe konnte nicht gefunden werden.
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws NotFoundError
      */
     public static async get(ubid: string): Promise<Baureihe> {
         const baureihe = await Baureihe.findOne({
@@ -41,36 +46,33 @@ export class Baureihe extends Table {
                 ubid,
             }
         });
-        if (baureihe == null || baureihe == undefined) throw new Error("Diese Baureihe konnte leider nicht gefunden werden.");
+        if (!baureihe) throw new NotFoundError("baureihe");
         return baureihe;
     }
 
-    /** Hinzufügen einer Baureihe in die Datenbank.
+    /**
+     * Hinzufügen einer Baureihe in die Datenbank.
      * @author Lia
      * @since 22.05.2026
-     * @throws Baureihe existiert bereits.
-     * @throws Baureihe konnte nicht erstellt werden.
+     * @throws ConflictError
      */
     public static async add(ubid: string, name: string, beschreibung: string): Promise<void> {
-        const test: number = await Baureihe.count({
-            where: {
-                ubid
-            }
-        });
-        if (test > 0) throw new Error("Diese Baureihe existiert bereits.");
-        const success = await Baureihe.create({
-            ubid,
-            name,
-            beschreibung
-        });
-        if (success == null) throw new Error("Diese Baureihe konnte leider nicht erstellt werden.");
+        try {
+            await Baureihe.create({
+                ubid,
+                name,
+                beschreibung
+            });
+        } catch (e: unknown) {
+            if (e instanceof UniqueConstraintError) throw new ConflictError("baureiheExistiert");
+            throw e;
+        }
     }
 
     /**
-     * Gibt die Gesamtzahl aller gesammelten Baureihen zurück.
      * @author Tim & Lia
      * @since 28.04.2026
-     * @returns Zahl der gesamten Baureihen.
+     * @returns Anzahl aller Baureihen
      */
     public static async getCount(): Promise <number> {
         const n: number = await Baureihe.count();
@@ -82,27 +84,20 @@ export class Baureihe extends Table {
     }
 
     /**
-     * 
-     * @param ubid 
-     * @param force 
-     * @throws Baureihe existiert nicht.
-     * @throws Baureihe wurde bereits von ${isUsed} Nutzern gefunden. Trotzdem löschen?
-     * @throws Baureihe konnte nicht gelöscht werden.
+     * Baureihe löschen
+     * @param force Erzwingt das Löschen der Baureihe, wodurch alle mit der Baureihe in Verbindung stehenden Daten gelöscht werden
+     * @throws ConflictError
+     * @throws NotFoundError
      */
     public static async remove(ubid: string, force: boolean): Promise<void> {
-        const test: number = await Baureihe.count({
-            where: {
-                ubid
-            }
-        });
-        if (test == 0) throw new Error("Diese Baureihe existiert nicht.");
         const isUsed: number = await Aktivitaet.count({
             where: {
                 ubid
             }
         });
         if (isUsed > 0) {
-            if (!force) throw new Error(`Diese Baureihe wurde bereits von ${isUsed} Nutzern gefunden. Möchtest Du sie trotzdem löschen?`);
+            if (!force) 
+                throw new ConflictError("baureiheBereitsVerwendet").replace("%d", isUsed.toString());
             await Aktivitaet.destroy({
                 where: {
                     ubid
@@ -114,22 +109,23 @@ export class Baureihe extends Table {
                 ubid
             }
         });
-        if (success == 0) throw new Error("Diese Baureihe konnte leider nicht gelöscht werden.");
+        if (success == 0) throw new NotFoundError("baureihe");
     }
 
+    /**
+     * Baureihe ändern
+     * @param ubid Indikator welche Baureihe geändert werden soll
+     * @param name Neuer Name
+     * @param beschreibung Neue Beschreibung
+     * @throws NotFoundError
+     */
     public static async edit(ubid: string, name: string, beschreibung: string) {
-        const test: number = await Baureihe.count({
-            where: {
-                ubid
-            }
-        });
-        if (test < 1) throw new Error("Diese Baureihe existiert nicht.");
         const success = await Baureihe.findOne({
             where: {
                 ubid
             }
         });
-        if (success == null) throw new Error("Diese Baureihe konnte leider nicht abgefragt werden.");
+        if (success == null) throw new NotFoundError("baureihe");
         success.setDataValue("name", name);
         success.setDataValue("beschreibung", beschreibung);
         await success.save();

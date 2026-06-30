@@ -1,9 +1,14 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes, UniqueConstraintError } from 'sequelize';
+import { randomUUID } from 'crypto';
+
 import { Freundesliste } from './Freundesliste';
 import { Aktivitaet } from './Aktivitaet';
 import { Table } from './Table';
 import { Registrierungscodes } from './Registrierungscodes';
-import { randomUUID } from 'crypto';
+
+import { NotFoundError } from '../error/NotFoundError';
+import { ConflictError } from '../error/ConflictError';
+import { UnauthorizedError } from '../error/UnauthorizedError';
 
 export class Nutzer extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -13,6 +18,7 @@ export class Nutzer extends Table {
                 defaultValue: DataTypes.UUIDV4,
                 allowNull: false,
                 primaryKey: true,
+                unique: true,
             },
             name: {
                 type: DataTypes.STRING,
@@ -73,9 +79,7 @@ export class Nutzer extends Table {
      * Sucht einen Nutzer zu einem Sessiontoken.
      * @author Tim & Lia
      * @since 28.04.2026
-     * @param sessiontoken Sessiontoken eines Nutzers
-     * @returns Gibt die UUID vom Nutzer zurück.
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws UnauthorizedError
      */
     static async getNutzer(sessiontoken: string): Promise<Nutzer> {
         const nutzer = await Nutzer.findOne({
@@ -83,25 +87,20 @@ export class Nutzer extends Table {
                 sessiontoken,
             },
         });
-        if (!nutzer) throw new Error("Zu diesem Sessiontoken konnte leider kein Nutzer gefunden werden.");
+        if (!nutzer) throw new UnauthorizedError("invalidSession");
         return nutzer;
     }
 
     /**
-     * Sucht einen Nutzer zu einem Sessiontoken.
      * @author Tim & Lia
      * @since 28.04.2026
-     * @param sessiontoken Sessiontoken eines Nutzers
-     * @returns Gibt die UUID vom Nutzer zurück.
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws NotFoundError
      */
     static async getNutzerByUUID(uuid: string): Promise<Nutzer> {
         const nutzer = await Nutzer.findOne({
-            where: {
-                uuid,
-            },
+            where: { uuid }
         });
-        if (!nutzer) throw new Error("Zu dieser UUID konnte leider kein Nutzer gefunden werden.");
+        if (!nutzer) throw new NotFoundError("uuid");
         return nutzer;
     }
 
@@ -110,75 +109,63 @@ export class Nutzer extends Table {
      * Registrieren eines Nutzers auf der Website.
      * @author Tim & Lia
      * @since 08.05.2026
-     * @param name Benutzername des Nutzers.
-     * @param passworthash Passworthash des Nutzers.
-     * @returns True or False, ob das Registrieren funktioniert hat.
-     * @throws Nutzername existiert schon.
-     * @throws Code ungültig.
-     * @throws Nutzer konnte nicht erstellt werden.
+     * @param code Registrierungscode
+     * @throws NotFoundError
+     * @throws ConflictError
      */
     public static async add(name: string, passworthash: string, code: string): Promise<void> {
-        const test: number = await Nutzer.count({
-            where: {
-                name: name,
-            }
-        });
         const testcode: number = await Registrierungscodes.count({
-            where: {
-                code
+            where: { code }
+        });
+        if(testcode < 1) throw new NotFoundError("registrierungscode");
+        try {
+            const uuid = randomUUID();
+            await Nutzer.create({
+                uuid,
+                name,
+                passworthash,
+            });
+
+            await Registrierungscodes.destroy({
+                where: { code }
+            });
+            await Freundesliste.create({
+                von: uuid,
+                zu: uuid,
+                isComplete: true
+            });
+            
+            await this.sequelize?.sync();
+        } catch (e: unknown) {
+            if (e instanceof UniqueConstraintError) {
+                const errors = e.fields;
+                if ("uuid" in errors) {
+                    await Nutzer.add(name, passworthash, code);
+                    return;
+                }
+                if ("name" in errors) {
+                    throw new ConflictError("nutzername");
+                }
             }
-        });
-        if(test > 0) throw new Error("Dieser Nutzername ist bereits vergeben.");
-        if(testcode < 1) throw new Error("Der Registrierungscode ist ungültig.");
-        const uuid = randomUUID();
-        const entry: Nutzer = await Nutzer.create({
-            uuid,
-            name: name,
-            passworthash: passworthash,
-        });
-        if (!entry) throw new Error("Der Nutzer konnte leider nicht erstellt werden.");
-        const freundschaft = await Freundesliste.create({
-            von: uuid,
-            zu: uuid,
-            isComplete: true
-        });
-        if (!freundschaft) console.warn("Freundschaft mit sich selbst konnte bei Registrierung nicht erstellt werden.");
-        const isDestroyed = await Registrierungscodes.destroy({
-            where: {
-                code
-            }
-        });
-        if (isDestroyed < 1) console.warn("Registrierungscode konnte nach erfolgreicher Registrierung nicht gelöscht werden.");
-        await this.sequelize?.sync();
-        if(entry == null) throw new Error("Das Registrieren war leider nicht möglich.");
+            throw e;
+        }
     }
 
     /**
      * Anmelden des Nutzers auf der Website.
      * @author Tim & Lia
      * @since 08.05.2026
-     * @param name Benutzername des Nutzers.
-     * @param passworthash Passworthash des Nutzers.
      * @returns Gibt das neu vergebene Sessiontoken zurück.
-     * @throws Nutzername oder Passwort falsch.
-     * @throws Nutzer konnte nicht aus Datenbank gelesen werden.
+     * @throws NotFoundError
      */
     public static async getSessiontoken(name: string, passworthash: string): Promise<string> {
-        const test = await Nutzer.count({
-            where: {
-                name: name,
-                passworthash: passworthash,
-            }
-        });
-        if(test == 0) throw new Error("Der Nutzername oder das Passwort ist falsch.");
-        if(test > 1) console.warn(`Der Benutzer "${name}" ist doppelt vorhanden.`);
         const entry = await Nutzer.findOne({
             where: {
-                name: name,
-                passworthash: passworthash,
+                name,
+                passworthash,
             }
         });
-        if(!entry) throw new Error("Der Nutzer konnte leider nicht aus der Datenbank gelesen werden.");
+        if(!entry) throw new NotFoundError("login");
         const sessiontoken: string = randomUUID();
         entry.setDataValue("sessiontoken", sessiontoken);
         await entry.save();
@@ -186,10 +173,7 @@ export class Nutzer extends Table {
     }
 
     /**
-     * 
-     * @param sessiontoken 
-     * @returns 
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws NotFoundError
      */
     public static async getUUID(sessiontoken: string): Promise<string> {
         const user = await this.getNutzer(sessiontoken);
@@ -197,9 +181,8 @@ export class Nutzer extends Table {
     }
 
     /**
-     * 
-     * @param sessiontoken 
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * Vergibt Adminrechte an den zugehörigen Nutzer
+     * @throws NotFoundError
      */
     public static async elevate(sessiontoken: string): Promise<void> {
         const user = await this.getNutzer(sessiontoken);
@@ -208,9 +191,8 @@ export class Nutzer extends Table {
     }
 
     /**
-     * 
-     * @param sessiontoken 
-     * @throws Zu dieser UUID konnte kein Nutzer gefunden werden.
+     * Vergibt Adminrechte an diese UUID
+     * @throws NotFoundError
      */
     public static async elevateByUUID(uuid: string): Promise<void> {
         const user = await this.getNutzerByUUID(uuid);
@@ -228,85 +210,64 @@ export class Nutzer extends Table {
         return test != 0;
     }
 
+    /**
+     * @returns Alle registrierten Nutzer mit UUID, Name und Adminstatus
+     */
     public static async getAll(): Promise<Nutzer[]> {
-        return await Nutzer.findAll();
+        return await Nutzer.findAll({
+            attributes: ["uuid", "name", "admin"]
+        });
     }
 
     /**
-     * 
-     * @param uuid 
-     * @throws Dieser Nutzer existiert nicht.
-     * @throws Nutzer konnte nicht aus Datenbank gelöscht werden.
+     * Nutzer löschen
+     * Der Nutzer darf kein Admin sein
+     * @param force Erzwingt die Löschung, indem alle zugehörigen Daten ebenfalls gelöscht werden
+     * @throws ConflictError
+     * @throws NotFoundError
      */
     public static async remove(uuid: string, force: boolean): Promise<void> {
-        const existsNutzer = await Nutzer.count({
-            where: {
-                uuid,
-                admin: false
-            }
-        });
-        if (existsNutzer == 0) throw new Error("Dieser Nutzer existiert nicht.");
-        const isUsed = await Aktivitaet.count({
-            where: {
-                uuid
-            }
-        });
-        const isUsed2 = await Freundesliste.count({
-            where: {
-                von: uuid
-            }
-        });
-        const isUsed3 = await Freundesliste.count({
-            where: {
-                zu: uuid
-            }
-        });
-        if (isUsed > 0 || isUsed2 > 0 || isUsed3 > 0) {
-            if (!force) throw new Error(`Dieser Account hat bereits ${isUsed} Baureihen gefunden, wurde von ${isUsed3} Freunden hinzugefügt und hat ${isUsed2} Freunde hinzugefügt. Willst Du ihn trotzdem löschen?`);
+        if (force) {
             await Aktivitaet.destroy({
-                where: {
-                    uuid
-                }
+                where: { uuid }
             });
             await Freundesliste.destroy({
-                where: {
-                    von: uuid
-                }
+                where: { von: uuid }
             });
             await Freundesliste.destroy({
-                where: {
-                    zu: uuid
-                }
+                where: { zu: uuid }
             });
+        } else {
+            const isUsed = await Aktivitaet.count({
+                where: { uuid }
+            });
+            const isUsed2 = await Freundesliste.count({
+                where: { von: uuid }
+            });
+            const isUsed3 = await Freundesliste.count({
+                where: { zu: uuid }
+            });
+            if (isUsed > 0 || isUsed2 > 0 || isUsed3 > 0)
+                throw new ConflictError("kontoBereitsVerwendet")
+                    .replace("%d", isUsed.toString())
+                    .replace("%d", isUsed3.toString())
+                    .replace("%d", isUsed2.toString());
         }
+        
         const count = await Nutzer.destroy({
             where: {
                 uuid,
                 admin: false
             }
         });
-        if (count == 0) throw new Error("Der Nutzer konnte leider nicht aus der Datenbank gelöscht werden.");
+        if (count == 0) throw new NotFoundError("unelevatedUser");
     }
 
     /**
-     * 
-     * @param uuid 
-     * @throws Dieser Nutzer existiert nicht.
-     * @throws Nutzer konnte nicht gefunden werden.
+     * @throws NotFoundError
      */
     public static async removeAdmin(uuid: string): Promise<void> {
-        const existsNutzer = await Nutzer.count({
-            where: {
-                uuid
-            }
-        });
-        if (existsNutzer == 0) throw new Error("Dieser Nutzer existiert nicht.");
-        const nutzer = await Nutzer.findOne({
-            where: {
-                uuid
-            }
-        });
-        if (nutzer == null) throw new Error("Dieser Nutzer konnte nicht gefunden werden.");
+        const nutzer = await Nutzer.getNutzerByUUID(uuid);
         nutzer.setDataValue("admin", false);
         await nutzer.save();
     }

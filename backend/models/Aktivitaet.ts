@@ -1,7 +1,10 @@
-import { Sequelize,DataTypes } from 'sequelize';
+import { Sequelize, DataTypes, UniqueConstraintError } from 'sequelize';
+
 import { Nutzer } from './Nutzer';
 import { Baureihe } from './Baureihe';
 import { Table } from './Table';
+
+import { NotFoundError } from '../error/NotFoundError';
 
 export class Aktivitaet extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -27,6 +30,10 @@ export class Aktivitaet extends Table {
         {
             sequelize,
             modelName: 'Aktivitaet',
+            indexes: [{
+                unique: true,
+                fields: ['uuid', 'ubid'],
+            }],
         });
     }
 
@@ -39,40 +46,31 @@ export class Aktivitaet extends Table {
         });
     }
 
-    /** Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
+    /**
+     * Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
      * @author Tim
      * @since 08.06.2026
-     * @param sessiontoken 
-     * @param ubid 
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
-     * @throws Baureihe konnte nicht gefunden werden.
-     * @throws Baureihe ist bereits als "Gefunden" markiert.
-     * @throws Baureihe konnte nicht als "Gefunden" markiert werden.
+     * @throws NotFoundError
      */
     public static async alsGefundenMarkieren(token: string, ubid: string): Promise<void> {
         const uuid = await Nutzer.getUUID(token);
         const baureihe = await Baureihe.get(ubid);
-        const test = await Aktivitaet.count({
-            where: {
+        try {
+            await Aktivitaet.create({
                 uuid: uuid,
                 ubid: baureihe.getDataValue("ubid"),
-            }
-        });
-        if (test > 0) throw new Error(`Diese Baureihe hast Du bereits gefunden.`);
-        const neueAktivitaet = await Aktivitaet.create({
-            uuid: uuid,
-            ubid: baureihe.getDataValue("ubid"),
-        });
-        if (neueAktivitaet == null) throw new Error(`Diese Baureihe konnte leider nicht als von Dir "Gefunden" markiert werden.`);
+            });
+        } catch (e: unknown) {
+            if (e instanceof UniqueConstraintError) throw new NotFoundError("nichtAlsGefundenMarkiert");
+            throw e;
+        }
     }
 
     /**
-     * Gibt eine Liste an allen on einem Nutzer gefundenen Baureihen zurück.
+     * Gibt eine Liste aller von einem Nutzer gefundenen Baureihen zurück.
      * @author Tim & Lia
      * @since 28.04.2026
-     * @param sessiontoken Sessiontoken eines Nutzers.
      * @returns Liste mit allen Einträgen der Tabelle Baureihe.
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
      */
     public static async getGefundeneBaureihen(uuid: string): Promise<Baureihe[]> {
         return await Aktivitaet.findAll({
@@ -84,11 +82,8 @@ export class Aktivitaet extends Table {
     }
 
     /**
-     * 
-     * @param ubid 
-     * @param sessiontoken 
-     * @returns 
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
+     * @throws NotFoundError
+     * @return gibt des Zeitpunkt des Findens zurück oder null, wenn die Baureihe nicht gefunden wurde.
      */
     public static async istGefunden(ubid: string, sessiontoken: string): Promise<string | null> {
         const found = await Aktivitaet.findOne({
@@ -101,22 +96,18 @@ export class Aktivitaet extends Table {
         return (found as unknown as { createdAt: string}).createdAt;
     }
 
+    /**
+     * @throws NotFoundError
+     */
     public static async alsNichtGefundenMarkieren(token: string, ubid: string): Promise<void> {
         const uuid = await Nutzer.getUUID(token);
         const baureihe = await Baureihe.get(ubid);
-        const test = await Aktivitaet.count({
-            where: {
-                uuid: uuid,
-                ubid: baureihe.getDataValue("ubid"),
-            }
-        });
-        if (test == 0) throw new Error(`Du hast deine "Gefunden"-Markierung bereits von dieser Baureihe entfernt.`);
         const count = await Aktivitaet.destroy({
             where: {
                 uuid: uuid,
                 ubid: baureihe.getDataValue("ubid"),
             }
         });
-        if (count == 0) throw new Error(`Deine "Gefunden"-Markierung konnte leider nicht von der Baureihe entfernt werden.`);
+        if (count == 0) throw new NotFoundError("nichtAlsGefundenMarkiert");
     }
 }

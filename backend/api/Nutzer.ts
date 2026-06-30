@@ -4,6 +4,10 @@ import { Nutzer as DBNutzer } from "../models/Nutzer";
 
 import { API } from "./API";
 
+import { UnauthorizedError } from "../error/UnauthorizedError";
+import { ForbiddenError } from "../error/ForbiddenError";
+import { ValidationError } from "../error/ValidationError";
+
 export class Nutzer {
     async logout(req: Request, res: Response) {
         res.clearCookie("sessiontoken", {
@@ -24,16 +28,13 @@ export class Nutzer {
      * Gibt die Anfrage des Servers, eine Registrierung durchzuführen an die Datenbank weiter, damit diese einen neuen Nutzer speichern kann. Bei Erfolg Weiterleitung zur Login Seite, sonst auf Registrieren Seite bleiben.
      */
     async registrieren(req: Request, res: Response) {
-        const data = req.body;
-        try {
-            if (!API.isValidString(data.username)) throw new Error("Nutzername ist fehlerhaft.");
-            if (!API.isValidString(data.passwort)) throw new Error("Passwort ist fehlerhaft.");
-            if (!API.isValidString(data.code)) throw new Error("Code ist fehlerhaft.");
+        await API.try(req, res, false, "registrieren?", async (data, ignored) => {
+            if (!API.isValidString(data.username)) throw new ValidationError("username");
+            if (!API.isValidString(data.passwort)) throw new ValidationError("passwort");
+            if (!API.isValidString(data.code)) throw new ValidationError("code");
             await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
             res.redirect("/login?successMessage=" + encodeURIComponent("Registrierung erfolgreich abgeschlossen."));
-        } catch (e) {
-            res.redirect("/registrieren?errorMessage=" + encodeURIComponent((e as Error).message));
-        }
+        });
     }
 
     /**
@@ -41,10 +42,9 @@ export class Nutzer {
      * Gibt die des Servers einen Login durchzuführen an die Datenbank weiter 
      */
     async anmelden(req: Request, res: Response) {
-        const data = req.body;
-        try {
-            if (!API.isValidString(data.username)) throw new Error("Nutzername ist fehlerhaft.");
-            if (!API.isValidString(data.passwort)) throw new Error("Passwort ist fehlerhaft.");
+        await API.try(req, res, false, "login?", async (data, ignored) => {
+            if (!API.isValidString(data.username)) throw new ValidationError("username");
+            if (!API.isValidString(data.passwort)) throw new ValidationError("passwort");
             const sessiontoken = await DBNutzer.getSessiontoken(
                 data.username, 
                 await this.sha256Hex(data.passwort)
@@ -55,108 +55,71 @@ export class Nutzer {
                 secure: false
             });
             res.redirect("/home");
-        } catch (e) {
-            res.redirect("/login?errorMessage=" + encodeURIComponent((e as Error).message));
-        }
+        });
     }
 
     async getUUID(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        try {
-            res.send(await DBNutzer.getUUID(sessiontoken));
-        } catch (e: unknown) {
-            res.send((e as Error).message);
-        }
+        await API.try(req, res, true, false, async (ignored, sessiontoken) => {
+            res.send(await DBNutzer.getUUID(sessiontoken as string));
+        });
     }
 
     async getNutzername(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        const data = req.query;
-        try {
-            const uuid = await DBNutzer.getUUID(sessiontoken);
+        await API.try(req, res, true, false, async (data, sessiontoken) => {
+            const uuid = await DBNutzer.getUUID(sessiontoken as string);
             res.send((await DBNutzer.getNutzerByUUID((data.uuid ? data.uuid : uuid) as string)).getDataValue("name"));
-        } catch (e: unknown) {
-            res.send((e as Error).message);
-        }
+        });
     }
 
     async elevate(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        try {
-            await DBNutzer.elevate(req.cookies.sessiontoken);
+        await API.try(req, res, true, "elevate?", async (ignored, sessiontoken) => {
+            await DBNutzer.elevate(sessiontoken as string);
             res.redirect("/home?successMessage=" + encodeURIComponent("Adminrechte erfolgreich erlangt."));
-        } catch (e: unknown) {
-            res.redirect("/elevate?errorMessage=" + encodeURIComponent((e as Error).message));
-        }
+        });
     }
 
     async isElevated(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        try {
-            const isElevated = await DBNutzer.isElevated(req.cookies.sessiontoken);
+        await API.try(req, res, true, false, async (ignored, sessiontoken) => {
+            const isElevated = await DBNutzer.isElevated(sessiontoken as string);
             res.send(`{ "isElevated": ${isElevated} }`);
-        } catch (e: unknown) {
-            res.send((e as Error).message);
-        }
+        });
     }
 
     async elevateByUUID(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        const data = req.body;
-        try {
-            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
-            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Adminrechte zu vergeben.");
+        await API.try(req, res, true, "accounts?", async (data, sessiontoken) => {
+            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("elevateOtherUser");
             await DBNutzer.elevateByUUID(data.uuid);
             res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte hinzugefügt."));
-        } catch (e: unknown) {
-            res.redirect("/accounts?errorMessage=" + encodeURIComponent((e as Error).message));
-        }
+        });
     }
 
     async getAll(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        try {
-            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Liste der Accounts abzufragen.");
+        await API.try(req, res, true, false, async (ignored, sessiontoken) => {
+            if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("listAccounts");
             res.send(`${JSON.stringify(await DBNutzer.getAll())}`);
-        } catch (e: unknown) {
-            res.send((e as Error).message);
-        }
+        });
     }
 
     async remove(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
         const data = req.body;
-        let force = false;
-        if (data.force) force = true;
-        try {
-            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
-            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Account zu löschen.");
+        await API.try(req, res, true, `accounts?uuid=${data.uuid}&`, async (data, sessiontoken) => {
+            let force = false;
+            if (data.force) force = true;
+            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("deleteAccount");
             await DBNutzer.remove(data.uuid, force);
             res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich gelöscht"));
-        } catch (e: unknown) {
-            res.redirect("/accounts?errorMessage=" + encodeURIComponent((e as Error).message) + "&uuid=" + data.uuid);
-        }
+        });
     }
 
     async removeAdmin(req: Request, res: Response) {
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        const data = req.body;
-        try {
-            if (!API.isValidString(data.uuid)) throw new Error("UUID ist fehlerhaft.");
-            if (!await DBNutzer.isElevated(sessiontoken)) throw new Error("Keine Berechtigung Adminrechte zu entfernen.");
+        await API.try(req, res, true, "accounts?", async (data, sessiontoken) => {
+            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("removeElevation");
             await DBNutzer.removeAdmin(data.uuid)
             res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte entfernt."));
-        } catch (e: unknown) {
-            res.redirect("/accounts?errorMessage=" + encodeURIComponent((e as Error).message));
-        }
+        });
     }
 
     /**
@@ -181,7 +144,7 @@ export class Nutzer {
     static async checkSessiontoken(req: Request, res: Response): Promise<string | null> {
         const sessiontoken = req.cookies.sessiontoken;
         try {
-            if (sessiontoken == undefined) throw new Error("Keine gültige Sitzung");
+            if (sessiontoken == undefined) throw new UnauthorizedError("noSession");
             await DBNutzer.getNutzer(sessiontoken)
         } catch (e: unknown) {
             res.redirect("/logout?errorMessage=" + encodeURIComponent((e as Error).message));

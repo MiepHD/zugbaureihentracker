@@ -1,10 +1,12 @@
-import { Sequelize, DataTypes, literal } from 'sequelize';
+import { Sequelize, DataTypes, literal, UniqueConstraintError } from 'sequelize';
+
 import { Nutzer } from './Nutzer';
 import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
-
-import { Nutzer as DBNutzer } from "../models/Nutzer";
 import { Baureihe } from './Baureihe';
+
+import { NotFoundError } from '../error/NotFoundError';
+import { ConflictError } from '../error/ConflictError';
 
 export class Freundesliste extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -34,6 +36,10 @@ export class Freundesliste extends Table {
         {
             sequelize,
             modelName: 'Freundesliste',
+            indexes: [{
+                unique: true,
+                fields: ['von', 'zu'],
+            }],
         });
     }
 
@@ -52,44 +58,27 @@ export class Freundesliste extends Table {
      * Hinzufügen eines Freundes in die Freundesliste.
      * @author Tim & Lia
      * @since 05.05.2026
-     * @param sessiontoken Sessiontoken eines Nutzers.
-     * @param uuid User ID eines Nutzers.
-     * @returns True or false, on das Hinzufügen erfolgreich war.
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
-     * @throws Freund ist bereits in Freundesliste.
-     * @throws Freund konnte nicht hinzugefügt werden.
+     * @throws ConflictError
+     * @throws NotFoundError
      */
     public static async add(sessiontoken: string, uuid: string): Promise<void> {
         const uuid2 = await Nutzer.getUUID(sessiontoken);
-        const uuidExists = await DBNutzer.count({
-            where: {
-                uuid
-            }
-        });
-        if (uuidExists == 0) throw new Error("Diese UUID existiert nicht.");
-        const test = await Freundesliste.count({
-            where: {
+        try {
+            await Freundesliste.create({
                 von: uuid2,
                 zu: uuid,
-            }
-        });
-        if(test > 0) throw new Error("Diesen Freund hast Du bereits in Deiner Freundesliste.");
-        const entry = await Freundesliste.create({
-            von: uuid2,
-            zu: uuid,
-        });
-        if(entry == null) throw new Error("Dieser Freund konnte leider nicht Deiner Freundesliste hinzugefügt werden.");
+            });
+        } catch (e: unknown) {
+            if (e instanceof UniqueConstraintError) throw new ConflictError("bereitsBefreundet");
+            throw e;
+        }
     }
 
     /**
      * Entfernen eines Freundes aus der Freundesliste.
      * @author Tim & Lia
      * @since 05.05.2026
-     * @param sessiontoken Sessiontoken eines Nutzers.
-     * @param uuid UUID eines Nuters.
-     * @returns True or False, ob das Löschen erfolgreich war.
-     * @throws Zu diesem Sessiontoken konnte kein Nutzer gefunden werden.
-     * @throws Freund konnte nicht entfernt werden.
+     * @throws NotFoundError
      */
     public static async remove(sessiontoken: string, uuid: string): Promise<void> {
         const uuid2: string = await Nutzer.getUUID(sessiontoken);
@@ -105,14 +94,11 @@ export class Freundesliste extends Table {
                 zu: uuid2,
             }
         });
-        if (exit == 0 || exit2 == 0) throw Error("Dieser Freund konnte leider nicht aus Deiner Freundesliste entfernt werden.");
+        if (exit == 0 && exit2 == 0) throw new NotFoundError("freundschaft");
     }
 
     /**
-     * 
-     * @param sessiontoken 
-     * @returns 
-     * @throws Daten konnten nicht abgefragt werden.
+     * @throws NotFoundError
      */
     public static async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Baureihe[]> {
         const uuid = await Nutzer.getUUID(sessiontoken);
@@ -130,25 +116,24 @@ export class Freundesliste extends Table {
                         model: Nutzer,
                         as: "WirdGefolgtVon",
                         through: {
-                            where: {
-                                isComplete: true
-                            },
+                            where: { isComplete: true },
                             attributes: []
                         },
                         required: true,
-                        where: {
-                            uuid
-                        },
+                        where: { uuid },
                         attributes: []
                     }]
                 }]
             }],
             order: [["ubid", "ASC"]]
         });
-        if (tabelle == null) throw Error("Die Baureihen Deiner Freunde konnten leider nicht abgefragt werden.");
         return tabelle;
     }
 
+    /**
+     * 
+     * @throws NotFoundError
+     */
     public static async getRanking(sessiontoken: string): Promise<Nutzer> {
         const uuid = await Nutzer.getUUID(sessiontoken);
         const test = await Freundesliste.count({
@@ -163,46 +148,46 @@ export class Freundesliste extends Table {
             isComplete: true
         });
         const tabelle = await Nutzer.findAll({
-            where: {
-                sessiontoken,
-            },
+            where: { sessiontoken },
             attributes: ["uuid"], 
             subQuery: false,
-            include: [
-                {
-                    model: Nutzer,
-                    as: 'Freunde',
-                    through: { 
-                        where: {
-                            isComplete: true
-                        },
-                        attributes: ["isComplete"]
-                     }, // Blendet die Zwischentabelle aus
-                    attributes: [
-                        'name', 
-                        'uuid',
-                        // Subquery: Zählt die Aktivitäten direkt für jeden Freund
-                        [
-                            literal(`(
-                                SELECT COUNT(*)
-                                FROM Aktivitaets AS a
-                                WHERE a.uuid = Freunde.uuid
-                            )`),
-                            'score'
-                        ]
+            include: [{
+                model: Nutzer,
+                as: 'Freunde',
+                through: { 
+                    where: { isComplete: true },
+                    attributes: ["isComplete"]
+                },
+                attributes: [
+                    'name', 
+                    'uuid',
+                    // Subquery: Zählt die Aktivitäten direkt für jeden Freund
+                    [
+                        literal(`(
+                            SELECT COUNT(*)
+                            FROM Aktivitaets AS a
+                            WHERE a.uuid = Freunde.uuid
+                        )`),
+                        'score'
                     ]
-                }
-            ],
+                ]
+            }],
             order: [
-                [literal('`Freunde.score`'), 'DESC'] // Beachte die Backticks passend zu deinem SQL-Dialekt
+                [literal('`Freunde.score`'), 'DESC'] // Beachte die Backticks passend zum MariaDB SQL-Dialekt
             ]
         });
-        if (tabelle == null) throw new Error("Das Freundesleaderboard konnte leider nicht abgefragt werden.");
         return tabelle[0];
     }
 
-    public static async akzeptiereFreundschaftsanfrage(sessiontoken: string, uuid: string){
+    /**
+     * @throws NotFoundError
+     */
+    public static async akzeptiereFreundschaftsanfrage(sessiontoken: string, uuid: string): Promise<void> {
         const uuid2 = await Nutzer.getUUID(sessiontoken);
+
+        /**
+         * Edge case falls jemand auf mysteriöse Art und Weise eine Freundschaftsanfrage von sich selbst annimmt. (Stellt sicher, dass Abnormalitäten in der Datenbank, dass man nicht mit sich selbst befreundet ist, selbstständig repariert werden können)
+         */
         if (uuid == uuid2) {
             const entry = await Freundesliste.findOne({
                 where: {
@@ -214,31 +199,7 @@ export class Freundesliste extends Table {
             await entry?.save();
             return;
         }
-        const test = await Freundesliste.count({
-            where: {
-                von: uuid,
-                zu: uuid2,
-                isComplete: false
-            }
-        });
-        if (test == 0) throw new Error("Von diesem Nutzer hast Du keine Freundschaftsanfrage erhalten.");
-        const gegenrichtung = await Freundesliste.findOne({
-            where: {
-                von: uuid2,
-                zu: uuid,
-            }
-        });
-        if (gegenrichtung == null) {
-            const result = await Freundesliste.create({
-                von: uuid2,
-                zu: uuid,
-                isComplete: true
-            })
-            if (result == null) throw new Error("Freundschaft konnte leider nicht erstellt werden.");
-        } else {
-            gegenrichtung.setDataValue("isComplete", true);
-            await gegenrichtung.save();
-        }
+
         
         const anfrage = await Freundesliste.findOne({
             where: {
@@ -246,11 +207,30 @@ export class Freundesliste extends Table {
                 zu: uuid2
             }
         });
-        if (anfrage == null) throw new Error("Freundschaftsanfrage konnte leider nicht gefunden werden.");
+        if (anfrage == null) throw new NotFoundError("freundschaftsanfrage");
         anfrage.setDataValue("isComplete", true);
         await anfrage.save();
+        const gegenrichtung = await Freundesliste.findOne({
+            where: {
+                von: uuid2,
+                zu: uuid,
+            }
+        });
+        if (gegenrichtung == null) {
+            await Freundesliste.create({
+                von: uuid2,
+                zu: uuid,
+                isComplete: true
+            });
+        } else {
+            gegenrichtung.setDataValue("isComplete", true);
+            await gegenrichtung.save();
+        }
     }
 
+    /**
+     * @throws NotFoundError
+     */
     public static async getAusstehendeFreundschaftsanfragen(sessiontoken: string): Promise<{ eingehend: Freundesliste[], ausgehend: Freundesliste[] }> {
         const uuid = await Nutzer.getUUID(sessiontoken);
         return {
@@ -279,6 +259,9 @@ export class Freundesliste extends Table {
         };
     }
 
+    /**
+     * @throws NotFoundError
+     */
     public static async deleteAnfrage(vonUUID: string, zuUUID: string) {
         const result = await Freundesliste.destroy({
             where: {
@@ -286,7 +269,7 @@ export class Freundesliste extends Table {
                 zu: zuUUID
             }
         });
-        if (result == 0) throw new Error("Freundschaftsanfrage konnt leider nicht gelöscht werden.");
+        if (result == 0) throw new NotFoundError("freundschaftsanfrage");
     }
 
     public static async sindBefreundet(vonUUID: string, zuUUID: string): Promise<boolean> {
