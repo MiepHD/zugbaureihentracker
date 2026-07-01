@@ -143,13 +143,8 @@ export class Nutzer {
      */
     static async checkSessiontoken(req: Request, res: Response): Promise<string | null> {
         const sessiontoken = req.cookies.sessiontoken;
-        try {
-            if (sessiontoken == undefined) throw new UnauthorizedError("noSession");
-            await DBNutzer.getNutzer(sessiontoken)
-        } catch (e: unknown) {
-            res.redirect("/logout?errorMessage=" + encodeURIComponent((e as Error).message));
-            return null;
-        }
+        if (sessiontoken == undefined) throw new UnauthorizedError("noSession");
+        await DBNutzer.getNutzer(sessiontoken);
         return sessiontoken;
     }
 }

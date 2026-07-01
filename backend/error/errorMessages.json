@@ -17,6 +17,7 @@
     "ForbiddenError.deleteAccount": "Keine Berechtigung Account zu löschen.",
     "ForbiddenError.removeElevation": "Keine Berechtigung Adminrechte zu entfernen.",
     "ForbiddenError.createCode": "Keine Berechtigung, Registrierungscodes zu erstellen.",
+    "ForbiddenError.site": "Keine Berechtigung diese Seite aufzurufen.",
 
     "UnauthorizedError.noSession": "Keine Session gefunden.",
     "UnauthorizedError.invalidSession": "Diese Session ist ungültig.",

@@ -11,9 +11,6 @@ class XHR {
             if (this.xhr.readyState !== XMLHttpRequest.DONE) {
                 return;
             }
-            if (this.xhr.status !== 200) {
-            return;
-            }
             let response = null;
             try {
                 response = JSON.parse(this.xhr.responseText);

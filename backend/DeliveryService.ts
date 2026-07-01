@@ -5,6 +5,7 @@ import path from "path";
 
 import { API } from "./api/API";
 import { Nutzer } from "./models/Nutzer";
+import { ForbiddenError } from "./error/ForbiddenError";
 
 /**
  * Die Klasse DeliveryService stellt die einzelnen HTML Seiten für den User zur Verfügung
@@ -39,11 +40,9 @@ export class DeliveryService {
     private async handleRequest(req: Request, res: Response) {
         let urlpath = req.path;
         if (urlpath === "/") urlpath = "home";
-        const sessiontoken = await API.checkSessiontoken(req, res);
-        if (sessiontoken == null) return;
-        if (this.restricted.includes(urlpath.replace("/", "")) && !await Nutzer.isElevated(sessiontoken)) {
-            res.redirect("/home?errorMessage=" + encodeURIComponent("Keine Berechtigung diese Seite aufzurufen."));
-        }
-        res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
+        await API.try(req, res, this.paths.includes(urlpath.replace("/", "")), "home?", async (data, sessiontoken) => {
+            if (this.restricted.includes(urlpath.replace("/", "")) && !await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("site");
+            res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
+        });
     }
 }

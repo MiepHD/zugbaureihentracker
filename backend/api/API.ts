@@ -13,6 +13,9 @@ import { Aktivitaet } from "./Aktivitaet";
 import { Registrierungscodes } from "./Registierungscodes";
 
 import { ExpectedError } from "../error/ExpectedError";
+import { randomUUID } from "crypto";
+import { UnauthorizedError } from "../error/UnauthorizedError";
+import { ForbiddenError } from "../error/ForbiddenError";
 
 export class API {
     private adminpasswort: string;
@@ -117,7 +120,6 @@ export class API {
         try {
             if (checkSessiontoken) {
                 const sessiontoken = await API.checkSessiontoken(req, res);
-                if (sessiontoken == null) return;
                 await execute(data, sessiontoken);
                 return;
             }
@@ -128,12 +130,34 @@ export class API {
                 if (typeof redirectOnError == "boolean" && !redirectOnError) {
                     res.send(`${e.statuscode}: ${(e as Error).message}`);
                 } else {
+                    if (e instanceof UnauthorizedError) redirectOnError = "login?";
+                    if (e instanceof ForbiddenError) redirectOnError = "home?";
                     res.redirect(
                         `/${redirectOnError}errorMessage=` +
-                        encodeURIComponent(`${e.statuscode}: ${(e as Error).message}`
-                    ));
+                        encodeURIComponent(`${e.statuscode}: ${(e as Error).message}`)
+                    );
                 }
+                return;
             }
+            const uuid = randomUUID();
+            res.status(500);
+            if (typeof redirectOnError == "boolean" && !redirectOnError) {
+                res.send(`500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})`);
+            } else {
+                res.redirect(
+                    `/${redirectOnError}errorMessage=` +
+                    encodeURIComponent(`500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})`)
+                );
+            }
+            fs.writeFileSync(path.join(__dirname, '../../errors.log'), `
+Error-ID: ${uuid}
+Request-Body: ${req.body ? JSON.stringify(req.body) : "Doesn't exist here."}
+Request-Query: ${req.query ? JSON.stringify(req.query) : "Doesn't exist here."}
+Request-Path: ${req.path}
+Request-Method: ${req.method}
+Error-Message: ${JSON.stringify((e as Error).message)}
+Error: ${JSON.stringify(e)};\n`
+            , { flag: "a"});
         }
     }
 }
