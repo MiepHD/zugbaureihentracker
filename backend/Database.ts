@@ -8,10 +8,26 @@ import { Table } from './models/Table';
 
 export class Database {
     private sequelize: Sequelize;
+
+    /**
+     * Dieses Attribut sind nur für Tests
+     */
     public registrierungscodes: typeof Registrierungscodes;
+    /**
+     * Dieses Attribut sind nur für Tests
+     */
     public nutzer: typeof Nutzer;
+    /**
+     * Dieses Attribut sind nur für Tests
+     */
     public freundesliste: typeof Freundesliste;
+    /**
+     * Dieses Attribut sind nur für Tests
+     */
     public baureihe: typeof Baureihe;
+    /**
+     * Dieses Attribut sind nur für Tests
+     */
     public aktivitaet: typeof Aktivitaet;
     
     /**

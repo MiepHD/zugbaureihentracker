@@ -1,15 +1,15 @@
 import express, { Express } from "express";
-import { DeliveryService } from "./DeliveryService";
-import { API } from "./api/API";
 import { Sequelize } from "sequelize";
 import fs from "fs";
 import http from 'http';
 import https from 'https';
 import path from "path";
 
-export class Server {
+import { DeliveryService } from "./DeliveryService";
 
-    private app: Express = express();
+import { API } from "./api/API";
+
+export class Server {
 
     /**
      * Konstruktor für den Server; Starten des Servers; Übergeben des Delivery Service
@@ -17,23 +17,24 @@ export class Server {
      * @since 14.04.2026
      */
     constructor() {
+        const app: Express = express();
         try {
             const privateKey  = fs.readFileSync(path.join(__dirname, 'sslcert/privkey.pem'), 'utf8');
             const certificate = fs.readFileSync(path.join(__dirname, 'sslcert/fullchain.pem'), 'utf8');
             const credentials = {key: privateKey, cert: certificate};
-            const httpServer = http.createServer(this.app);
-            const httpsServer = https.createServer(credentials, this.app);
+            const httpServer = http.createServer(app);
+            const httpsServer = https.createServer(credentials, app);
 
             httpServer.listen(80);
             httpsServer.listen(443);
             console.log(`Server läuft auf http://localhost:80 & https://localhost:433`);
         } catch (e) {
             console.warn("SSL Verbindung konnte nicht hergesstelt werden. Fallback auf Port 3000");
-            this.app.listen(3000, () => {
+            app.listen(3000, () => {
                 console.log(`Server läuft auf http://localhost:3000`);
             });
         }
-        new DeliveryService(this.app);
+        new DeliveryService(app);
         const api: API = new API(new Sequelize(
             'appdb',
             'appuser',
@@ -48,7 +49,7 @@ export class Server {
                 },
             }
         ), null);
-        api.init(this.app);
+        api.init(app);
     }
 
 }

@@ -45,7 +45,7 @@ export class API {
         await this.bindListeners(app);
     }
 
-    public async bindListeners(app: Express) {
+    private async bindListeners(app: Express) {
         const nutzer = new Nutzer();
         app.get("/logout", nutzer.logout.bind(nutzer));
         app.post("/api/registrieren", nutzer.registrieren.bind(nutzer));
