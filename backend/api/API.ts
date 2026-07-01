@@ -56,10 +56,10 @@ export class API {
         app.get("/api/isElevated", nutzer.isElevated.bind(nutzer));
         app.get("/api/getNutzername", nutzer.getNutzername.bind(nutzer));
         app.post("/api/removeAdmin", (req: Request, res: Response) => {
-            if (this.authorize(req, res, "elevate")) nutzer.removeAdmin(req, res);
+            if (this.authorize(req, res, "accounts")) nutzer.removeAdmin(req, res);
         });
         app.post("/api/addAdmin", (req: Request, res: Response) => {
-            if (this.authorize(req, res, "elevate")) nutzer.elevateByUUID(req, res);
+            if (this.authorize(req, res, "accounts")) nutzer.elevateByUUID(req, res);
         });
         app.post("/api/elevate", (req: Request, res: Response) => {
             if (this.authorize(req, res, "elevate")) nutzer.elevate(req, res);
