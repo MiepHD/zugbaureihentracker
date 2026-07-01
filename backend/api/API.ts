@@ -28,7 +28,9 @@ export class API {
         } else {
             try {
                 this.adminpasswort = fs.readFileSync(path.join(__dirname, '../config/pass.txt'), 'utf8').replace("\n", "");
+                console.log("Es wird das Passwort aus der /backend/config/pass.txt verwendet.");
             } catch {
+                console.warn("Das Masterpasswort konnte nicht geladen werden. Es wird auf das UNSICHERE Standardpasswort zurückgegriffen.");
                 this.adminpasswort = "Das Adminpasswort";
             }
         }
@@ -54,25 +56,13 @@ export class API {
         app.get("/api/isElevated", nutzer.isElevated.bind(nutzer));
         app.get("/api/getNutzername", nutzer.getNutzername.bind(nutzer));
         app.post("/api/removeAdmin", (req: Request, res: Response) => {
-            if (req.body.passwort !== this.adminpasswort) {
-                res.redirect("/accounts?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));
-                return;
-            }
-            nutzer.removeAdmin(req, res);
+            if (this.authorize(req, res, "elevate")) nutzer.removeAdmin(req, res);
         });
         app.post("/api/addAdmin", (req: Request, res: Response) => {
-            if (req.body.passwort !== this.adminpasswort) {
-                res.redirect("/accounts?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));
-                return;
-            }
-            nutzer.elevateByUUID(req, res);
+            if (this.authorize(req, res, "elevate")) nutzer.elevateByUUID(req, res);
         });
         app.post("/api/elevate", (req: Request, res: Response) => {
-            if (req.body.passwort !== this.adminpasswort) {
-                res.redirect("/elevate?errorMessage=" + encodeURIComponent("Das Passwort ist falsch."));
-                return;
-            }
-            nutzer.elevate(req, res);
+            if (this.authorize(req, res, "elevate")) nutzer.elevate(req, res);
         });
 
         const registrierungscodes = new Registrierungscodes();
@@ -102,6 +92,15 @@ export class API {
         app.post("/api/abortFreundschaftsanfrage", freundesliste.abortFreundschaftsanfrage.bind(freundesliste));
         app.post("/api/FreundschaftsanfrageAblehnen", freundesliste.FreundschaftsanfrageAblehnen.bind(freundesliste));
         app.get("/api/getAusstehendeFreundschaftsanfragen", freundesliste.getAusstehendeFreundschaftsanfragen.bind(freundesliste));
+    }
+
+    private authorize(req: Request, res: Response, redirect: string) {
+        if (req.body.passwort !== this.adminpasswort) {
+            console.warn(`Jemand hat ein falsches Masterpasswort auf /${redirect} eingegeben.`);
+            res.redirect(`/${redirect}?errorMessage=` + encodeURIComponent("403: Das Passwort ist falsch."));
+            return false;
+        }
+        return true;
     }
 
     static isValidString(str: unknown) {
@@ -149,6 +148,7 @@ export class API {
                     encodeURIComponent(`500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})`)
                 );
             }
+            console.warn(`Ein unerwarteter Fehler ist aufgetreten. Für mehr Infos suche in der /errors.log nach der Error-ID: ${uuid}`);
             fs.writeFileSync(path.join(__dirname, '../../errors.log'), `
 Error-ID: ${uuid}
 Time: ${new Date().toString()}

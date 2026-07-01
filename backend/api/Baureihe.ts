@@ -40,6 +40,7 @@ export class Baureihe {
             
             await DBBaureihe.add(data.ubid, data.name, data.beschreibung);
             res.redirect("/add?successMessage=" + "Baureihe wurde erfolgreich erstellt.");
+            console.log(`Es wurde eine neue Baureihe hinzugefügt mit der ubid: ${data.ubid}`);
         });
     }
 
@@ -60,6 +61,7 @@ export class Baureihe {
             
             await DBBaureihe.remove(data.ubid, force);
             res.redirect("/baureihen?successMessage=" + "Baureihe wurde erfolgreich gelöscht.");
+            console.log(`Es wurde die Baureihe mit der ubid ${data.ubid} gelöscht.`);
         });
     }
 
@@ -73,6 +75,7 @@ export class Baureihe {
             
             await DBBaureihe.edit(data.ubid, data.name, data.beschreibung);
             res.redirect("/editor?ubid=" + data.ubid + "&successMessage=" + "Baureihe wurde erfolgreich geändert.");
+            console.log(`Die Baureihe mit der ubid ${data.ubid} wurde geändert.`);
         });
     }
 }

@@ -34,6 +34,7 @@ export class Nutzer {
             if (!API.isValidString(data.code)) throw new ValidationError("code");
             await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
             res.redirect("/login?successMessage=" + encodeURIComponent("Registrierung erfolgreich abgeschlossen."));
+            console.log(`${data.username} hat sich mit dem Code ${data.code} registriert.`);
         });
     }
 
@@ -75,6 +76,7 @@ export class Nutzer {
         await API.try(req, res, true, "elevate?", async (ignored, sessiontoken) => {
             await DBNutzer.elevate(sessiontoken as string);
             res.redirect("/home?successMessage=" + encodeURIComponent("Adminrechte erfolgreich erlangt."));
+            console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat Adminrechte erlangt.`);
         });
     }
 
@@ -91,6 +93,7 @@ export class Nutzer {
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("elevateOtherUser");
             await DBNutzer.elevateByUUID(data.uuid);
             res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte hinzugefügt."));
+            console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat Adminrechte an ${(await DBNutzer.getNutzerByUUID(data.uuid)).getDataValue("name")} vergeben.`);
         });
     }
 
@@ -110,6 +113,7 @@ export class Nutzer {
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("deleteAccount");
             await DBNutzer.remove(data.uuid, force);
             res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich gelöscht"));
+            console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat den Account von ${(await DBNutzer.getNutzerByUUID(data.uuid)).getDataValue("name")} gelöscht.`);
         });
     }
 
@@ -119,6 +123,7 @@ export class Nutzer {
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("removeElevation");
             await DBNutzer.removeAdmin(data.uuid)
             res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte entfernt."));
+            console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat ${(await DBNutzer.getNutzerByUUID(data.uuid)).getDataValue("name")} die Adminrechte genommen.`);
         });
     }
 

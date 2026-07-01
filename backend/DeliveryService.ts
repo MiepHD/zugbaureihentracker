@@ -33,15 +33,16 @@ export class DeliveryService {
         app.use(cookieParser());
         for(let urlpath of this.paths) {
             app.get(`/${urlpath}`, this.handleRequest.bind(this));
+            app.get(`/${urlpath}/index.html`, this.handleRequest.bind(this));
         }
         app.use(express.static(path.join(__dirname, '../frontend')));
     }
 
     private async handleRequest(req: Request, res: Response) {
-        let urlpath = req.path;
-        if (urlpath === "/") urlpath = "home";
-        await API.try(req, res, this.paths.includes(urlpath.replace("/", "")), "home?", async (data, sessiontoken) => {
-            if (this.restricted.includes(urlpath.replace("/", "")) && !await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("site");
+        let urlpath = req.path.replaceAll("/", "").replaceAll("index.html", "");
+        if (urlpath === "") urlpath = "home";
+        await API.try(req, res, this.paths.includes(urlpath), "home?", async (data, sessiontoken) => {
+            if (this.restricted.includes(urlpath) && !await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("site");
             res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
         });
     }

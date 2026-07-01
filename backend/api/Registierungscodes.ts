@@ -17,6 +17,7 @@ export class Registrierungscodes {
             }
             await DBRegistrierungscodes.add(data.code as string);
             res.redirect("/invite?successMessage=" + encodeURIComponent("Registrierungscode erfolgreich erstellt."));
+            console.log(`Der Registrierungscode ${data.code} wurde hinzugefügt.`);
         });
     }
 }
