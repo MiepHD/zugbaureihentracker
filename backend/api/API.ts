@@ -151,12 +151,17 @@ export class API {
             }
             fs.writeFileSync(path.join(__dirname, '../../errors.log'), `
 Error-ID: ${uuid}
+Time: ${new Date().toString()}
 Request-Body: ${req.body ? JSON.stringify(req.body) : "Doesn't exist here."}
 Request-Query: ${req.query ? JSON.stringify(req.query) : "Doesn't exist here."}
 Request-Path: ${req.path}
 Request-Method: ${req.method}
-Error-Message: ${JSON.stringify((e as Error).message)}
-Error: ${JSON.stringify(e)};\n`
+Error-Message as JSON: ${JSON.stringify((e as Error).message)}
+Error-Message: ${(e as Error).message}
+Error-Stack: ${(e as Error).stack}
+Error-Name: ${(e as Error).name}
+Error as JSON: ${JSON.stringify(e as Error)}
+Error: ${(e as Error).toString()}\n`
             , { flag: "a"});
         }
     }
