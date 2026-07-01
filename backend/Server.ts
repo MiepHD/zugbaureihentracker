@@ -7,7 +7,7 @@ import path from "path";
 
 import { DeliveryService } from "./DeliveryService";
 
-import { API } from "./api/API";
+import { API } from "./API";
 
 export class Server {
 

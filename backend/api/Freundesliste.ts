@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { Freundesliste as DBFreundesliste } from "../models/Freundesliste";
 
-import { API } from "./API";
+import { API } from "../API";
 import { Nutzer } from "../models/Nutzer";
 
 import { ValidationError } from "../error/ValidationError";

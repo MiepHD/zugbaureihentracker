@@ -4,18 +4,18 @@ import cookieParser from "cookie-parser";
 import fs from "fs";
 import path from "path";
 
-import { Database } from "../Database";
+import { Database } from "./Database";
 
-import { Baureihe } from "./Baureihe";
-import { Freundesliste } from "./Freundesliste";
-import { Nutzer } from "./Nutzer";
-import { Aktivitaet } from "./Aktivitaet";
-import { Registrierungscodes } from "./Registierungscodes";
+import { Baureihe } from "./api/Baureihe";
+import { Freundesliste } from "./api/Freundesliste";
+import { Nutzer } from "./api/Nutzer";
+import { Aktivitaet } from "./api/Aktivitaet";
+import { Registrierungscodes } from "./api/Registierungscodes";
 
-import { ExpectedError } from "../error/ExpectedError";
+import { ExpectedError } from "./error/ExpectedError";
 import { randomUUID } from "crypto";
-import { UnauthorizedError } from "../error/UnauthorizedError";
-import { ForbiddenError } from "../error/ForbiddenError";
+import { UnauthorizedError } from "./error/UnauthorizedError";
+import { ForbiddenError } from "./error/ForbiddenError";
 
 export class API {
     private adminpasswort: string;

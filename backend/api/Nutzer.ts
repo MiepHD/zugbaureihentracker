@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { Nutzer as DBNutzer } from "../models/Nutzer";
 
-import { API } from "./API";
+import { API } from "../API";
 
 import { UnauthorizedError } from "../error/UnauthorizedError";
 import { ForbiddenError } from "../error/ForbiddenError";

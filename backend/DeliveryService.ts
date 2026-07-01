@@ -3,7 +3,7 @@ import express, { Express } from "express";
 import cookieParser from "cookie-parser";
 import path from "path";
 
-import { API } from "./api/API";
+import { API } from "./API";
 import { Nutzer } from "./models/Nutzer";
 import { ForbiddenError } from "./error/ForbiddenError";
 

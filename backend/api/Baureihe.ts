@@ -4,7 +4,7 @@ import { Baureihe as DBBaureihe } from "../models/Baureihe";
 import { Nutzer as DBNutzer } from "../models/Nutzer";
 import { Aktivitaet as DBAktivitaet } from "../models/Aktivitaet";
 
-import { API } from "./API";
+import { API } from "../API";
 
 import { ValidationError } from "../error/ValidationError";
 import { ForbiddenError } from "../error/ForbiddenError";

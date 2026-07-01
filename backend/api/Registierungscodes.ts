@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { Nutzer as DBNutzer } from "../models/Nutzer";
 import { Registrierungscodes as DBRegistrierungscodes } from "../models/Registrierungscodes";
 
-import { API } from "./API";
+import { API } from "../API";
 
 import { ForbiddenError } from "../error/ForbiddenError";
 

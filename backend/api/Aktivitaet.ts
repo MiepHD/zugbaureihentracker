@@ -4,7 +4,7 @@ import { Aktivitaet as DBAktivitaet } from "../models/Aktivitaet";
 import { Nutzer } from "../models/Nutzer";
 import { Freundesliste } from "../models/Freundesliste";
 
-import { API } from "./API";
+import { API } from "../API";
 
 import { ValidationError } from "../error/ValidationError";
 import { ForbiddenError } from "../error/ForbiddenError";
