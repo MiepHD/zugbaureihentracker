@@ -1,10 +1,9 @@
 import { expect, test, beforeAll, beforeEach } from 'vitest';
-import http from 'http';
 import { Sequelize } from 'sequelize';
 import express, { Express } from "express";
 import request from 'supertest';
 
-import { API } from "../../backend/api/API";
+import { API } from "../../backend/API";
 import { DeliveryService } from "../../backend/DeliveryService";
 
 //Werk von Lia
