@@ -27,7 +27,7 @@ export class API {
             this.adminpasswort = adminpasswort;
         } else {
             try {
-                this.adminpasswort = fs.readFileSync(path.join(__dirname, '../config/pass.txt'), 'utf8').replace("\n", "");
+                this.adminpasswort = fs.readFileSync(path.join(__dirname, 'config/pass.txt'), 'utf8').replace("\n", "");
                 console.log("Es wird das Passwort aus der /backend/config/pass.txt verwendet.");
             } catch {
                 console.warn("Das Masterpasswort konnte nicht geladen werden. Es wird auf das UNSICHERE Standardpasswort zurückgegriffen.");
