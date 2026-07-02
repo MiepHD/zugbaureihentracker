@@ -4,7 +4,7 @@
 
 if (ubid) (document.getElementById("ubid") as HTMLInputElement).value = query.get("ubid") as string;
 
-new XHR().get("/api/getBaureihe?" + query.param, (response: any) => {
+new XHR().get("/api/baureihe/json/get?" + query.param, (response: any) => {
   if (typeof response == "string") {
     messageHandler.showError(response);
     return;

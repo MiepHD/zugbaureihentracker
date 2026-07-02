@@ -14,7 +14,7 @@ new XHR().get(endpoint, (response: any) => {
   }
 });
 
-new XHR().get("/api/isElevated", (response: any) => {
+new XHR().get("/api/nutzer/json/isElevated", (response: any) => {
   if (typeof response == "string") {
     messageHandler.showError(response);
     return;

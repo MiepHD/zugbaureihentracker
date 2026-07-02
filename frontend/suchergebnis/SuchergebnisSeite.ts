@@ -8,7 +8,7 @@ if (ubid) (document.querySelector("input") as HTMLInputElement).value = ubid;
 
 if (ubid) (document.querySelector("b") as HTMLElement).textContent = ubid;
 
-new XHR().get("/api/getBaureihe?" + query.param, (response: any) => {
+new XHR().get("/api/baureihe/json/get?" + query.param, (response: any) => {
   if (typeof response == "string") {
     messageHandler.showError(response);
     (document.querySelector("p") as HTMLElement).innerHTML = "";
@@ -26,6 +26,6 @@ new XHR().get("/api/getBaureihe?" + query.param, (response: any) => {
     elem.textContent = `Baureihe nicht mehr als "Gefunden" markieren`;
     elem.style.setProperty("background-color", "lightcoral");
     (document.getElementById("gefundenAm") as HTMLElement).textContent = "Du hast diese Baureihe gefunden am " + new Date(response.gefunden).toLocaleString().replace(",", " um");
-    (document.querySelector("form") as HTMLFormElement).action = "/api/baureiheAlsNichtGefundenMarkieren";
+    (document.querySelector("form") as HTMLFormElement).action = "/api/aktivitaet/web/setnichtgefunden";
   }
 });

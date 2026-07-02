@@ -1,6 +1,6 @@
 
 function getBaureihenEndpoint(): string {
-  return '/api/getGefundeneBaureihen';
+  return '/api/aktivitaet/json/getgefunden';
 }
 
 function renderBaureihen(items: unknown): void {

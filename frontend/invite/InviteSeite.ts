@@ -1,4 +1,4 @@
-new XHR().get("/api/isElevated", (response: any) => {
+new XHR().get("/api/nutzer/json/isElevated", (response: any) => {
   if (typeof response == "string" && !response.startsWith("401")) {
     messageHandler.showError(response);
     return;

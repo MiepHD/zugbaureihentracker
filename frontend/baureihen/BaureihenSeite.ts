@@ -1,4 +1,4 @@
-new XHR().get("/api/getBaureihen", (response: any) => {
+new XHR().get("/api/baureihe/json/getall", (response: any) => {
   if (typeof response == "string") {
     messageHandler.showError(response);
     return;
@@ -16,7 +16,7 @@ new XHR().get("/api/getBaureihen", (response: any) => {
       (document.querySelector("main") as HTMLElement).appendChild(details);
     }
     const elem = document.createElement("li");
-      elem.innerHTML = `<a href="/editor?ubid=${baureihe.ubid}">${baureihe.ubid}</a> <i>${baureihe.name}</i> <form action="/api/removeBaureihe" method="post" style="display: inline-block;"> <input name="ubid" value="${baureihe.ubid}" style="display: none"><button style="background-color: red">Löschen</button></form>`;
+      elem.innerHTML = `<a href="/editor?ubid=${baureihe.ubid}">${baureihe.ubid}</a> <i>${baureihe.name}</i> <form action="/api/baureihe/web/remove" method="post" style="display: inline-block;"> <input name="ubid" value="${baureihe.ubid}" style="display: none"><button style="background-color: red">Löschen</button></form>`;
       list.appendChild(elem);
   }
 });

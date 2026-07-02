@@ -14,4 +14,4 @@ const fill = (data: any) => {
 }
 
 const xhr = new XHR();
-xhr.get("/api/baureihenVonFreundenAbrufen", fill);
+xhr.get("/api/freundesliste/json/baureihenvonfreundenabrufen", fill);

@@ -20,7 +20,7 @@
   <body>
     <main>
       <a href="/admin" style="display:none" id="admin" class="back">Admin-Seite</a>
-      <form action="/logout" methode="GET" style="position: absolute; right: 1ch; top: 1ch;">
+      <form action="/api/nutzer/web/logout" methode="GET" style="position: absolute; right: 1ch; top: 1ch;">
         <button>Ausloggen</button>
       </form>
       <h1>Baureihensuche</h1>
@@ -32,7 +32,7 @@
       </form>
       <p>6-stelliger Baureihencode</p>
       <h1>Bereits gefundene Baureihen</h1>
-      <ul id="liste" data-source="/api/getGefundeneBaureihen" class="baureihen"></ul>
+      <ul id="liste" data-source="/api/aktivitaet/json/getgefunden" class="baureihen"></ul>
       <a href="/leaderboard">Baureihen von Freunden</a>
     </main>
   </body>
