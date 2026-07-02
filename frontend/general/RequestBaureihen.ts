@@ -14,24 +14,20 @@ function renderBaureihen(items: unknown): void {
     return;
   }
 
-  items.forEach((item) => {
-    const li = document.createElement('li');
-    if (typeof item === 'string') {
-      li.textContent = item;
-    } else if (item && typeof item === 'object') {
-      const value = (item as Record<string, unknown>);
-      if (typeof value.ubid === 'string') {
-        li.innerHTML = `<a href="/suchergebnis?ubid=${value.ubid}">${value.ubid}</a>`;
-      } else if (typeof value.name === 'string') {
-        li.textContent = value.name;
-      } else if (typeof value.bezeichnung === 'string') {
-        li.textContent = value.bezeichnung;
-      } else {
-        li.textContent = JSON.stringify(value);
-      }
-    } else {
-      li.textContent = String(item);
+  let list = ul;
+  let group = "ABC";
+  for (const baureihe of items) {
+    if (!(baureihe.ubid as string).startsWith(group)) {
+      group = (baureihe.ubid as string).slice(0, 3);
+      const details = document.createElement("details");
+      details.innerHTML = `<summary>${group}</summary>`;
+      list = document.createElement("ul");
+      list.classList.add("baureihen");
+      details.appendChild(list);
+      (document.getElementById("liste") as HTMLElement).appendChild(details);
     }
-    ul.prepend(li);
-  });
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="/suchergebnis?ubid=${baureihe.ubid}">${baureihe.ubid}</a>`;
+    list.prepend(li);
+  }
 }
