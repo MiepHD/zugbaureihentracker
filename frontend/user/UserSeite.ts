@@ -4,8 +4,6 @@
 
 const uuidU = query.get("uuid");
 
-if (uuidU) (document.getElementById("uuid") as HTMLInputElement).value = uuidU;
-
 if (uuidU) (document.querySelector("i") as HTMLElement).textContent = uuidU;
 
 function requestBaureihen2(): void {
@@ -23,7 +21,7 @@ function requestBaureihen2(): void {
 
 requestBaureihen2();
 const xhr3 = new XHR();
-xhr3.get("/api/getNutzername?uuid=" + encodeURIComponent(uuidU as string), (response: string) => {
+xhr3.get("/api/nutzer/raw/getNutzername?uuid=" + encodeURIComponent(uuidU as string), (response: string) => {
   (document.querySelector("b") as HTMLElement).textContent = response;
   document.title += " " + response;
   const h2 = document.querySelector("h2") as HTMLElement;
