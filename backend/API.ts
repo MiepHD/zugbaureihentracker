@@ -81,6 +81,8 @@ export class API {
         const aktivitaet = new Aktivitaet();
         app.post("/api/aktivitaet/web/setgefunden", aktivitaet.alsGefundenMarkieren.bind(aktivitaet));
         app.post("/api/aktivitaet/web/setnichtgefunden", aktivitaet.alsNichtGefundenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/web/setgefahren", aktivitaet.alsGefahrenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/web/setnichtgefahren", aktivitaet.alsNichtGefahrenMarkieren.bind(aktivitaet));
         app.get("/api/aktivitaet/json/getgefunden", aktivitaet.getGefundene.bind(aktivitaet));
 
         const freundesliste = new Freundesliste();

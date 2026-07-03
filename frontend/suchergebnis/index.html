@@ -21,10 +21,14 @@
       <h1><b></b> <i style="font-size: smaller;"></i></h1>
       <p>
       </p>
-      <form action="/api/aktivitaet/web/setgefunden" method="post" style="display: flex; flex-direction: column;">
+      <form id="gefunden" action="/api/aktivitaet/web/setgefunden" method="post" style="display: flex; flex-direction: column;">
         <input name="ubid" style="display: none"/><button style="align-self: center;">Gefunden</button>
       </form>
       <p id="gefundenAm"></p>
+      <form id="gefahren" action="/api/aktivitaet/web/setgefahren" method="post" style="display: flex; flex-direction: column;">
+        <input name="ubid" style="display: none"/><button style="align-self: center;">Gefahren</button>
+      </form>
+      <p id="gefahrenAm"></p>
     </main>
   </body>
 </html>

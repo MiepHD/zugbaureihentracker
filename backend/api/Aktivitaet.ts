@@ -23,6 +23,19 @@ export class Aktivitaet {
         });
     }
 
+    /**
+     * Gibt die Request, eine Baureihe als gefunden zu markieren an die Datenbank weiter und je nach Anwort Redirected entweder auf die Home Seite oder auf die Suchergebnis Seite.
+     * @author Lia
+     */
+    async alsGefahrenMarkieren(req: Request, res: Response) {
+        const data = req.body;
+        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+            if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
+            await DBAktivitaet.alsGefahrenMarkieren(sessiontoken as string, data.ubid);
+            res.redirect("/home?successMessage=" + encodeURIComponent(`Baureihe wurde als "Gefahren" markiert.`));
+        });
+    }
+
     async getGefundene(req: Request, res: Response) {
         await API.try(req, res, true, false, async (data, sessiontoken) => {
             const uuid = await Nutzer.getUUID(sessiontoken as string);
@@ -43,6 +56,15 @@ export class Aktivitaet {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsNichtGefundenMarkieren(sessiontoken as string, data.ubid);
             res.redirect("/home?successMessage=" + encodeURIComponent("Baureihe wurde erfolgreich aus den gefundenen Baureihen entfernt"));
+        });
+    }
+
+    async alsNichtGefahrenMarkieren(req: Request, res: Response) {
+        const data = req.body;
+        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+            if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
+            await DBAktivitaet.alsNichtGefahrenMarkieren(sessiontoken as string, data.ubid);
+            res.redirect("/home?successMessage=" + encodeURIComponent("Baureihe wurde erfolgreich aus den gefahrenen Baureihen entfernt"));
         });
     }
 }

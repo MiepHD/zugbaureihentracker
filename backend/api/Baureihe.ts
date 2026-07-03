@@ -20,7 +20,8 @@ export class Baureihe {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             res.send(`{
                 "baureihe": ${JSON.stringify(await DBBaureihe.get(data.ubid as string))},
-                "gefunden": ${JSON.stringify(await DBAktivitaet.istGefunden((data.ubid as string), sessiontoken as string))}
+                "gefunden": ${JSON.stringify(await DBAktivitaet.istGefunden((data.ubid as string), sessiontoken as string))},
+                "gefahren": ${JSON.stringify(await DBAktivitaet.istGefahren((data.ubid as string), sessiontoken as string))}
             }`);
         });
     }

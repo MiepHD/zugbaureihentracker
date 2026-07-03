@@ -26,6 +26,15 @@ export class Aktivitaet extends Table {
                     key: 'ubid',
                 },
             },
+            gefahren: {
+                type: DataTypes.BOOLEAN,
+                allowNull: true,
+                defaultValue: false
+            },
+            gefahrenAm: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            }
         },
         {
             sequelize,
@@ -67,6 +76,39 @@ export class Aktivitaet extends Table {
     }
 
     /**
+     * Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
+     * @author Tim
+     * @since 08.06.2026
+     * @throws NotFoundError
+     */
+    public static async alsGefahrenMarkieren(token: string, ubid: string): Promise<void> {
+        const uuid = await Nutzer.getUUID(token);
+        const baureihe = await Baureihe.get(ubid);
+        try {
+            await Aktivitaet.create({
+                uuid: uuid,
+                ubid: baureihe.getDataValue("ubid"),
+                gefahren: true,
+                gefahrenAm: new Date().toISOString()
+            });
+        } catch (e: unknown) {
+            if (e instanceof UniqueConstraintError) {
+                const entry = await Aktivitaet.findOne({
+                    where: {
+                        uuid,
+                        ubid: baureihe.getDataValue("ubid")
+                    }
+                });
+                entry?.setDataValue("gefahren", true);
+                entry?.setDataValue("gefahrenAm", new Date().toISOString());
+                await entry?.save();
+                return;
+            }
+            throw e;
+        }
+    }
+
+    /**
      * Gibt eine Liste aller von einem Nutzer gefundenen Baureihen zurück.
      * @author Tim & Lia
      * @since 28.04.2026
@@ -98,6 +140,22 @@ export class Aktivitaet extends Table {
 
     /**
      * @throws NotFoundError
+     * @return gibt des Zeitpunkt des Findens zurück oder null, wenn die Baureihe nicht gefunden wurde.
+     */
+    public static async istGefahren(ubid: string, sessiontoken: string): Promise<string | null> {
+        const found = await Aktivitaet.findOne({
+            where: {
+                ubid,
+                uuid: await Nutzer.getUUID(sessiontoken),
+                gefahren: true
+            }
+        });
+        if (found == null) return null;
+        return (found as unknown as { gefahrenAm: string}).gefahrenAm;
+    }
+
+    /**
+     * @throws NotFoundError
      */
     public static async alsNichtGefundenMarkieren(token: string, ubid: string): Promise<void> {
         const uuid = await Nutzer.getUUID(token);
@@ -109,5 +167,22 @@ export class Aktivitaet extends Table {
             }
         });
         if (count == 0) throw new NotFoundError("nichtAlsGefundenMarkiert");
+    }
+
+    /**
+     * @throws NotFoundError
+     */
+    public static async alsNichtGefahrenMarkieren(token: string, ubid: string): Promise<void> {
+        const uuid = await Nutzer.getUUID(token);
+        const baureihe = await Baureihe.get(ubid);
+        const entry = await Aktivitaet.findOne({
+            where: {
+                uuid: uuid,
+                ubid: baureihe.getDataValue("ubid"),
+            }
+        });
+        if (entry == null) throw new NotFoundError("nichtAlsGefahrenMarkiert"); //TODO: Error hinzufügen
+        entry.setDataValue("gefahren", false);
+        await entry.save();
     }
 }
