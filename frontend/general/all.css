@@ -17,7 +17,9 @@ main {
 }
 
 .easyform {
-    display: grid;grid-template-columns: max-content max-content;gap: 1ch;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 1ch;
 }
 
 h1 {

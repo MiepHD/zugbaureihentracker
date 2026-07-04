@@ -12,7 +12,7 @@ function requestBaureihen2(): void {
     if (Array.isArray(response)) {
       renderBaureihen(response);
       const h2 = document.querySelector("h2") as HTMLElement;
-      h2.textContent = (h2.textContent as string).replace("?", ((document.getElementById("liste") as HTMLElement).children.length).toString());
+      h2.textContent = (h2.textContent as string).replace("?", (response.length).toString());
     } else {
       messageHandler.showError(response);
     }
