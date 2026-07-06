@@ -5,6 +5,10 @@
       rel="stylesheet"
       type="text/css"
       href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
     />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,14 +20,14 @@
 </head>
 <body>
     <main>
-        <a href="/leaderboard" class="back">Zurück</a>
+        <a href="/leaderboard" class="back"><img src="/assets/chevron-left-alt-svgrepo-com.svg" class="icon" /></a>
         <h1>Freundschaftsanfragen</h1>
         <h2>Eingehend:</h2>
         <ol id="eingehend"></ol>
         <h2>Ausgehend:</h2>
         <ol id="ausgehend"></ol>
         <form action="/api/freundesliste/web/add" method="post">
-            <input name="uuid" /><button>Hinzufügen</button>
+            <input name="uuid" /><button><img class="icon" src="/assets/user-add-svgrepo-com.svg" alt="hinzufügen" /></button>
         </form>
         <p id="uuid"></p>
 

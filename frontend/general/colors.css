@@ -1,0 +1,9 @@
+:root {
+    --text: #e5e7f9;
+    --background: #212878;
+    --primary: #868ce4;
+    --secondary: #811c6b;
+    --accent: #ff4c4c;
+
+    --error: lightcoral;
+}

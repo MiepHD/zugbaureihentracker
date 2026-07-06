@@ -16,6 +16,8 @@ function renderBaureihen(items: unknown, additionalContent = ""): void {
 
   let list = ul;
   const input = document.createElement("input");
+  (input as HTMLInputElement).placeholder = "Suchen...";
+  (input as HTMLInputElement).type = "search";
   input.addEventListener("input", () => {
     for (const group of document.querySelectorAll('#liste > details')) {
       for (const elem of group.children[1].children) {
