@@ -40,7 +40,7 @@ function renderBaureihen(items: unknown, additionalContent = ""): void {
       (document.getElementById("liste") as HTMLElement).appendChild(details);
     }
     const li = document.createElement('li');
-    li.innerHTML = `<a href="/suchergebnis?ubid=${baureihe.ubid}">${baureihe.ubid}<span style="color:green">${baureihe.gefahren ? "✓" : ""}</span></a>${additionalContent.replaceAll("%s", baureihe.ubid)}`;
+    li.innerHTML = `<a href="/suchergebnis?ubid=${baureihe.ubid}">${baureihe.ubid}<span style="color:green">${baureihe.gefahren ? "✓" : "&nbsp;&nbsp;&nbsp;"}</span></a>${additionalContent.replaceAll("%s", baureihe.ubid)}`;
     list.prepend(li);
   }
 }
