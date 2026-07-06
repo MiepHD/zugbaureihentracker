@@ -1,3 +1,9 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
 body {
     background-color: var(--background);
     color: var(--text);
@@ -6,19 +12,9 @@ body {
 
 /* Lia */
 main {
-    padding: 4ch;
-    margin: auto;
-    
-    width: fit-content;
-    height: fit-content;
-    max-height: calc(100% - 8ch);
+    padding: 4rem;
     overflow-y: scroll;
-    
-    position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
+    text-align: center;
 }
 
 .easyform {
@@ -35,6 +31,7 @@ h1 {
 .baureihen {
     text-align: center;
     list-style-type: none;
+    padding: 0;
 }
 
 .baureihen > li {
@@ -82,9 +79,15 @@ input {
 
 .icon {
     cursor: pointer;
-    width: 0.6rem;
-    height: 0.6rem;
+    width: 2.6rem;
+    height: 2.6rem;
     padding: 0.2rem;
+}
+
+.icon.small {
+    width: 0.8rem;
+    height: 0.8rem;
+    padding: 0.1rem;
 }
 
 button:has(img.icon) {
@@ -93,11 +96,16 @@ button:has(img.icon) {
 
 a:has(img.icon), button:has(img.icon) {
     display: inline-block;
-    width: 1rem;
-    height: 1rem;
+    width: 3rem;
+    height: 3rem;
     border-radius: 0.1rem;
     vertical-align: center;
     background-color: var(--secondary);
+}
+
+a:has(img.icon.small), button:has(img.icon.small) {
+    width: 1rem;
+    height: 1rem;
 }
 
 summary {
@@ -113,4 +121,15 @@ input:focus-visible {
 
 form:has(button > img.icon) {
     display: contents;
+}
+
+.bottomleft {
+    position: absolute;
+    bottom: 1ch;
+    left: 1ch;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
 }
