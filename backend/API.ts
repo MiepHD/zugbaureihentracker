@@ -151,7 +151,7 @@ export class API {
                 );
             }
             console.warn(`Ein unerwarteter Fehler ist aufgetreten. Für mehr Infos suche in der /errors.log nach der Error-ID: ${uuid}`);
-            fs.writeFileSync(path.join(__dirname, '../../errors.log'), `
+            fs.writeFileSync(path.join(__dirname, '../errors.log'), `
 Error-ID: ${uuid}
 Time: ${new Date().toString()}
 Request-Body: ${req.body ? JSON.stringify(req.body) : "Doesn't exist here."}
