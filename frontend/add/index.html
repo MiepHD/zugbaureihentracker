@@ -12,6 +12,10 @@
       rel="stylesheet"
       type="text/css"
       href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
     />
     <script src="/general/Query.js"></script>
     <script src="/general/MessageHandler.js" defer></script>
@@ -19,7 +23,7 @@
 </head>
 <body>
     <main>
-        <a href="/admin" class="back"><img src="/assets/chevron-left-alt-svgrepo-com.svg" class="icon" /></a>
+        <a href="/admin" class="back icon"></a>
         <form action="/api/baureihe/web/add" method="post" class="easyform">
             <label for="ubid">UBID:</label>
             <input type="text" id="ubid" name="ubid" required>

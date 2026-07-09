@@ -12,6 +12,10 @@
       rel="stylesheet"
       type="text/css"
       href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
     />
     <script src="/general/Query.js"></script>
     <script src="/general/MessageHandler.js" defer></script>
@@ -21,7 +25,7 @@
 </head>
 <body>
     <main>
-        <a href onclick="history.back()" class="back"><img src="/assets/chevron-left-alt-svgrepo-com.svg" class="icon" /></a>
+        <a href onclick="history.back()" class="back icon"></a>
         <form action="/api/baureihe/web/edit" method="post" class="easyform">
             <label for="ubid">UBID:</label>
             <input type="text" id="ubid" name="ubid" disabled>

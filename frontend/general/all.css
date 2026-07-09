@@ -77,19 +77,6 @@ input {
     color: var(--primary);
 }
 
-.icon {
-    cursor: pointer;
-    width: 2.6rem;
-    height: 2.6rem;
-    padding: 0.2rem;
-}
-
-.icon.small {
-    width: 0.8rem;
-    height: 0.8rem;
-    padding: 0.1rem;
-}
-
 button:has(img.icon) {
     all: unset;
 }
