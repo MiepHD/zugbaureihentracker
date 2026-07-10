@@ -5,6 +5,14 @@
       rel="stylesheet"
       type="text/css"
       href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
     />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,18 +24,16 @@
 </head>
 <body>
     <main>
-        <a href="/leaderboard" class="back">Zurück</a>
-        <h1>Freundschaftsanfragen</h1>
+        <a href="/leaderboard" class="back icon"></a>
+        <h1>Anfragen</h1>
         <h2>Eingehend:</h2>
         <ol id="eingehend"></ol>
         <h2>Ausgehend:</h2>
         <ol id="ausgehend"></ol>
         <form action="/api/freundesliste/web/add" method="post">
-            <input name="uuid" /><button>Hinzufügen</button>
+            <input name="uuid" /><button aria-label="hinzufügen" class="icon small useradd"></button>
         </form>
         <p id="uuid"></p>
-
-        <a href="/freunde">Alle Baureihen ansehen, die Deine Freunde bereits gefunden haben</a>
     </main>
 </body>
 </html>

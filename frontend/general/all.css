@@ -1,45 +1,49 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 /* Lia */
 main {
-    padding: 4ch;
-    margin: auto;
-    
-    width: fit-content;
-    height: fit-content;
-    max-height: calc(100% - 8ch);
+    padding: 4rem 1rem;
     overflow-y: scroll;
-    
-    position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
 }
 
 .easyform {
     display: grid;
     grid-template-columns: max-content max-content;
     gap: 1ch;
+    width: max-content;
+    margin: auto;
 }
 
 h1 {
-    text-align: center;
+    color: var(--primary);
 }
 
 .baureihen {
     text-align: center;
     list-style-type: none;
+    padding: 0;
 }
 
 .baureihen > li {
     margin: 0.25ch;
-    border: 1px solid black;
+    border: 1px solid var(--secondary);
     padding: 0.125ch;
 }
 
 .baureihen > li > a {
     text-decoration: none;
-    color: black;
+    color: var(--primary);
 }
 
 .back {
@@ -54,9 +58,67 @@ h1 {
     left: 1ch;
     right: 1ch;
     padding: 2ch;
-    background-color: lightcoral;
+    background-color: var(--error);
+    color: var(--secondary);
 }
 
 button {
     cursor: pointer;
+    color: var(--text);
+    background-color: var(--secondary);
+    border-radius: calc(3ch / 10);
+}
+
+a {
+    color: var(--accent);
+}
+
+input {
+    background-color: transparent;
+    border-width: 0 0 calc(1ch / 10) 0;
+    color: var(--primary);
+}
+
+button:has(img.icon) {
+    all: unset;
+}
+
+a:has(img.icon), button:has(img.icon) {
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.1rem;
+    vertical-align: center;
+    background-color: var(--secondary);
+}
+
+a:has(img.icon.small), button:has(img.icon.small) {
+    width: 1rem;
+    height: 1rem;
+}
+
+summary {
+    cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 2px !important;
+}
+
+form:has(button > img.icon) {
+    display: contents;
+}
+
+.bottomleft {
+    position: absolute;
+    bottom: 1ch;
+    left: 1ch;
+}
+
+textarea {
+    width: 100%;
+    height: 100%;
 }
