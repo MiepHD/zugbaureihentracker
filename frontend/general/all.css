@@ -12,7 +12,7 @@ body {
 
 /* Lia */
 main {
-    padding: 4rem;
+    padding: 4rem 1rem;
     overflow-y: scroll;
     text-align: center;
 }
@@ -21,10 +21,11 @@ main {
     display: grid;
     grid-template-columns: max-content max-content;
     gap: 1ch;
+    width: max-content;
+    margin: auto;
 }
 
 h1 {
-    text-align: center;
     color: var(--primary);
 }
 
@@ -63,6 +64,7 @@ h1 {
 
 button {
     cursor: pointer;
+    color: var(--text);
     background-color: var(--secondary);
     border-radius: calc(3ch / 10);
 }
