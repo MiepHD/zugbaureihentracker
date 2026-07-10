@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, literal, UniqueConstraintError } from 'sequelize';
+import { Sequelize, DataTypes, literal, UniqueConstraintError, ForeignKeyConstraintError } from 'sequelize';
 
 import { Nutzer } from './Nutzer';
 import { Table } from './Table';
@@ -70,6 +70,7 @@ export class Freundesliste extends Table {
             });
         } catch (e: unknown) {
             if (e instanceof UniqueConstraintError) throw new ConflictError("bereitsBefreundet");
+            if (e instanceof ForeignKeyConstraintError) throw new NotFoundError("uuid");
             throw e;
         }
     }
