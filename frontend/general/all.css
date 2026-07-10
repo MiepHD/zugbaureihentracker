@@ -58,8 +58,8 @@ h1 {
     left: 1ch;
     right: 1ch;
     padding: 2ch;
-    background-color: var(--error);
-    color: var(--secondary);
+    background-color: var(--red);
+    color: var(--background);
 }
 
 button {

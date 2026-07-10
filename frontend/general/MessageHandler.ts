@@ -29,7 +29,7 @@ class MessageHandler {
         const elem = document.createElement("div");
         elem.classList.add("errorMessage");
         elem.textContent = message;
-        elem.style.setProperty("background-color", "lightgreen");
+        elem.style.setProperty("background-color", "var(--green)");
         document.body.appendChild(elem);
     }
 }
