@@ -41,7 +41,7 @@ export class DeliveryService {
     private async handleRequest(req: Request, res: Response) {
         let urlpath = req.path.replaceAll("/", "").replaceAll("index.html", "");
         if (urlpath === "") urlpath = "home";
-        await API.try(req, res, this.paths.includes(urlpath), "home?", async (data, sessiontoken) => {
+        await API.try(req, res, this.paths.includes(urlpath), async (data, sessiontoken) => {
             if (this.restricted.includes(urlpath) && !await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("site");
             res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
         });
