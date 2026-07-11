@@ -35,12 +35,23 @@ class XHR {
             }
 
             let response = null;
-            response = this.xhr.responseURL;
+            try {
+                response = JSON.parse(this.xhr.responseText);
+            } catch {
+                response = this.xhr.responseText;
+            }
             
             callback(response);
         };
+
+        if (data instanceof FormData) {
+            const newdata: Record<string, any> = {};
+            data.forEach((value, key) => {
+                newdata[key] = value;
+            });
+            data = newdata;
+        }
         
-        // Wandelt das Objekt in einen String um und sendet es im Request-Body
         this.xhr.send(JSON.stringify(data));
     }
 }
