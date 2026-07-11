@@ -48,25 +48,25 @@ export class API {
     private async bindListeners(app: Express) {
         const nutzer = new Nutzer();
         app.get("/api/nutzer/web/logout", nutzer.logout.bind(nutzer));
-        app.post("/api/nutzer/web/registrieren", nutzer.registrieren.bind(nutzer));
-        app.post("/api/nutzer/web/anmelden", nutzer.anmelden.bind(nutzer));
+        app.post("/api/nutzer/json/registrieren", nutzer.registrieren.bind(nutzer));
+        app.post("/api/nutzer/json/anmelden", nutzer.anmelden.bind(nutzer));
         app.get("/api/nutzer/raw/getUUID", nutzer.getUUID.bind(nutzer));
         app.get("/api/nutzer/json/getAccounts", nutzer.getAll.bind(nutzer));
-        app.post("/api/nutzer/web/removeAccount", nutzer.remove.bind(nutzer));
+        app.post("/api/nutzer/json/removeAccount", nutzer.remove.bind(nutzer));
         app.get("/api/nutzer/json/isElevated", nutzer.isElevated.bind(nutzer));
         app.get("/api/nutzer/raw/getNutzername", nutzer.getNutzername.bind(nutzer));
-        app.post("/api/nutzer/web/removeAdmin", (req: Request, res: Response) => {
+        app.post("/api/nutzer/json/removeAdmin", (req: Request, res: Response) => {
             if (this.authorize(req, res, "accounts")) nutzer.removeAdmin(req, res);
         });
-        app.post("/api/nutzer/web/addAdmin", (req: Request, res: Response) => {
+        app.post("/api/nutzer/json/addAdmin", (req: Request, res: Response) => {
             if (this.authorize(req, res, "accounts")) nutzer.elevateByUUID(req, res);
         });
-        app.post("/api/nutzer/web/elevate", (req: Request, res: Response) => {
+        app.post("/api/nutzer/json/elevate", (req: Request, res: Response) => {
             if (this.authorize(req, res, "elevate")) nutzer.elevate(req, res);
         });
 
         const registrierungscodes = new Registrierungscodes();
-        app.post("/api/registrierungscodes/web/addInviteCode", (req: Request, res: Response) => {
+        app.post("/api/registrierungscodes/json/addInviteCode", (req: Request, res: Response) => {
             registrierungscodes.add(req, res, req.body.passwort == this.adminpasswort)
         });
 
@@ -74,32 +74,32 @@ export class API {
         app.get("/api/baureihe/json/get", baureihe.get.bind(baureihe));
         app.get("/api/baureihe/json/getall", baureihe.getAll.bind(baureihe));
         app.get("/api/baureihe/raw/count", baureihe.count.bind(baureihe));
-        app.post("/api/baureihe/web/add", baureihe.add.bind(baureihe));
-        app.post("/api/baureihe/web/remove", baureihe.remove.bind(baureihe));
-        app.post("/api/baureihe/web/edit", baureihe.edit.bind(baureihe));
+        app.post("/api/baureihe/json/add", baureihe.add.bind(baureihe));
+        app.post("/api/baureihe/json/remove", baureihe.remove.bind(baureihe));
+        app.post("/api/baureihe/json/edit", baureihe.edit.bind(baureihe));
 
         const aktivitaet = new Aktivitaet();
-        app.post("/api/aktivitaet/web/setgefunden", aktivitaet.alsGefundenMarkieren.bind(aktivitaet));
-        app.post("/api/aktivitaet/web/setnichtgefunden", aktivitaet.alsNichtGefundenMarkieren.bind(aktivitaet));
-        app.post("/api/aktivitaet/web/setgefahren", aktivitaet.alsGefahrenMarkieren.bind(aktivitaet));
-        app.post("/api/aktivitaet/web/setnichtgefahren", aktivitaet.alsNichtGefahrenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setgefunden", aktivitaet.alsGefundenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setnichtgefunden", aktivitaet.alsNichtGefundenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setgefahren", aktivitaet.alsGefahrenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setnichtgefahren", aktivitaet.alsNichtGefahrenMarkieren.bind(aktivitaet));
         app.get("/api/aktivitaet/json/getgefunden", aktivitaet.getGefundene.bind(aktivitaet));
 
         const freundesliste = new Freundesliste();
-        app.post("/api/freundesliste/web/add", freundesliste.add.bind(freundesliste));
-        app.post("/api/freundesliste/web/remove", freundesliste.remove.bind(freundesliste));
+        app.post("/api/freundesliste/json/add", freundesliste.add.bind(freundesliste));
+        app.post("/api/freundesliste/json/remove", freundesliste.remove.bind(freundesliste));
         app.get("/api/freundesliste/json/baureihenvonfreundenabrufen", freundesliste.baureihenVonFreundenAbrufen.bind(freundesliste));
         app.get("/api/freundesliste/json/getranking", freundesliste.getRanking.bind(freundesliste));
-        app.post("/api/freundesliste/web/akzeptiereanfrage", freundesliste.akzeptiereFreundschaftsanfrage.bind(freundesliste));
-        app.post("/api/freundesliste/web/abortanfrage", freundesliste.abortFreundschaftsanfrage.bind(freundesliste));
-        app.post("/api/freundesliste/web/ablehnenanfrage", freundesliste.FreundschaftsanfrageAblehnen.bind(freundesliste));
-        app.get("/api/freundesliste/web/getausstehend", freundesliste.getAusstehendeFreundschaftsanfragen.bind(freundesliste));
+        app.post("/api/freundesliste/json/akzeptiereanfrage", freundesliste.akzeptiereFreundschaftsanfrage.bind(freundesliste));
+        app.post("/api/freundesliste/json/abortanfrage", freundesliste.abortFreundschaftsanfrage.bind(freundesliste));
+        app.post("/api/freundesliste/json/ablehnenanfrage", freundesliste.FreundschaftsanfrageAblehnen.bind(freundesliste));
+        app.get("/api/freundesliste/json/getausstehend", freundesliste.getAusstehendeFreundschaftsanfragen.bind(freundesliste));
     }
 
     private authorize(req: Request, res: Response, redirect: string) {
         if (req.body.passwort !== this.adminpasswort) {
             console.warn(`Jemand hat ein falsches Masterpasswort auf /${redirect} eingegeben.`);
-            res.redirect(`/${redirect}?errorMessage=` + encodeURIComponent("403: Das Passwort ist falsch."));
+            res.send(`{ "errorMessage": "403: Das Passwort ist falsch." }`);
             return false;
         }
         return true;
@@ -114,7 +114,7 @@ export class API {
      * @param redirectOnError Beginnt ohne / und endet mit & oder ?. Alternativ kann man auch false übergeben, dass kein redirect ausgeführt wird
      * @param execute Bekommt die Daten übergeben und ein Sessiontoken falls eines angefordert wurde
      */
-    static async try(req: Request, res: Response, checkSessiontoken: boolean, redirectOnError: string | boolean, execute: (data: any, sessiontoken: string | null) => Promise<void>) {
+    static async try(req: Request, res: Response, checkSessiontoken: boolean, execute: (data: any, sessiontoken: string | null) => Promise<void>) {
         let data;
         if (req.method == "GET") data = req.query;
         else data = req.body;
@@ -128,28 +128,12 @@ export class API {
         catch (e: unknown) {
             if (e instanceof ExpectedError) {
                 res.status(e.statuscode);
-                if (typeof redirectOnError == "boolean" && !redirectOnError) {
-                    res.send(`${e.statuscode}: ${(e as Error).message}`);
-                } else {
-                    if (e instanceof UnauthorizedError) redirectOnError = "login?";
-                    if (e instanceof ForbiddenError) redirectOnError = "home?";
-                    res.redirect(
-                        `/${redirectOnError}errorMessage=` +
-                        encodeURIComponent(`${e.statuscode}: ${(e as Error).message}`)
-                    );
-                }
+                res.send(`${e.statuscode}: ${(e as Error).message}`);
                 return;
             }
             const uuid = randomUUID();
             res.status(500);
-            if (typeof redirectOnError == "boolean" && !redirectOnError) {
-                res.send(`500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})`);
-            } else {
-                res.redirect(
-                    `/${redirectOnError}errorMessage=` +
-                    encodeURIComponent(`500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})`)
-                );
-            }
+            res.send(`500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})`);
             console.warn(`Ein unerwarteter Fehler ist aufgetreten. Für mehr Infos suche in der /errors.log nach der Error-ID: ${uuid}`);
             fs.writeFileSync(path.join(__dirname, '../errors.log'), `
 Error-ID: ${uuid}
