@@ -1,0 +1,44 @@
+import { Request, Response } from "express";
+import { API } from "../API";
+
+import { Nutzer } from "../models/Nutzer";
+import { Beschreibung as DBBeschreibung } from "../models/Beschreibung";
+import { ForbiddenError } from "../error/ForbiddenError";
+import { ValidationError } from "../error/ValidationError";
+
+export class Beschreibung {
+    async getAll(req: Request, res: Response) {
+        await API.try(req, res, true, async (ignored, sessiontoken) => {
+            if (!await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("getAllBeschreibungen");
+            res.send(`${JSON.stringify(await DBBeschreibung.getAll())}`);
+        });
+    }
+
+    async add(req: Request, res: Response) {
+        await API.try(req, res, true, async (data, sessiontoken) => {
+            if (!await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("addBeschreibung");
+            if (!API.isValidString(data.name)) throw new ValidationError("name");
+            if (!API.isValidString(data.besitzer)) throw new ValidationError("besitzer");
+            if (!API.isValidString(data.vmax)) throw new ValidationError("vmax");
+            if (!API.isValidString(data.baujahre)) throw new ValidationError("baujahre");
+            if (!API.isValidString(data.gewicht)) throw new ValidationError("gewicht");
+            
+            await DBBeschreibung.add(data.name, data.besitzer, data.vmax, data.baujahre, data.gewicht);
+            res.send(`{ "successMessage": "Beschreibung wurde erfolgreich erstellt." }`);
+            console.log(`Es wurde eine neue Beschreibung hinzugefügt mit dem Namen: ${data.name}`);
+        });
+    }
+
+    async remove(req: Request, res: Response) {
+        await API.try(req, res, true, async (data, sessiontoken) => {
+            let force = false;
+            if (data.force) force = true;
+            if (!await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("removeBeschreibung");
+            if (!API.isValidString(data.name)) throw new ValidationError("name");
+
+            await DBBeschreibung.remove(data.name, force);
+            res.send(`{ "successMessage": "Beschreibung wurde erfolgreich gelöscht." }`);
+            console.log(`Es wurde die Beschreibung mit dem Namen ${data.name} gelöscht.`);
+        });
+    }
+}

@@ -6,6 +6,10 @@
     "ValidationError.username": "Nutzername ist fehlerhaft.",
     "ValidationError.passwort": "Passwort ist fehlerhaft.",
     "ValidationError.code": "Code ist fehlerhaft.",
+    "ValidationError.besitzer": "Besitzer ist fehlerhaft.",
+    "ValidationError.vmax": "Höchstgeschwindigkeit ist fehlerhaft.",
+    "ValidationError.baujahre": "Baujahre sind fehlerhaft.",
+    "ValidationError.gewicht": "Gewicht ist fehlerhaft.",
 
     "ForbiddenError.profile": "Keine Bereichtigung Profil dieses Users abzurufen.",
     "ForbiddenError.addBaureihe": "Keine Berechtigung Baureihen hinzuzufügen.",
@@ -18,6 +22,9 @@
     "ForbiddenError.removeElevation": "Keine Berechtigung Adminrechte zu entfernen.",
     "ForbiddenError.createCode": "Keine Berechtigung, Registrierungscodes zu erstellen.",
     "ForbiddenError.site": "Keine Berechtigung diese Seite aufzurufen.",
+    "ForbiddenError.getAllBeschreibungen": "Keine Berechtigung alle Beschreibungen abzurufen.",
+    "ForbiddenError.addBeschreibung": "Keine Berechtigung Beschreibungen hinzuzufügen.",
+    "ForbiddenError.removeBeschreibung": "Keine Berechtigung Beschreibungen zu löschen.",
 
     "UnauthorizedError.noSession": "Keine Session gefunden.",
     "UnauthorizedError.invalidSession": "Diese Session ist ungültig.",
@@ -29,6 +36,8 @@
     "ConflictError.nutzername": "Dieser Nutzername ist bereits vergeben.",
     "ConflictError.kontoBereitsVerwendet": "Dieser Account hat bereits %d Baureihen gefunden, wurde von %d Freunden hinzugefügt und hat %d Freunde hinzugefügt. Willst Du ihn trotzdem löschen?|%s",
     "ConflictError.codeExists": "Dieser Registrierungscode existiert bereits.",
+    "ConflictError.beschreibungGenutzt": "Diese Beschreibung wird von %d Baureihen genutzt. Willst Du sie trotzdem löschen?|%s",
+    "ConflictError.beschreibungExistiert": "Dieser Beschreibungsname wird bereits genutzt.",
 
     "NotFoundError.nichtAlsGefundenMarkiert": "Diese Baureihe ist von Dir nicht als gefunden markiert.",
     "NotFoundError.nichtAlsGefahrenMarkiert": "Diese Baureihe ist von Dir nicht als gefahren markiert.",
@@ -38,5 +47,6 @@
     "NotFoundError.uuid": "Zu dieser UUID konnte leider kein Nutzer gefunden werden.",
     "NotFoundError.registrierungscode": "Der Registrierungscode konnte nicht gefunden werden.",
     "NotFoundError.login": "Es konnte kein Konto zu dieser Kombination aus Benuzername und Passwort gefunden werden.",
-    "NotFoundError.unelevatedUser": "Zu dieser UUID konnte kein Nutzer ohne Adminrechte gefunden werden."
+    "NotFoundError.unelevatedUser": "Zu dieser UUID konnte kein Nutzer ohne Adminrechte gefunden werden.",
+    "NotFoundError.beschreibung": "Diese Beschreibung konnte nicht gefunden werden."
 }

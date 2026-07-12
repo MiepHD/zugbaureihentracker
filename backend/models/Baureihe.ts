@@ -5,6 +5,7 @@ import { Aktivitaet } from './Aktivitaet';
 
 import { NotFoundError } from '../error/NotFoundError';
 import { ConflictError } from '../error/ConflictError';
+import { Beschreibung } from './Beschreibung';
 
 export class Baureihe extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -32,6 +33,9 @@ export class Baureihe extends Table {
         Baureihe.hasMany(Aktivitaet, {
             foreignKey: "ubid"
         });
+        Baureihe.hasMany(Beschreibung, {
+            foreignKey: "beschreibung"
+        });
     }
 
     /**
@@ -44,7 +48,8 @@ export class Baureihe extends Table {
         const baureihe = await Baureihe.findOne({
             where: {
                 ubid,
-            }
+            },
+            include: [Beschreibung]
         });
         if (!baureihe) throw new NotFoundError("baureihe");
         return baureihe;
