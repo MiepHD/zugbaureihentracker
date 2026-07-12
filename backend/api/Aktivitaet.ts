@@ -19,7 +19,7 @@ export class Aktivitaet {
         await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsGefundenMarkieren(sessiontoken as string, data.ubid);
-            res.send(`{ "successMessage": "Baureihe wurde als "Gefunden" markiert." }`);
+            res.send(`{ "successMessage": "Baureihe wurde als \\\"Gefunden\\\" markiert." }`);
         });
     }
 
@@ -32,7 +32,7 @@ export class Aktivitaet {
         await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsGefahrenMarkieren(sessiontoken as string, data.ubid);
-            res.send(`{ "successMessage": "Baureihe wurde als "Gefahren" markiert." }`);
+            res.send(`{ "successMessage": "Baureihe wurde als \\\"Gefahren\\\" markiert." }`);
         });
     }
 

@@ -19,12 +19,15 @@
     />
     <script src="/general/Query.js"></script>
     <script src="/general/MessageHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/add/script.js" defer></script>
     <title>Zugbaureihentracker | Baureihe hinzufügen</title>
 </head>
 <body>
     <main>
         <a href="/admin" class="back icon"></a>
-        <form action="/api/baureihe/web/add" method="post" class="easyform">
+        <form data-api="/api/baureihe/json/add" class="easyform">
             <label for="ubid">UBID:</label>
             <input type="text" id="ubid" name="ubid" required>
             <label for="name">Name:</label>

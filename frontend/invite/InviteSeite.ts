@@ -8,3 +8,4 @@ new XHR().get("/api/nutzer/json/isElevated", (response: any) => {
     (document.querySelector("label[for=passwort]") as HTMLElement).style.setProperty("display", "none");
   }
 });
+new FormHandler();

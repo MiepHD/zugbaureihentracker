@@ -43,6 +43,10 @@
     mask-image: url("/assets/user-x-svgrepo-com.svg");
 }
 
+.icon.usercheck {
+    mask-image: url("/assets/user-check-svgrepo-com.svg");
+}
+
 .icon.pencil {
     mask-image: url("/assets/pencil-svgrepo-com.svg");
 }

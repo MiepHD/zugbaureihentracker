@@ -97,7 +97,7 @@ export class Baureihe extends Table {
         });
         if (isUsed > 0) {
             if (!force) 
-                throw new ConflictError("baureiheBereitsVerwendet").replace("%d", isUsed.toString());
+                throw new ConflictError("baureiheBereitsVerwendet").replace("%d", isUsed.toString()).replace("%s", ubid);
             await Aktivitaet.destroy({
                 where: {
                     ubid

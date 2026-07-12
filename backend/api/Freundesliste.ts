@@ -10,7 +10,7 @@ import { ValidationError } from "../error/ValidationError";
 export class Freundesliste {
     async add(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             await DBFreundesliste.add(sessiontoken as string, data.uuid);
             res.send(`{ "successMessage": "Freund wurde erfolgreich hinzugefügt." }`);
         });
@@ -18,7 +18,7 @@ export class Freundesliste {
 
     async remove(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             await DBFreundesliste.remove(sessiontoken as string, data.uuid);
             res.send(`{ "successMessage": "Freund wurde erfolgreich entfernt." }`);
         });
@@ -41,7 +41,7 @@ export class Freundesliste {
 
     async akzeptiereFreundschaftsanfrage(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             await DBFreundesliste.akzeptiereFreundschaftsanfrage(sessiontoken as string, data.uuid);
             res.send(`{ "successMessage": "Freund erfolgreich hinzugefügt." }`);
         });
@@ -56,7 +56,7 @@ export class Freundesliste {
 
     async FreundschaftsanfrageAblehnen(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             await DBFreundesliste.deleteAnfrage(data.uuid, await Nutzer.getUUID(sessiontoken as string));
             res.send(`{ "successMessage": "Anfrage erfolgreich abgelehnt." }`);
         });
@@ -64,7 +64,7 @@ export class Freundesliste {
 
     async abortFreundschaftsanfrage(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             await DBFreundesliste.deleteAnfrage(await Nutzer.getUUID(sessiontoken as string), data.uuid);
             res.send(`{ "successMessage": "Anfrage erfolgreich zurückgezogen." }`);
         })

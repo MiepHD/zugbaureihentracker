@@ -89,7 +89,7 @@ export class Nutzer {
 
     async elevateByUUID(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("elevateOtherUser");
             await DBNutzer.elevateByUUID(data.uuid);
             res.send(`{ "successMessage": "Account erfolgreich Adminrechte hinzugefügt." }`);
@@ -109,7 +109,7 @@ export class Nutzer {
         await API.try(req, res, true, async (data, sessiontoken) => {
             let force = false;
             if (data.force) force = true;
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("deleteAccount");
             await DBNutzer.remove(data.uuid, force);
             res.send(`{ "successMessage": "Account erfolgreich gelöscht" }`);
@@ -119,7 +119,7 @@ export class Nutzer {
 
     async removeAdmin(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("removeElevation");
             await DBNutzer.removeAdmin(data.uuid)
             res.send(`{ "successMessage": "Account erfolgreich Adminrechte entfernt." }`);

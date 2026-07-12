@@ -1,11 +1,11 @@
-document.querySelector("button")?.addEventListener("click", (e: Event) => {
+document.querySelector("button")?.addEventListener("click", () => {
     try {
         const data: Array<{name: string, beschreibung: string, ubid: string}> = JSON.parse((document.querySelector("textarea") as HTMLTextAreaElement).value);
         const log: HTMLElement = document.getElementById("log") as HTMLElement;
+        log.innerHTML = "";
         for (const baureihe of data) {
-            new XHR().post("/api/baureihe/web/add", baureihe, (res: any) => {
-                const urlObj = new URL(res);
-                const errorMessage = urlObj.searchParams.get('errorMessage');
+            new XHR().post("/api/baureihe/json/add", baureihe, (res: any) => {
+                const errorMessage = res.errorMessage ? res.errorMessage : res.successMessage;
                 if (errorMessage) log.innerHTML = log.innerHTML + baureihe.ubid + ": " + errorMessage + "<br/>"; else log.innerHTML = log.innerHTML + baureihe.ubid + ": Erfolgreich hinzugefügt.<br/>";
             });
         }

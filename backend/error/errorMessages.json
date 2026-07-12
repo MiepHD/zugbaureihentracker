@@ -24,13 +24,14 @@
 
     "ConflictError.alreadyFound": "Diese Baureihe hast Du bereits gefunden.",
     "ConflictError.baureiheExistiert": "Diese Baureihe existiert bereits.",
-    "ConflictError.baureiheBereitsVerwendet": "Diese Baureihe wurde bereits von %d Nutzern gefunden. Möchtest Du sie trotzdem löschen?",
+    "ConflictError.baureiheBereitsVerwendet": "Diese Baureihe wurde bereits von %d Nutzern gefunden. Möchtest Du sie trotzdem löschen?|%s",
     "ConflictError.bereitsBefreundet": "Diesen Freund hast Du bereits in Deiner Freundesliste.",
     "ConflictError.nutzername": "Dieser Nutzername ist bereits vergeben.",
-    "ConflictError.kontoBereitsVerwendet": "Dieser Account hat bereits %d Baureihen gefunden, wurde von %d Freunden hinzugefügt und hat %d Freunde hinzugefügt. Willst Du ihn trotzdem löschen?",
+    "ConflictError.kontoBereitsVerwendet": "Dieser Account hat bereits %d Baureihen gefunden, wurde von %d Freunden hinzugefügt und hat %d Freunde hinzugefügt. Willst Du ihn trotzdem löschen?|%s",
     "ConflictError.codeExists": "Dieser Registrierungscode existiert bereits.",
 
     "NotFoundError.nichtAlsGefundenMarkiert": "Diese Baureihe ist von Dir nicht als gefunden markiert.",
+    "NotFoundError.nichtAlsGefahrenMarkiert": "Diese Baureihe ist von Dir nicht als gefahren markiert.",
     "NotFoundError.baureihe": "Diese Baureihe konnte leider nicht gefunden werden.",
     "NotFoundError.freundschaft": "Dieser Freund existiert nicht in Deiner Freundesliste",
     "NotFoundError.freundschaftsanfrage": "Diese Freundschaftsanfrage konnte nicht gefunden werden.",

@@ -15,7 +15,6 @@ import { Registrierungscodes } from "./api/Registierungscodes";
 import { ExpectedError } from "./error/ExpectedError";
 import { randomUUID } from "crypto";
 import { UnauthorizedError } from "./error/UnauthorizedError";
-import { ForbiddenError } from "./error/ForbiddenError";
 
 export class API {
     private adminpasswort: string;
@@ -105,8 +104,13 @@ export class API {
         return true;
     }
 
-    static isValidString(str: unknown) {
+    static isValidString(str: unknown): boolean {
         return str !== null && typeof str === "string" && str !== ""
+    }
+
+    static isValidUUID(uuid: unknown): boolean {
+        if (!this.isValidString(uuid)) return false;
+        return (uuid as string).length === 36;
     }
 
     /**
@@ -126,14 +130,18 @@ export class API {
             }
             await execute(data, null); }
         catch (e: unknown) {
-            if (e instanceof ExpectedError) {
+            if (e instanceof UnauthorizedError) {
                 res.status(e.statuscode);
-                res.send(`${e.statuscode}: ${(e as Error).message}`);
+                res.redirect(`/login?errorMessage=${encodeURIComponent(`${e.statuscode}: ${(e as Error).message}`)}`);
+                return;
+            } else if (e instanceof ExpectedError) {
+                res.status(e.statuscode);
+                res.send(`{ "errorMessage": "${e.statuscode}: ${(e as Error).message}" }`);
                 return;
             }
             const uuid = randomUUID();
             res.status(500);
-            res.send(`500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})`);
+            res.send(`{ "errorMessage": "500: Es ist ein unerwarteter Fehler auf dem Server aufgetreten. (${uuid})" }`);
             console.warn(`Ein unerwarteter Fehler ist aufgetreten. Für mehr Infos suche in der /errors.log nach der Error-ID: ${uuid}`);
             fs.writeFileSync(path.join(__dirname, '../errors.log'), `
 Error-ID: ${uuid}

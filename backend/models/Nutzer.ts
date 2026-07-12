@@ -251,7 +251,8 @@ export class Nutzer extends Table {
                 throw new ConflictError("kontoBereitsVerwendet")
                     .replace("%d", isUsed.toString())
                     .replace("%d", isUsed3.toString())
-                    .replace("%d", isUsed2.toString());
+                    .replace("%d", isUsed2.toString())
+                    .replace("%s", uuid);
         }
         
         const count = await Nutzer.destroy({

@@ -20,13 +20,14 @@
     <script src="/general/Query.js"></script>
     <script src="/general/MessageHandler.js" defer></script>
     <script src="/general/XHR.js" defer></script>
+    <script src="/general/FormHandler.js" defer></script>
     <script src="/editor/EditorSeite.js" defer></script>
     <title>Zugbaureihentracker | Baureihe ändern</title>
 </head>
 <body>
     <main>
         <a href onclick="history.back()" class="back icon"></a>
-        <form action="/api/baureihe/web/edit" method="post" class="easyform">
+        <form data-api="/api/baureihe/json/edit" method="post" class="easyform">
             <label for="ubid">UBID:</label>
             <input type="text" id="ubid" name="ubid" disabled>
             <label for="name">Name:</label>
