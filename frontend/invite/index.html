@@ -19,13 +19,14 @@
     <script src="/general/Query.js"></script>
     <script src="/general/MessageHandler.js" defer></script>
     <script src="/general/XHR.js" defer></script>
+    <script src="/general/FormHandler.js" defer></script>
     <script src="/invite/InviteSeite.js" defer></script>
     <title>Zugbaureihentracker | Invite</title>
 </head>
 <body>
     <main>
         <a href="/admin" class="back icon"></a>
-        <form action="/api/registrierungscodes/web/addInviteCode" method="POST" class="easyform">
+        <form data-api="/api/registrierungscodes/json/addInviteCode" class="easyform">
             <label for="code">Code</label>
             <input id="code" name="code" />
             <label for="passwort">Das Adminpasswort</label>

@@ -20,6 +20,7 @@
     <script src="/general/Query.js"></script>
     <script src="/general/MessageHandler.js" defer></script>
     <script src="/general/XHR.js" defer></script>
+    <script src="/general/FormHandler.js" defer></script>
     <script src="/suchergebnis/SuchergebnisSeite.js" defer></script>
     <title>Zugbaureihentracker | Suchergebnis</title>
   </head>
@@ -29,11 +30,11 @@
       <h1><b></b> <i style="font-size: smaller;"></i></h1>
       <p>
       </p>
-      <form id="gefunden" action="/api/aktivitaet/web/setgefunden" method="post">
+      <form id="gefunden" data-api="/api/aktivitaet/json/setgefunden">
         <input name="ubid" style="display: none"/><button>Gefunden</button>
       </form>
       <p id="gefundenAm"></p>
-      <form id="gefahren" action="/api/aktivitaet/web/setgefahren" method="post">
+      <form id="gefahren" data-api="/api/aktivitaet/json/setgefahren">
         <input name="ubid" style="display: none"/><button>Gefahren</button>
       </form>
       <p id="gefahrenAm"></p>

@@ -28,12 +28,12 @@ export class Nutzer {
      * Gibt die Anfrage des Servers, eine Registrierung durchzuführen an die Datenbank weiter, damit diese einen neuen Nutzer speichern kann. Bei Erfolg Weiterleitung zur Login Seite, sonst auf Registrieren Seite bleiben.
      */
     async registrieren(req: Request, res: Response) {
-        await API.try(req, res, false, "registrieren?", async (data, ignored) => {
+        await API.try(req, res, false, async (data, ignored) => {
             if (!API.isValidString(data.username)) throw new ValidationError("username");
             if (!API.isValidString(data.passwort)) throw new ValidationError("passwort");
             if (!API.isValidString(data.code)) throw new ValidationError("code");
             await DBNutzer.add(data.username, await this.sha256Hex(data.passwort), data.code);
-            res.redirect("/login?successMessage=" + encodeURIComponent("Registrierung erfolgreich abgeschlossen."));
+            res.send(`{ "successMessage": "Registrierung erfolgreich abgeschlossen." }`);
             console.log(`${data.username} hat sich mit dem Code ${data.code} registriert.`);
         });
     }
@@ -43,7 +43,7 @@ export class Nutzer {
      * Gibt die des Servers einen Login durchzuführen an die Datenbank weiter 
      */
     async anmelden(req: Request, res: Response) {
-        await API.try(req, res, false, "login?", async (data, ignored) => {
+        await API.try(req, res, false, async (data, ignored) => {
             if (!API.isValidString(data.username)) throw new ValidationError("username");
             if (!API.isValidString(data.passwort)) throw new ValidationError("passwort");
             const sessiontoken = await DBNutzer.getSessiontoken(
@@ -55,50 +55,50 @@ export class Nutzer {
                 sameSite: "lax",
                 secure: false
             });
-            res.redirect("/home");
+            res.send(`{ "successMessage": "Erfolreich angemeldet." }`);
         });
     }
 
     async getUUID(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (ignored, sessiontoken) => {
+        await API.try(req, res, true, async (ignored, sessiontoken) => {
             res.send(await DBNutzer.getUUID(sessiontoken as string));
         });
     }
 
     async getNutzername(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             const uuid = await DBNutzer.getUUID(sessiontoken as string);
             res.send((await DBNutzer.getNutzerByUUID((data.uuid ? data.uuid : uuid) as string)).getDataValue("name"));
         });
     }
 
     async elevate(req: Request, res: Response) {
-        await API.try(req, res, true, "elevate?", async (ignored, sessiontoken) => {
+        await API.try(req, res, true, async (ignored, sessiontoken) => {
             await DBNutzer.elevate(sessiontoken as string);
-            res.redirect("/home?successMessage=" + encodeURIComponent("Adminrechte erfolgreich erlangt."));
+            res.send(`{ "successMessage": "Adminrechte erfolgreich erlangt." }`);
             console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat Adminrechte erlangt.`);
         });
     }
 
     async isElevated(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (ignored, sessiontoken) => {
+        await API.try(req, res, true, async (ignored, sessiontoken) => {
             const isElevated = await DBNutzer.isElevated(sessiontoken as string);
             res.send(`{ "isElevated": ${isElevated} }`);
         });
     }
 
     async elevateByUUID(req: Request, res: Response) {
-        await API.try(req, res, true, "accounts?", async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+        await API.try(req, res, true, async (data, sessiontoken) => {
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("elevateOtherUser");
             await DBNutzer.elevateByUUID(data.uuid);
-            res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte hinzugefügt."));
+            res.send(`{ "successMessage": "Account erfolgreich Adminrechte hinzugefügt." }`);
             console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat Adminrechte an ${(await DBNutzer.getNutzerByUUID(data.uuid)).getDataValue("name")} vergeben.`);
         });
     }
 
     async getAll(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (ignored, sessiontoken) => {
+        await API.try(req, res, true, async (ignored, sessiontoken) => {
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("listAccounts");
             res.send(`${JSON.stringify(await DBNutzer.getAll())}`);
         });
@@ -106,23 +106,23 @@ export class Nutzer {
 
     async remove(req: Request, res: Response) {
         const data = req.body;
-        await API.try(req, res, true, `accounts?uuid=${data.uuid}&`, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             let force = false;
             if (data.force) force = true;
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("deleteAccount");
             await DBNutzer.remove(data.uuid, force);
-            res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich gelöscht"));
+            res.send(`{ "successMessage": "Account erfolgreich gelöscht" }`);
             console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat den Account von ${(await DBNutzer.getNutzerByUUID(data.uuid)).getDataValue("name")} gelöscht.`);
         });
     }
 
     async removeAdmin(req: Request, res: Response) {
-        await API.try(req, res, true, "accounts?", async (data, sessiontoken) => {
-            if (!API.isValidString(data.uuid)) throw new ValidationError("uuid");
+        await API.try(req, res, true, async (data, sessiontoken) => {
+            if (!API.isValidUUID(data.uuid)) throw new ValidationError("uuid");
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("removeElevation");
             await DBNutzer.removeAdmin(data.uuid)
-            res.redirect("/accounts?successMessage=" + encodeURIComponent("Account erfolgreich Adminrechte entfernt."));
+            res.send(`{ "successMessage": "Account erfolgreich Adminrechte entfernt." }`);
             console.log(`${(await DBNutzer.getNutzer(sessiontoken as string)).getDataValue("name")} hat ${(await DBNutzer.getNutzerByUUID(data.uuid)).getDataValue("name")} die Adminrechte genommen.`);
         });
     }

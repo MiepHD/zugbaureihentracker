@@ -16,10 +16,10 @@ export class Aktivitaet {
      */
     async alsGefundenMarkieren(req: Request, res: Response) {
         const data = req.body;
-        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsGefundenMarkieren(sessiontoken as string, data.ubid);
-            res.redirect("/home?successMessage=" + encodeURIComponent(`Baureihe wurde als "Gefunden" markiert.`));
+            res.send(`{ "successMessage": "Baureihe wurde als \\\"Gefunden\\\" markiert." }`);
         });
     }
 
@@ -29,15 +29,15 @@ export class Aktivitaet {
      */
     async alsGefahrenMarkieren(req: Request, res: Response) {
         const data = req.body;
-        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsGefahrenMarkieren(sessiontoken as string, data.ubid);
-            res.redirect("/home?successMessage=" + encodeURIComponent(`Baureihe wurde als "Gefahren" markiert.`));
+            res.send(`{ "successMessage": "Baureihe wurde als \\\"Gefahren\\\" markiert." }`);
         });
     }
 
     async getGefundene(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             const uuid = await Nutzer.getUUID(sessiontoken as string);
             if (data.uuid) {
                 if(await Freundesliste.sindBefreundet(uuid, data.uuid as string) || await Nutzer.isElevated(sessiontoken as string)) {
@@ -52,19 +52,19 @@ export class Aktivitaet {
 
     async alsNichtGefundenMarkieren(req: Request, res: Response) {
         const data = req.body;
-        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsNichtGefundenMarkieren(sessiontoken as string, data.ubid);
-            res.redirect("/home?successMessage=" + encodeURIComponent("Baureihe wurde erfolgreich aus den gefundenen Baureihen entfernt"));
+            res.send(`{ "successMessage": "Baureihe wurde erfolgreich aus den gefundenen Baureihen entfernt" }`);
         });
     }
 
     async alsNichtGefahrenMarkieren(req: Request, res: Response) {
         const data = req.body;
-        await API.try(req, res, true, `suchergebnis?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsNichtGefahrenMarkieren(sessiontoken as string, data.ubid);
-            res.redirect("/home?successMessage=" + encodeURIComponent("Baureihe wurde erfolgreich aus den gefahrenen Baureihen entfernt"));
+            res.send(`{ "successMessage": "Baureihe wurde erfolgreich aus den gefahrenen Baureihen entfernt" }`);
         });
     }
 }

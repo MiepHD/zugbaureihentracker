@@ -9,14 +9,14 @@ import { ForbiddenError } from "../error/ForbiddenError";
 
 export class Registrierungscodes {
     async add(req: Request, res: Response, isAuthenticated: boolean) {
-        await API.try(req, res, false, "invite?", async (data, ignored) => {
+        await API.try(req, res, false, async (data, ignored) => {
             if (!isAuthenticated) {
                 const sessiontoken = await API.checkSessiontoken(req, res);
                 if (sessiontoken == null) return;
                 if (!await DBNutzer.isElevated(sessiontoken)) throw new ForbiddenError("createCode");
             }
             await DBRegistrierungscodes.add(data.code as string);
-            res.redirect("/invite?successMessage=" + encodeURIComponent("Registrierungscode erfolgreich erstellt."));
+            res.send(`{ "successMessage": "Registrierungscode erfolgreich erstellt." }`);
             console.log(`Der Registrierungscode ${data.code} wurde hinzugefügt.`);
         });
     }

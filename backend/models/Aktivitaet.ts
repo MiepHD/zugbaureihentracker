@@ -181,7 +181,7 @@ export class Aktivitaet extends Table {
                 ubid: baureihe.getDataValue("ubid"),
             }
         });
-        if (entry == null) throw new NotFoundError("nichtAlsGefahrenMarkiert"); //TODO: Error hinzufügen
+        if (entry == null) throw new NotFoundError("nichtAlsGefahrenMarkiert");
         entry.setDataValue("gefahren", false);
         await entry.save();
     }

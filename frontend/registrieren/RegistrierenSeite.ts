@@ -11,3 +11,4 @@ document.getElementById('registerForm')?.addEventListener('submit', function (ev
         errorMessage.textContent = '';
     }
 });
+new FormHandler(() => {location.href="/login"});

@@ -16,7 +16,7 @@ export class Baureihe {
      * @return Im JSON-Format
      */
     async get(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             res.send(`{
                 "baureihe": ${JSON.stringify(await DBBaureihe.get(data.ubid as string))},
@@ -27,55 +27,53 @@ export class Baureihe {
     }
 
     async count(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             res.send(`${await DBBaureihe.getCount()}`);
         });
     }
 
     async add(req: Request, res: Response) {
-        await API.try(req, res, true, "add?", async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("addBaureihe");
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             if (!API.isValidString(data.name)) throw new ValidationError("name");
             if (!API.isValidString(data.beschreibung)) throw new ValidationError("beschreibung");
             
             await DBBaureihe.add(data.ubid, data.name, data.beschreibung);
-            res.redirect("/add?successMessage=" + "Baureihe wurde erfolgreich erstellt.");
+            res.send(`{ "successMessage": "Baureihe wurde erfolgreich erstellt." }`);
             console.log(`Es wurde eine neue Baureihe hinzugefügt mit der ubid: ${data.ubid}`);
         });
     }
 
     async getAll(req: Request, res: Response) {
-        await API.try(req, res, true, false, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (ignored, sessiontoken) => {
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("getAllBaureihen");
             res.send(`${JSON.stringify(await DBBaureihe.getAll())}`);
         });
     }
 
     async remove(req: Request, res: Response) {
-        const data = req.body;
-        await API.try(req, res, true, `baureihen?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             let force = false;
             if (data.force) force = true;
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("deleteBaureihe");
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
-            
+
             await DBBaureihe.remove(data.ubid, force);
-            res.redirect("/baureihen?successMessage=" + "Baureihe wurde erfolgreich gelöscht.");
+            res.send(`{ "successMessage": "Baureihe wurde erfolgreich gelöscht." }`);
             console.log(`Es wurde die Baureihe mit der ubid ${data.ubid} gelöscht.`);
         });
     }
 
     async edit(req: Request, res: Response) {
-        const data = req.body;
-        await API.try(req, res, true, `editor?ubid=${data.ubid}&`, async (data, sessiontoken) => {
+        await API.try(req, res, true, async (data, sessiontoken) => {
             if (!await DBNutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("editBaureihe");
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             if (!API.isValidString(data.name)) throw new ValidationError("name");
             if (!API.isValidString(data.beschreibung)) throw new ValidationError("beschreibung");
             
             await DBBaureihe.edit(data.ubid, data.name, data.beschreibung);
-            res.redirect("/editor?ubid=" + data.ubid + "&successMessage=" + "Baureihe wurde erfolgreich geändert.");
+            res.send(`{ "ubid": "${data.ubid}", "successMessage": "Baureihe wurde erfolgreich geändert." }`);
             console.log(`Die Baureihe mit der ubid ${data.ubid} wurde geändert.`);
         });
     }
