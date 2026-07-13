@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="FreundschaftsanfragenSeite.js" defer></script>
+    <title>Zugbaureihentracker | Freundschaftsanfragen</title>
+</head>
+<body>
+    <main>
+        <a href="/app/leaderboard" class="back icon"></a>
+        <h1>Anfragen</h1>
+        <h2>Eingehend:</h2>
+        <ol id="eingehend"></ol>
+        <h2>Ausgehend:</h2>
+        <ol id="ausgehend"></ol>
+        <form data-api="/api/freundesliste/json/add">
+            <input name="uuid" /><button aria-label="hinzufügen" class="icon small useradd"></button>
+        </form>
+        <p id="uuid"></p>
+    </main>
+</body>
+</html>

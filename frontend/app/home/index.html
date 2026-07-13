@@ -1,0 +1,47 @@
+<!-- Authors: Christoph, Tim-->
+<!doctype html>
+<html lang="de">
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta property="og:title" content="Home" />
+    <script src="/general/Query.js"></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/RequestBaureihen.js" defer></script>
+    <script src="HomeSeite.js" defer></script>
+    <title>Zugbaureihentracker</title>
+  </head>
+  <body>
+    <main>
+      <a href="/admin/dashboard" style="display:none" id="admin" class="back">Admin-Seite</a>
+      <form action="/api/nutzer/web/logout" methode="GET">
+        <button style="position: absolute; right: 1ch; top: 1ch;" class="logout icon">
+        </button>
+      </form>
+      <h1>Baureihensuche</h1>
+      <form action="/app/suchergebnis" method="GET">
+          <input type="search" name="ubid" placeholder="Suchen..." required/>
+          <button type="submit" class="small icon search">
+          </button>
+      </form>
+      <p>6-stelliger Baureihencode</p>
+      <h1>Bereits gefundene Baureihen</h1>
+      <div id="liste" class="baureihen"></div>
+      <a href="/app/leaderboard" class="bottomleft icon users"></a>
+    </main>
+  </body>
+</html>

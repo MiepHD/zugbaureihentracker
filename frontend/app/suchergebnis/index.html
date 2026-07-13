@@ -1,0 +1,43 @@
+<!-- Authors: Christoph-->
+<!doctype html>
+<html lang="de">
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="SuchergebnisSeite.js" defer></script>
+    <title>Zugbaureihentracker | Suchergebnis</title>
+  </head>
+  <body>
+    <main>
+      <a href onclick="history.back()" class="back icon"></a>
+      <h1><b></b> <i style="font-size: smaller;"></i></h1>
+      <p>
+      </p>
+      <form id="gefunden" data-api="/api/aktivitaet/json/setgefunden">
+        <input name="ubid" style="display: none"/><button>Gefunden</button>
+      </form>
+      <p id="gefundenAm"></p>
+      <form id="gefahren" data-api="/api/aktivitaet/json/setgefahren">
+        <input name="ubid" style="display: none"/><button>Gefahren</button>
+      </form>
+      <p id="gefahrenAm"></p>
+    </main>
+  </body>
+</html>

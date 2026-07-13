@@ -20,14 +20,14 @@ class MessageHandler {
             elem.innerHTML += `&nbsp;&nbsp;&nbsp;<form data-api="/api/nutzer/json/removeAccount/" style="display: inline-block"><input name="uuid" value="${uuid}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`
         }
         if (message.includes("Zugbaureihentracker | Anmelden")) {
-            document.location = "/login?errorMessage=" + encodeURIComponent("Bitte melde dich (erneut) an.");
+            document.location = "/public/login?errorMessage=" + encodeURIComponent("Bitte melde dich (erneut) an.");
             return;
         }
         document.body.appendChild(elem);
-        new FormHandler(() => { location.reload(); }, null, document.querySelectorAll(".errorMessage form"));
         setTimeout(() => {
             elem.remove();
         }, 5000);
+        new FormHandler(() => { location.reload(); }, null, document.querySelectorAll(".errorMessage form"));
     }
 
     showSuccess(message: string) {

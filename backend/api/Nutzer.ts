@@ -17,9 +17,9 @@ export class Nutzer {
         });
         const data: any = req.query;
         if (data.errorMessage) {
-            res.redirect("/login?errorMessage=" + encodeURIComponent(data.errorMessage));
+            res.redirect("/public/login?errorMessage=" + encodeURIComponent(data.errorMessage));
         } else {
-            res.redirect("/login");
+            res.redirect("/public/login");
         }
     }
 

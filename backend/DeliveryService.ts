@@ -18,10 +18,6 @@ export class DeliveryService {
      * @since 17.04.2026
      * @author Tim & Lia, 
      */
-    private paths: String[] = ["", "accounts", "add", "addmany", "admin", "baureihen", "elevate", "freunde", "home", "suchergebnis", "editor"];
-
-    private restricted: String[] = ["accounts", "add", "addmany", "admin", "baureihen", "editor"];
-
 
     /**
      * Der Konstruktor meldet eine Listener bei app an um dann die HTML Seiten bereitzustellen
@@ -31,19 +27,23 @@ export class DeliveryService {
      */
     constructor(app: Express) {
         app.use(cookieParser());
-        for(let urlpath of this.paths) {
-            app.get(`/${urlpath}`, this.handleRequest.bind(this));
-            app.get(`/${urlpath}/index.html`, this.handleRequest.bind(this));
-        }
+        app.get(["/admin{*any}", "/admin"], this.adminAccess.bind(this));
+        app.get(["/app/{*any}", "/app", "/", ""], this.restrictedAccess.bind(this));
         app.use(express.static(path.join(__dirname, '../frontend')));
     }
 
-    private async handleRequest(req: Request, res: Response) {
-        let urlpath = req.path.replaceAll("/", "").replaceAll("index.html", "");
-        if (urlpath === "") urlpath = "home";
-        await API.try(req, res, this.paths.includes(urlpath), async (data, sessiontoken) => {
-            if (this.restricted.includes(urlpath) && !await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("site");
-            res.sendFile(path.join(__dirname, `../frontend/${urlpath}/index.html`));
+    private async adminAccess(req: Request, res: Response) {
+        await API.try(req, res, true, async (ignored, sessiontoken) => {
+            if (!await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("site");
+            res.sendFile(path.join(__dirname, `../frontend/${req.path}`));
+        });
+    }
+
+    private async restrictedAccess(req: Request, res: Response) {
+        let urlpath = req.path;
+        if (urlpath === "") urlpath = "app/home";
+        await API.try(req, res, true, async () => {
+            res.sendFile(path.join(__dirname, `../frontend/${urlpath}`));
         });
     }
 }

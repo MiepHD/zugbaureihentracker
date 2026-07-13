@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="InviteSeite.js" defer></script>
+    <title>Zugbaureihentracker | Invite</title>
+</head>
+<body>
+    <main>
+        <a href="/admin/dashboard" class="back icon"></a>
+        <form data-api="/api/registrierungscodes/json/addInviteCode" class="easyform">
+            <label for="code">Code</label>
+            <input id="code" name="code" />
+            <label for="passwort">Das Adminpasswort</label>
+            <input id="passwort" name="passwort" type="password"/>
+            <div></div>
+            <button>Hinzufügen</button>
+        </form>
+    </main>
+</body>
+</html>
