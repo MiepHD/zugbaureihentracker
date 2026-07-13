@@ -11,13 +11,16 @@ class MessageHandler {
         elem.classList.add("errorMessage");
         elem.textContent = message.includes("|") ? message.split("|")[0] : message;
         elem.innerHTML += '<button style="position: absolute; right:1ch; background-color: var(--secondary)" class="icon small x" type="button" onclick="this.parentElement.remove();"></button>'
+        let formhandling = false;
         if (message.startsWith("409: Diese Baureihe") && message.includes("trotzdem löschen?")) {
             const ubid = message.split("|")[1];
             elem.innerHTML += `&nbsp;&nbsp;&nbsp;<form data-api="/api/baureihe/json/remove/" style="display: inline-block"><input name="ubid" value="${ubid}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`;
+            formhandling = true;
         }
         if (message.startsWith("409: Dieser Account") && message.includes("trotzdem löschen?")) {
             const uuid = message.split("|")[1];
             elem.innerHTML += `&nbsp;&nbsp;&nbsp;<form data-api="/api/nutzer/json/removeAccount/" style="display: inline-block"><input name="uuid" value="${uuid}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`
+            formhandling = true;
         }
         if (message.includes("Zugbaureihentracker | Anmelden")) {
             document.location = "/public/login?errorMessage=" + encodeURIComponent("Bitte melde dich (erneut) an.");
@@ -27,7 +30,8 @@ class MessageHandler {
         setTimeout(() => {
             elem.remove();
         }, 5000);
-        new FormHandler(() => { location.reload(); }, null, document.querySelectorAll(".errorMessage form"));
+        if (formhandling) new FormHandler(() => { location.reload(); }, null, document.querySelectorAll(".errorMessage form"));
+        
     }
 
     showSuccess(message: string) {
