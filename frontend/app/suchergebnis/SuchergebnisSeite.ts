@@ -22,7 +22,15 @@ class SuchergebnisSeite {
       return;
     }
 
-    (document.querySelector("p") as HTMLElement).innerHTML = response.baureihe.beschreibung;
+    if (response.baureihe.Beschreibung.length == 0) {
+      (document.querySelector("p") as HTMLElement).innerHTML = response.baureihe.beschreibung;
+    } else {
+      for (const key of Object.keys(response.baureihe.Beschreibung)) {
+        const elem = document.getElementById(key);
+        if (elem) elem.textContent = response.baureihe.Beschreibung[key];
+      }
+    }
+    
     (document.querySelector("i") as HTMLElement).innerHTML = response.baureihe.name;
 
     const elem = document.querySelector("#gefunden button") as HTMLButtonElement;

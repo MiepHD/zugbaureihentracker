@@ -1,0 +1,3 @@
+new FormHandler(() => {
+    history.back();
+});

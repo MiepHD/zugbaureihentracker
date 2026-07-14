@@ -21,6 +21,7 @@
     <script src="/general/FormHandler.js" defer></script>
     <script src="/general/XHR.js" defer></script>
     <script src="/general/MessageHandler.js" defer></script>
+    <script src="/general/BeschreibungsSelector.js" defer></script>
     <script src="EditorSeite.js" defer></script>
     <title>Zugbaureihentracker | Baureihe ändern</title>
 </head>
@@ -32,8 +33,10 @@
             <input type="text" id="ubid" name="ubid" disabled>
             <label for="name">Name:</label>
             <input type="text" id="name" name="name">
-            <label for="beschreibung">Beschreibung<br> (unterstützt HTML):</label>
-            <textarea id="beschreibung" name="beschreibung"></textarea>
+            <label for="beschreibung">Beschreibung</label>
+            <select id="beschreibung" name="beschreibung"></select>
+            <div></div>
+            <a href="/admin/addBeschreibung">Neue Beschreibung</a>
             <div></div>
             <button>Änderungen speichern</button>
         </form>

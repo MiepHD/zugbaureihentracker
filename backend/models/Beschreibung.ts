@@ -40,7 +40,7 @@ export class Beschreibung extends Table {
 
     public static async add(name: string, besitzer: string, vmax: string, baujahre: string, gewicht: string): Promise<void> {
         try {
-            await Baureihe.create({
+            await Beschreibung.create({
                 name,
                 besitzer,
                 vmax,

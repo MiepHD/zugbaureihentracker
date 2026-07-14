@@ -81,7 +81,9 @@ export class Nutzer {
     }
 
     async isElevated(req: Request, res: Response) {
-        await API.try(req, res, true, async (ignored, sessiontoken) => {
+        const sessiontoken = req.cookies.sessiontoken;
+        await API.try(req, res, false, async () => {
+            if (sessiontoken == undefined || sessiontoken == null || sessiontoken == "" || !await DBNutzer.isValidSessiontoken(sessiontoken)) throw new UnauthorizedError("noSession", false);
             const isElevated = await DBNutzer.isElevated(sessiontoken as string);
             res.send(`{ "isElevated": ${isElevated} }`);
         });
@@ -105,7 +107,6 @@ export class Nutzer {
     }
 
     async remove(req: Request, res: Response) {
-        const data = req.body;
         await API.try(req, res, true, async (data, sessiontoken) => {
             let force = false;
             if (data.force) force = true;
@@ -148,8 +149,7 @@ export class Nutzer {
      */
     static async checkSessiontoken(req: Request, res: Response): Promise<string | null> {
         const sessiontoken = req.cookies.sessiontoken;
-        if (sessiontoken == undefined) throw new UnauthorizedError("noSession");
-        await DBNutzer.getNutzer(sessiontoken);
+        if (sessiontoken == undefined || sessiontoken == null || sessiontoken == "" || !await DBNutzer.isValidSessiontoken(sessiontoken)) throw new UnauthorizedError("noSession");
         return sessiontoken;
     }
 }

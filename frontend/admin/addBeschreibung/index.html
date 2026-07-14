@@ -21,22 +21,23 @@
     <script src="/general/FormHandler.js" defer></script>
     <script src="/general/XHR.js" defer></script>
     <script src="/general/MessageHandler.js" defer></script>
-    <script src="/general/BeschreibungsSelector.js" defer></script>
     <script src="script.js" defer></script>
-    <title>Zugbaureihentracker | Baureihe hinzufügen</title>
+    <title>Zugbaureihentracker | Beschreibung hinzufügen</title>
 </head>
 <body>
     <main>
-        <a href="/admin/dashboard" class="back icon"></a>
-        <form data-api="/api/baureihe/json/add" class="easyform">
-            <label for="ubid">UBID:</label>
-            <input type="text" id="ubid" name="ubid" required>
+        <a href onclick="history.back()" class="back icon"></a>
+        <form data-api="/api/beschreibung/json/add" class="easyform">
             <label for="name">Name:</label>
-            <input type="text" id="name" name="name">
-            <label for="beschreibung">Beschreibung</label>
-            <select id="beschreibung" name="beschreibung"></select>
-            <div></div>
-            <a href="/admin/addBeschreibung">Neue Beschreibung</a>
+            <input type="text" id="name" name="name" required>
+            <label for="besitzer">Besitzer:</label>
+            <input type="text" id="besitzer" name="besitzer">
+            <label for="vmax">Vmax:</label>
+            <input type="text" id="vmax" name="vmax">
+            <label for="baujahre">Baujahr(e):</label>
+            <input type="text" id="baujahre" name="baujahre">
+            <label for="gewicht">Gewicht:</label>
+            <input type="text" id="gewicht" name="gewicht">
             <div></div>
             <button>Hinzufügen</button>
         </form>

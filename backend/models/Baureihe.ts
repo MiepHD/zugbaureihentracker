@@ -33,7 +33,7 @@ export class Baureihe extends Table {
         Baureihe.hasMany(Aktivitaet, {
             foreignKey: "ubid"
         });
-        Baureihe.hasMany(Beschreibung, {
+        Baureihe.belongsTo(Beschreibung, {
             foreignKey: "beschreibung"
         });
     }
