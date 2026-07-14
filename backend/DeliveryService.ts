@@ -41,7 +41,7 @@ export class DeliveryService {
 
     private async restrictedAccess(req: Request, res: Response) {
         let urlpath = req.path;
-        if (urlpath.replaceAll("/", "") === "") urlpath = "app/home/index.html";
+        if (urlpath.replaceAll("/", "") === "") {res.redirect("/app/home"); return;}
         await API.try(req, res, true, async () => {
             res.sendFile(path.join(__dirname, `../frontend/${urlpath}`));
         });
