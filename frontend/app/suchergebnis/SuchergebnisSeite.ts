@@ -15,15 +15,15 @@ class SuchergebnisSeite {
     new XHR().get("/api/baureihe/json/get?" + query.param, (response: any) => {
     if (response && response.errorMessage) {
       messageHandler.showError(response.errorMessage);
-      (document.querySelector("p") as HTMLElement).innerHTML = "";
+      (document.getElementById("beschreibung") as HTMLElement).innerHTML = "";
       (document.querySelector("i") as HTMLElement).innerHTML = "Baureihe wurde nicht gefunden :(";
       (document.getElementById("gefahren") as HTMLElement).style.setProperty("visibility", "hidden");
       (document.getElementById("gefunden") as HTMLElement).style.setProperty("visibility", "hidden");
       return;
     }
 
-    if (response.baureihe.Beschreibung.length == 0) {
-      (document.querySelector("p") as HTMLElement).innerHTML = response.baureihe.beschreibung;
+    if (response.baureihe.Beschreibung == null || response.baureihe.Beschreibung.length == 0) {
+      (document.getElementById("beschreibung") as HTMLElement).innerHTML = response.baureihe.beschreibung == null ? "" : response.baureihe.beschreibung;
     } else {
       for (const key of Object.keys(response.baureihe.Beschreibung)) {
         const elem = document.getElementById(key);

@@ -28,8 +28,7 @@
     <main>
       <a href onclick="history.back()" class="back icon"></a>
       <h1><b></b> <i style="font-size: smaller;"></i></h1>
-      <p>
-        <table>
+        <table id="beschreibung">
           <tbody>
             <tr>
               <td>Besitzer</td><td id="besitzer"></td>
@@ -45,7 +44,6 @@
             </tr>
           </tbody>
         </table>
-      </p>
       <form id="gefunden" data-api="/api/aktivitaet/json/setgefunden">
         <input name="ubid" style="display: none"/><button>Gefunden</button>
       </form>
