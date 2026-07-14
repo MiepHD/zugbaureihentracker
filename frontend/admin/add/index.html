@@ -1,0 +1,45 @@
+<!-- Authors: Lia-->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="/general/BeschreibungsSelector.js" defer></script>
+    <script src="script.js" defer></script>
+    <title>Zugbaureihentracker | Baureihe hinzufügen</title>
+</head>
+<body>
+    <main>
+        <a href="/admin/dashboard" class="back icon"></a>
+        <form data-api="/api/baureihe/json/add" class="easyform">
+            <label for="ubid">UBID:</label>
+            <input type="text" id="ubid" name="ubid" required>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            <label for="beschreibung">Beschreibung</label>
+            <select id="beschreibung" name="beschreibung"></select>
+            <div></div>
+            <a href="/admin/addBeschreibung">Neue Beschreibung</a>
+            <div></div>
+            <button>Hinzufügen</button>
+        </form>
+    </main>
+</body>
+</html>

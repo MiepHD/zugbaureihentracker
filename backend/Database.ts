@@ -5,6 +5,7 @@ import { Baureihe } from './models/Baureihe';
 import { Aktivitaet } from './models/Aktivitaet';
 import { Registrierungscodes } from './models/Registrierungscodes';
 import { Table } from './models/Table';
+import { Beschreibung } from './models/Beschreibung';
 
 export class Database {
     private sequelize: Sequelize;
@@ -29,6 +30,10 @@ export class Database {
      * Dieses Attribut sind nur für Tests
      */
     public aktivitaet: typeof Aktivitaet;
+    /**
+     * Dieses Attribut sind nur für Tests
+     */
+    public beschreibung: typeof Beschreibung;
     
     /**
      * Konstruktor der Klasse Api; Erstellen des Sequelize zur Kommunikation mit der Datenbank; Erstellen der Tabellen
@@ -42,6 +47,7 @@ export class Database {
         this.freundesliste = Freundesliste;
         this.baureihe = Baureihe;
         this.aktivitaet = Aktivitaet;
+        this.beschreibung = Beschreibung;
     }
 
     /**
@@ -49,7 +55,7 @@ export class Database {
      * @author Tim & Lia
      */
     async init(){
-        const models: typeof Table[] = [this.registrierungscodes, this.nutzer, this.freundesliste, this.baureihe, this.aktivitaet];
+        const models: typeof Table[] = [this.registrierungscodes, this.nutzer, this.freundesliste, this.baureihe, this.aktivitaet, this.beschreibung];
         for (const model of models) {
             model.initialize(this.sequelize);
         }

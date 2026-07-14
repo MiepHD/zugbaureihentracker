@@ -1,0 +1,1 @@
+new FormHandler(() => {location.href = "/app/home"});

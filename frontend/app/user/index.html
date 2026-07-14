@@ -1,0 +1,36 @@
+<!-- Authors: Christoph-->
+<!doctype html>
+<html lang="de">
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/general/Query.js"></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/RequestBaureihen.js" defer></script>
+    <script src="UserSeite.js" defer></script>
+    <title>Zugbaureihentracker |</title>
+  </head>
+  <body>
+    <main>
+      <a href onclick="history.back();" class="back icon"></a>
+      <h1><b></b></h1>
+      UUID: <i style="font-size: smaller;"></i>
+      <h2> hat diese ? Baureihen gefunden:</h2>
+      <div id="liste" class="baureihen"></div>
+    </main>
+  </body>
+</html>

@@ -210,6 +210,15 @@ export class Nutzer extends Table {
         return test != 0;
     }
 
+    public static async isValidSessiontoken(sessiontoken: string): Promise<boolean> {
+        const test = await Nutzer.count({
+            where: {
+                sessiontoken
+            }
+        });
+        return test != 0;
+    }
+
     /**
      * @returns Alle registrierten Nutzer mit UUID, Name und Adminstatus
      */

@@ -1,0 +1,42 @@
+<!-- Authors: Christoph -->
+<!doctype html>
+<html lang="de">
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="script.js" defer></script>
+    <title>Zugbaureihentracker | Anmelden</title>
+  </head>
+  <body>
+    <main>
+      <h1>Willkommen beim Zugbaureihentracker!</h1>
+      <form data-api="/api/nutzer/json/anmelden" class="easyform">
+        <label for="fname">Benutzername:</label>
+        <input type="text" id="fname" name="username" required>
+        <label for="lname">Passwort:</label>
+        <input type="password" id="lname" name="passwort" required>
+        <br/>
+        <button>Anmelden</button>
+      </form>
+      <p>Du hast noch kein Konto? <a href="/public/registrieren">Registrieren</a></p>
+    </main>
+  </body>
+</html>
+

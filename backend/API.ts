@@ -15,6 +15,8 @@ import { Registrierungscodes } from "./api/Registierungscodes";
 import { ExpectedError } from "./error/ExpectedError";
 import { randomUUID } from "crypto";
 import { UnauthorizedError } from "./error/UnauthorizedError";
+import { ForbiddenError } from "./error/ForbiddenError";
+import { Beschreibung } from "./api/Beschreibung";
 
 export class API {
     private adminpasswort: string;
@@ -93,6 +95,13 @@ export class API {
         app.post("/api/freundesliste/json/abortanfrage", freundesliste.abortFreundschaftsanfrage.bind(freundesliste));
         app.post("/api/freundesliste/json/ablehnenanfrage", freundesliste.FreundschaftsanfrageAblehnen.bind(freundesliste));
         app.get("/api/freundesliste/json/getausstehend", freundesliste.getAusstehendeFreundschaftsanfragen.bind(freundesliste));
+
+        const beschreibung = new Beschreibung();
+        app.post("/api/beschreibung/json/add", beschreibung.add.bind(beschreibung));
+        app.get("/api/beschreibung/json/getAll", beschreibung.getAll.bind(beschreibung));
+        app.post("/api/beschreibung/json/remove", beschreibung.remove.bind(beschreibung));
+        app.post("/api/beschreibung/json/edit", beschreibung.edit.bind(beschreibung));
+        app.get("/api/beschreibung/json/get", beschreibung.get.bind(beschreibung));
     }
 
     private authorize(req: Request, res: Response, redirect: string) {
@@ -130,9 +139,13 @@ export class API {
             }
             await execute(data, null); }
         catch (e: unknown) {
-            if (e instanceof UnauthorizedError) {
+            if ((e instanceof UnauthorizedError && e.redirect) || e instanceof ForbiddenError) {
                 res.status(e.statuscode);
-                res.redirect(`/login?errorMessage=${encodeURIComponent(`${e.statuscode}: ${(e as Error).message}`)}`);
+                res.redirect(
+                    `${e instanceof UnauthorizedError ? "/public/login" : "/app/home"}?errorMessage=${
+                        encodeURIComponent(`${e.statuscode}: ${(e as Error).message}`)
+                    }`
+                );
                 return;
             } else if (e instanceof ExpectedError) {
                 res.status(e.statuscode);

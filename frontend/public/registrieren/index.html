@@ -1,0 +1,46 @@
+<!-- Christoph -->
+<!doctype html>
+<html lang="de">
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta property="og:type" content="website" />
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="RegistrierenSeite.js" defer></script>
+    <title>Zugbaureihentracker | Registrieren</title>
+  </head>
+  <body>
+    <main>
+      <form id="registerForm" data-api="/api/nutzer/json/registrieren" class="easyform">
+        <p style="grid-column: 1 / span 2;">Registriere Dich auf dieser Seite:</p>
+        <label for="benutzername">Benutzername</label>
+        <input name="username" id="benutzername" required/>
+        <label for="password">Passwort</label>
+        <input id="password" type="password" name="passwort" required/>
+        <label for="passwordConfirm">Passwort erneut eingeben</label>
+        <input id="passwordConfirm" type="password" name="passwortConfirm" required/>
+        <label for="code">Einladungscode</label>
+        <input id="code" name="code" required/>
+        <div id="errorMessage" style="color:red; margin-top:0.5rem;"></div>
+        <button type="submit">Registrieren</button>
+      </form>
+      <p>Du hast doch ein Konto? <a href="/public/login">Anmelden</a></p>
+    </main>
+  </body>
+</html>

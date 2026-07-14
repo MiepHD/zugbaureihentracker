@@ -1,0 +1,46 @@
+<!-- Authors: Lia-->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="script.js" defer></script>
+    <title>Zugbaureihentracker | Beschreibung hinzufügen</title>
+</head>
+<body>
+    <main>
+        <a href onclick="history.back()" class="back icon"></a>
+        <form data-api="/api/beschreibung/json/add" class="easyform">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="besitzer">Besitzer:</label>
+            <input type="text" id="besitzer" name="besitzer">
+            <label for="vmax">Vmax:</label>
+            <input type="text" id="vmax" name="vmax">
+            <label for="baujahre">Baujahr(e):</label>
+            <input type="text" id="baujahre" name="baujahre">
+            <label for="gewicht">Gewicht:</label>
+            <input type="text" id="gewicht" name="gewicht">
+            <div></div>
+            <button>Hinzufügen</button>
+        </form>
+    </main>
+</body>
+</html>

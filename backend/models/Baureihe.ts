@@ -1,10 +1,11 @@
-import { Sequelize, DataTypes, UniqueConstraintError } from 'sequelize';
+import { Sequelize, DataTypes, UniqueConstraintError, ForeignKeyConstraintError } from 'sequelize';
 
 import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
 
 import { NotFoundError } from '../error/NotFoundError';
 import { ConflictError } from '../error/ConflictError';
+import { Beschreibung } from './Beschreibung';
 
 export class Baureihe extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -32,6 +33,9 @@ export class Baureihe extends Table {
         Baureihe.hasMany(Aktivitaet, {
             foreignKey: "ubid"
         });
+        Baureihe.belongsTo(Beschreibung, {
+            foreignKey: "beschreibung"
+        });
     }
 
     /**
@@ -44,7 +48,8 @@ export class Baureihe extends Table {
         const baureihe = await Baureihe.findOne({
             where: {
                 ubid,
-            }
+            },
+            include: [Beschreibung]
         });
         if (!baureihe) throw new NotFoundError("baureihe");
         return baureihe;
@@ -65,6 +70,7 @@ export class Baureihe extends Table {
             });
         } catch (e: unknown) {
             if (e instanceof UniqueConstraintError) throw new ConflictError("baureiheExistiert");
+            if (e instanceof ForeignKeyConstraintError) throw new NotFoundError("beschreibung");
             throw e;
         }
     }
