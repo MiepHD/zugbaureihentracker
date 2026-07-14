@@ -38,6 +38,7 @@ async function loginAsAdmin(username: string) {
 }
 
 async function addTestBaureihe(cookie: any, ubid = "a") {
+    const response1 = await request(app).post("/api/beschreibung/json/add").set("Cookie", cookie).send({ name: "c", baujahre: "A", besitzer: "B", vmax: "C", gewicht: "D"});
     await request(app).post("/api/baureihe/json/add").set("Cookie", cookie).send({ ubid, name: "b", beschreibung: "c" });
 }
 
@@ -146,6 +147,7 @@ test("Gesamtzahl Baureihen API", async () => {
 
 test("Baureihe hinzufügen API", async () => {
     const cookie = await loginAsAdmin("F");
+    const response1 = await request(app).post("/api/beschreibung/json/add").set("Cookie", cookie).send({ name: "cb", baujahre: "A", besitzer: "B", vmax: "C", gewicht: "D"});
     const response = await request(app).post("/api/baureihe/json/add").set("Cookie", cookie).send({ ubid: "ab", name: "bb", beschreibung: "cb" });
     expect(response.status).toBe(200);
 });

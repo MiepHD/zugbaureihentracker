@@ -24,6 +24,7 @@ beforeEach(async () => {
 
 
 test("Baureihe als gefunden markieren", async () => {
+    await db.beschreibung.add("c", "A", "a", "a", "d");
     await db.baureihe.add("a", "b", "c");
     await db.registrierungscodes.add("X");
     await db.nutzer.add("A", "A", "X");
@@ -32,6 +33,7 @@ test("Baureihe als gefunden markieren", async () => {
 });
 
 test("Baureihe abfragen", async () => {
+    await db.beschreibung.add("c", "A", "a", "a", "d");
     await db.baureihe.add("a", "b", "c");
     const baureihe: Baureihe | null = await db.baureihe.get("a");
     if (baureihe == null) return;
@@ -41,11 +43,13 @@ test("Baureihe abfragen", async () => {
 })
 
 test("Baureihe hinzufügen", async () => {
+    await db.beschreibung.add("cb", "A", "a", "a", "d");
     await db.baureihe.add("ab", "bb", "cb");
 });
 
 
 test("Anzahl der Baureihen abfragen", async () => {
+    await db.beschreibung.add("c", "A", "a", "a", "d");
     await db.baureihe.add("a", "b", "c");
     expect(await db.baureihe.getCount()).toBe(1);
 });
@@ -86,6 +90,7 @@ test("Freund entfernen", async () => {
 });
 
 test("Gefundene Baureihen auslesen", async () => {
+    await db.beschreibung.add("c", "A", "a", "a", "d");
     await db.baureihe.add("a", "b", "c");
     await db.registrierungscodes.add("X");
     await db.nutzer.add("F", "F", "X");
@@ -110,6 +115,7 @@ test("InviteCode hinzufügen", async () => {
 });
 
 test("Baureihen von Freunden abrufen (DB)", async () => {
+    await db.beschreibung.add("c", "A", "a", "a", "d");
     await db.baureihe.add("a", "b", "c");
 
     await db.registrierungscodes.add("X");

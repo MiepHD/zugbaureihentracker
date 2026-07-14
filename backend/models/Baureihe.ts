@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, UniqueConstraintError } from 'sequelize';
+import { Sequelize, DataTypes, UniqueConstraintError, ForeignKeyConstraintError } from 'sequelize';
 
 import { Table } from './Table';
 import { Aktivitaet } from './Aktivitaet';
@@ -70,6 +70,7 @@ export class Baureihe extends Table {
             });
         } catch (e: unknown) {
             if (e instanceof UniqueConstraintError) throw new ConflictError("baureiheExistiert");
+            if (e instanceof ForeignKeyConstraintError) throw new NotFoundError("beschreibung");
             throw e;
         }
     }
