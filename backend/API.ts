@@ -100,6 +100,8 @@ export class API {
         app.post("/api/beschreibung/json/add", beschreibung.add.bind(beschreibung));
         app.get("/api/beschreibung/json/getAll", beschreibung.getAll.bind(beschreibung));
         app.post("/api/beschreibung/json/remove", beschreibung.remove.bind(beschreibung));
+        app.post("/api/beschreibung/json/edit", beschreibung.edit.bind(beschreibung));
+        app.get("/api/beschreibung/json/get", beschreibung.get.bind(beschreibung));
     }
 
     private authorize(req: Request, res: Response, redirect: string) {

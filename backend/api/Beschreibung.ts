@@ -41,4 +41,29 @@ export class Beschreibung {
             console.log(`Es wurde die Beschreibung mit dem Namen ${data.name} gelöscht.`);
         });
     }
+
+    async edit(req: Request, res: Response) {
+        await API.try(req, res, true, async (data, sessiontoken) => {
+            if (!await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("editBeschreibung");
+            if (!API.isValidString(data.name)) throw new ValidationError("name");
+            if (!API.isValidString(data.besitzer)) throw new ValidationError("besitzer");
+            if (!API.isValidString(data.vmax)) throw new ValidationError("vmax");
+            if (!API.isValidString(data.baujahre)) throw new ValidationError("baujahre");
+            if (!API.isValidString(data.gewicht)) throw new ValidationError("gewicht");
+            
+            await DBBeschreibung.edit(data.name, data.besitzer, data.vmax, data.baujahre, data.gewicht);
+            res.send(`{ "name": "${data.name}", "successMessage": "Baureihe wurde erfolgreich geändert." }`);
+            console.log(`Die Beschreibung "${data.name}" wurde geändert.`);
+        });
+    }
+
+    async get(req: Request, res: Response) {
+        await API.try(req, res, true, async (data, sessiontoken) => {
+            if (!await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("getBeschreibung");
+            if (!API.isValidString(data.name)) throw new ValidationError("name");
+            res.send(`{
+                "beschreibung": ${JSON.stringify(await DBBeschreibung.get(data.name as string))}
+            }`);
+        });
+    }
 }

@@ -22,6 +22,11 @@ class MessageHandler {
             elem.innerHTML += `&nbsp;&nbsp;&nbsp;<form data-api="/api/nutzer/json/removeAccount/" style="display: inline-block"><input name="uuid" value="${uuid}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`
             formhandling = true;
         }
+        if (message.startsWith("409: Diese Beschreibung") && message.includes("trotzdem löschen?")) {
+            const name = message.split("|")[1];
+            elem.innerHTML += `&nbsp;&nbsp;&nbsp;<form data-api="/api/beschreibung/json/remove/" style="display: inline-block"><input name="name" value="${name}" style="display: none" /><input name="force" value="true" style="display: none"/><button>Ja, wirklich löschen</button></form>`
+            formhandling = true;
+        }
         if (message.includes("Zugbaureihentracker | Anmelden")) {
             document.location = "/public/login?errorMessage=" + encodeURIComponent("Bitte melde dich (erneut) an.");
             return;

@@ -25,6 +25,8 @@
     "ForbiddenError.getAllBeschreibungen": "Keine Berechtigung alle Beschreibungen abzurufen.",
     "ForbiddenError.addBeschreibung": "Keine Berechtigung Beschreibungen hinzuzufügen.",
     "ForbiddenError.removeBeschreibung": "Keine Berechtigung Beschreibungen zu löschen.",
+    "ForbiddenError.editBeschreibung": "Keine Berechtigung Beschreibungen zu ändern.",
+    "ForbiddenError.getBeschreibung": "Keine Berechtigung eine Beschreibung unabhängig einer Baureihe abzufragen.",
 
     "UnauthorizedError.noSession": "Keine Session gefunden.",
     "UnauthorizedError.invalidSession": "Diese Session ist ungültig.",

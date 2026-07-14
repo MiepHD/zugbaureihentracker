@@ -77,4 +77,28 @@ export class Beschreibung extends Table {
         });
         if (success == 0) throw new NotFoundError("beschreibung");
     }
+
+    public static async edit(name: string, besitzer: string, vmax: string, baujahre: string, gewicht: string) {
+        const success = await Beschreibung.findOne({
+            where: {
+                name
+            }
+        });
+        if (success == null) throw new NotFoundError("beschreibung");
+        success.setDataValue("besitzer", besitzer);
+        success.setDataValue("vmax", vmax);
+        success.setDataValue("baujahre", baujahre);
+        success.setDataValue("gewicht", gewicht);
+        await success.save();
+    }
+
+    public static async get(name: string): Promise<Baureihe> {
+        const beschreibung = await Beschreibung.findOne({
+            where: {
+                name,
+            }
+        });
+        if (!beschreibung) throw new NotFoundError("beschreibung");
+        return beschreibung;
+    }
 }

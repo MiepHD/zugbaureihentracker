@@ -9,7 +9,7 @@ class BaureihenSeite {
         return;
       }
       renderBaureihen(response, `
-        <a href="/admin/editor?ubid=%s" aria-label="zurückziehen" class="icon pencil small"></a>
+        <a href="/admin/editor?ubid=%s" aria-label="ändern" class="icon pencil small"></a>
         <form data-api="/api/baureihe/json/remove" style="display: inline-block;">
           <input name="ubid" value="%s" style="display: none">
           <button style="background-color: red" aria-label="löschen" class="icon small x"></button>

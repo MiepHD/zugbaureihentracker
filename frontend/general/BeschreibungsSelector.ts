@@ -1,4 +1,4 @@
-class AddSeite {
+class BeschreibungsSelector {
     constructor() {
         window.addEventListener("pageshow", this.update);
         this.update();
@@ -15,4 +15,4 @@ class AddSeite {
         });
     }
 }
-new AddSeite();
+new BeschreibungsSelector();
