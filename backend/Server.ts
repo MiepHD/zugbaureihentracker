@@ -46,6 +46,9 @@ export class Server {
                 logging: false,
                 dialectOptions: {
                     connectTimeout: 1000,
+                    sessionVariables: {
+                        FOREIGN_KEY_CHECKS: 0
+                    }
                 },
             }
         ), null);
