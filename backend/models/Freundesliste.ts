@@ -55,9 +55,8 @@ export class Freundesliste extends Table {
     }
 
     /**
-     * Hinzufügen eines Freundes in die Freundesliste.
+     * Senden einer Freundschaftsanfrage an einen User
      * @author Tim & Lia
-     * @since 05.05.2026
      * @throws ConflictError
      * @throws NotFoundError
      */
@@ -76,9 +75,8 @@ export class Freundesliste extends Table {
     }
 
     /**
-     * Entfernen eines Freundes aus der Freundesliste.
+     * Entfernen eines Freundes aus der eigenen Freundesliste.
      * @author Tim & Lia
-     * @since 05.05.2026
      * @throws NotFoundError
      */
     public static async remove(sessiontoken: string, uuid: string): Promise<void> {
@@ -99,6 +97,7 @@ export class Freundesliste extends Table {
     }
 
     /**
+     * @returns Baureihe (nur ubid) mit include von Aktivitaet (nur uuid des Feundes) mit include von Nutzer (nur name des Freundes)
      * @throws NotFoundError
      */
     public static async baureihenVonFreundenAbrufen(sessiontoken: string): Promise<Baureihe[]> {
@@ -132,7 +131,7 @@ export class Freundesliste extends Table {
     }
 
     /**
-     * 
+     * @returns TODO
      * @throws NotFoundError
      */
     public static async getRanking(sessiontoken: string): Promise<Nutzer> {
@@ -230,6 +229,7 @@ export class Freundesliste extends Table {
     }
 
     /**
+     * @returns Jeweils Freundesliste (Freundschaftsanfragen) mit include von Nutzer (nur Name des Ziel-Users)
      * @throws NotFoundError
      */
     public static async getAusstehendeFreundschaftsanfragen(sessiontoken: string): Promise<{ eingehend: Freundesliste[], ausgehend: Freundesliste[] }> {
@@ -261,9 +261,14 @@ export class Freundesliste extends Table {
     }
 
     /**
+     * Löscht Freundschaftsverknüpfung
+     * Dient damit gleichzeit für:
+     * - Freund entfernen
+     * - Freundschaftsanfrage ablehnen
+     * - Freundschaftsanfrage zurückziehen
      * @throws NotFoundError
      */
-    public static async deleteAnfrage(vonUUID: string, zuUUID: string) {
+    public static async deleteAnfrage(vonUUID: string, zuUUID: string): Promise<void> {
         const result = await Freundesliste.destroy({
             where: {
                 von: vonUUID,

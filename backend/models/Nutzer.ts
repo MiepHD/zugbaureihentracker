@@ -78,8 +78,8 @@ export class Nutzer extends Table {
     /**
      * Sucht einen Nutzer zu einem Sessiontoken.
      * @author Tim & Lia
-     * @since 28.04.2026
      * @throws UnauthorizedError
+     * @returns Vollständigen Nutzer mit PASSWORTHASH etc. => Sollte niemals direkt an den User ausgegeben werden!
      */
     static async getNutzer(sessiontoken: string): Promise<Nutzer> {
         const nutzer = await Nutzer.findOne({
@@ -93,8 +93,8 @@ export class Nutzer extends Table {
 
     /**
      * @author Tim & Lia
-     * @since 28.04.2026
      * @throws NotFoundError
+     * @returns Vollständigen Nutzer mit PASSWORTHASH, SESSIONTOKEN etc. => Sollte NIEMALS direkt an den User ausgegeben werden!
      */
     static async getNutzerByUUID(uuid: string): Promise<Nutzer> {
         const nutzer = await Nutzer.findOne({
@@ -106,9 +106,8 @@ export class Nutzer extends Table {
 
 
     /**
-     * Registrieren eines Nutzers auf der Website.
+     * Registrieren eines Nutzers
      * @author Tim & Lia
-     * @since 08.05.2026
      * @param code Registrierungscode
      * @throws NotFoundError
      * @throws ConflictError
@@ -152,10 +151,11 @@ export class Nutzer extends Table {
     }
 
     /**
-     * Anmelden des Nutzers auf der Website.
+     * Anmelden des Nutzers
+     * Generiert bei Ausführung immer ein neues Sessiontoken und ersetzt ggf. das bisherige.
+     * Damit verfällt die vorherige Session
      * @author Tim & Lia
-     * @since 08.05.2026
-     * @returns Gibt das neu vergebene Sessiontoken zurück.
+     * @returns neu vergebene Sessiontoken
      * @throws NotFoundError
      */
     public static async getSessiontoken(name: string, passworthash: string): Promise<string> {

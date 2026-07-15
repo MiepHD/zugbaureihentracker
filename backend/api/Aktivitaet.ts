@@ -11,11 +11,11 @@ import { ForbiddenError } from "../error/ForbiddenError";
 
 export class Aktivitaet {
     /**
-     * Gibt die Request, eine Baureihe als gefunden zu markieren an die Datenbank weiter und je nach Anwort Redirected entweder auf die Home Seite oder auf die Suchergebnis Seite.
+     * Zugänglichkeit: Session
+     * @returns Objekt mit successMessage oder errorMessage
      * @author Lia
      */
     async alsGefundenMarkieren(req: Request, res: Response) {
-        const data = req.body;
         await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsGefundenMarkieren(sessiontoken as string, data.ubid);
@@ -24,11 +24,11 @@ export class Aktivitaet {
     }
 
     /**
-     * Gibt die Request, eine Baureihe als gefunden zu markieren an die Datenbank weiter und je nach Anwort Redirected entweder auf die Home Seite oder auf die Suchergebnis Seite.
+     * Zugänglichkeit: Session
+     * @returns Objekt mit successMessage oder errorMessage
      * @author Lia
      */
     async alsGefahrenMarkieren(req: Request, res: Response) {
-        const data = req.body;
         await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsGefahrenMarkieren(sessiontoken as string, data.ubid);
@@ -36,6 +36,10 @@ export class Aktivitaet {
         });
     }
 
+    /**
+     * Zugänglichkeit: Session
+     * @author Lia
+     */
     async getGefundene(req: Request, res: Response) {
         await API.try(req, res, true, async (data, sessiontoken) => {
             const uuid = await Nutzer.getUUID(sessiontoken as string);
@@ -51,7 +55,6 @@ export class Aktivitaet {
     }
 
     async alsNichtGefundenMarkieren(req: Request, res: Response) {
-        const data = req.body;
         await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsNichtGefundenMarkieren(sessiontoken as string, data.ubid);
@@ -60,7 +63,6 @@ export class Aktivitaet {
     }
 
     async alsNichtGefahrenMarkieren(req: Request, res: Response) {
-        const data = req.body;
         await API.try(req, res, true, async (data, sessiontoken) => {
             if (!API.isValidString(data.ubid)) throw new ValidationError("ubid");
             await DBAktivitaet.alsNichtGefahrenMarkieren(sessiontoken as string, data.ubid);

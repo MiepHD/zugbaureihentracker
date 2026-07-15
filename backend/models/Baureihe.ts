@@ -41,7 +41,6 @@ export class Baureihe extends Table {
     /**
      * Suchen einer Baureihe aus der Datenbank und dazugehöriger Informationen.
      * @author Tim
-     * @since 22.05.2026
      * @throws NotFoundError
      */
     public static async get(ubid: string): Promise<Baureihe> {
@@ -58,7 +57,6 @@ export class Baureihe extends Table {
     /**
      * Hinzufügen einer Baureihe in die Datenbank.
      * @author Lia
-     * @since 22.05.2026
      * @throws ConflictError
      */
     public static async add(ubid: string, name: string, beschreibung: string): Promise<void> {
@@ -77,7 +75,6 @@ export class Baureihe extends Table {
 
     /**
      * @author Tim & Lia
-     * @since 28.04.2026
      * @returns Anzahl aller Baureihen
      */
     public static async getCount(): Promise <number> {

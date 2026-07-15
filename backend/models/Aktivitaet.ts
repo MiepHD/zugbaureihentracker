@@ -58,7 +58,6 @@ export class Aktivitaet extends Table {
     /**
      * Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
      * @author Tim
-     * @since 08.06.2026
      * @throws NotFoundError
      */
     public static async alsGefundenMarkieren(token: string, ubid: string): Promise<void> {
@@ -78,7 +77,6 @@ export class Aktivitaet extends Table {
     /**
      * Eine Baureihe als gefunden markieren, indem ein Eintrag in der Tabelle Aktivität erstellt wird.
      * @author Tim
-     * @since 08.06.2026
      * @throws NotFoundError
      */
     public static async alsGefahrenMarkieren(token: string, ubid: string): Promise<void> {
@@ -111,10 +109,9 @@ export class Aktivitaet extends Table {
     /**
      * Gibt eine Liste aller von einem Nutzer gefundenen Baureihen zurück.
      * @author Tim & Lia
-     * @since 28.04.2026
-     * @returns Liste mit allen Einträgen der Tabelle Baureihe.
+     * @returns Liste mit Einträgen von Aktivitaet und include von Baureihe.
      */
-    public static async getGefundeneBaureihen(uuid: string): Promise<Baureihe[]> {
+    public static async getGefundeneBaureihen(uuid: string): Promise<Aktivitaet[]> {
         return await Aktivitaet.findAll({
             where: {
                 uuid
@@ -125,7 +122,7 @@ export class Aktivitaet extends Table {
 
     /**
      * @throws NotFoundError
-     * @return gibt des Zeitpunkt des Findens zurück oder null, wenn die Baureihe nicht gefunden wurde.
+     * @return Zeitpunkt des Findens oder null, wenn die Baureihe nicht gefunden wurde.
      */
     public static async istGefunden(ubid: string, sessiontoken: string): Promise<string | null> {
         const found = await Aktivitaet.findOne({
@@ -140,7 +137,7 @@ export class Aktivitaet extends Table {
 
     /**
      * @throws NotFoundError
-     * @return gibt des Zeitpunkt des Findens zurück oder null, wenn die Baureihe nicht gefunden wurde.
+     * @return Zeitpunkt des Fahrens zurück oder null, wenn die Baureihe nicht gefahren wurde.
      */
     public static async istGefahren(ubid: string, sessiontoken: string): Promise<string | null> {
         const found = await Aktivitaet.findOne({
