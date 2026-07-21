@@ -43,7 +43,7 @@ function renderBaureihen(items: unknown, additionalContent = ""): void {
     }
     const li = document.createElement('li');
     const anfang = `<span class="anfang">&nbsp;&nbsp;&nbsp;</span>`;
-    const ende = `<span class="ende">&nbsp;&nbsp;&nbsp;</span>`;
+    const ende = `<span class="ende">${baureihe.gefahren ? "✓" : "&nbsp;&nbsp;&nbsp;"}</span>`;
     const verbindungen: Array<number> = [];
     let ubid: Array<string> = Array.from(baureihe.ubid);
     ubid.forEach((value: unknown, index: number, arr: unknown[]) => {
@@ -82,7 +82,7 @@ function renderBaureihen(items: unknown, additionalContent = ""): void {
       ubidstring += str;
     }
 
-    li.innerHTML = `<a class="zug" href="/app/suchergebnis?ubid=${baureihe.ubid}">${ubidstring}<span style="color:green">${baureihe.gefahren ? "✓" : "&nbsp;&nbsp;&nbsp;"}</span></a>${additionalContent.replaceAll("%s", baureihe.ubid)}`;
+    li.innerHTML = `<a class="zug" href="/app/suchergebnis?ubid=${baureihe.ubid}">${ubidstring}</a>${additionalContent.replaceAll("%s", baureihe.ubid)}`;
     list.prepend(li);
   }
 }

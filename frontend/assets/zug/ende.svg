@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
-   sodipodi:docname="Ende"
+   sodipodi:docname="ende.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.77415123"
-     inkscape:cx="397.20921"
-     inkscape:cy="561.25984"
+     inkscape:cx="396.56334"
+     inkscape:cy="561.25985"
      inkscape:window-width="1920"
      inkscape:window-height="1128"
      inkscape:window-x="0"
@@ -39,17 +39,17 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:#b81414;stroke:#000000;stroke-width:8.89376;stroke-opacity:1;fill-opacity:1"
-       d="M 203.3435,24.107768 C 121.96737,23.629085 12.827609,88.729995 14.263658,125.10992 c 1.436049,36.37992 15.31786,44.51754 62.707488,45.4749 47.389644,0.95736 135.946034,1.43604 135.946034,1.43604"
+       style="fill:#b81414;fill-opacity:1;stroke:#000000;stroke-width:8.93832;stroke-opacity:1"
+       d="M -0.41938185,24.123295 C 81.791476,23.644713 192.05075,88.731954 190.59997,125.10424 c -1.45078,36.37228 -15.47499,44.50819 -63.35072,45.46535 -47.875749,0.95716 -137.340514,1.43574 -137.340514,1.43574"
        id="path1" />
     <path
-       style="fill:#149bb8;fill-opacity:1;stroke:#000000;stroke-width:5.23684;stroke-opacity:1"
-       d="m 133.95613,35.629455 v 81.693115 c 0,0 -100.125939,1.23776 -113.476066,-11.44941 0,0 28.948184,-37.737837 113.476066,-70.243705 z"
+       style="fill:#149bb8;fill-opacity:1;stroke:#000000;stroke-width:5.26308;stroke-opacity:1"
+       d="m 69.679736,35.642563 v 81.675967 c 0,0 101.152994,1.2375 114.640054,-11.44701 0,0 -29.24512,-37.729914 -114.640054,-70.228957 z"
        id="path2"
        sodipodi:nodetypes="ccc" />
     <path
-       style="fill:#b83d14;fill-opacity:1;stroke:#000000;stroke-width:6.35;stroke-opacity:1"
-       d="m 133.63291,37.594936 h 33.83544 v 79.632914 h -34.86076 z"
+       style="fill:#b83d14;fill-opacity:1;stroke:#000000;stroke-width:6.38181;stroke-opacity:1"
+       d="M 70.006271,37.607631 H 35.823761 V 117.22383 H 71.042109 Z"
        id="path3" />
   </g>
 </svg>
