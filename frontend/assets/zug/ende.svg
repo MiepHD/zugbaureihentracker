@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200mm"
+   height="200mm"
+   viewBox="0 0 200 200"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   sodipodi:docname="Ende"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.77415123"
+     inkscape:cx="397.20921"
+     inkscape:cy="561.25984"
+     inkscape:window-width="1920"
+     inkscape:window-height="1128"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#b81414;stroke:#000000;stroke-width:8.89376;stroke-opacity:1;fill-opacity:1"
+       d="M 203.3435,24.107768 C 121.96737,23.629085 12.827609,88.729995 14.263658,125.10992 c 1.436049,36.37992 15.31786,44.51754 62.707488,45.4749 47.389644,0.95736 135.946034,1.43604 135.946034,1.43604"
+       id="path1" />
+    <path
+       style="fill:#149bb8;fill-opacity:1;stroke:#000000;stroke-width:5.23684;stroke-opacity:1"
+       d="m 133.95613,35.629455 v 81.693115 c 0,0 -100.125939,1.23776 -113.476066,-11.44941 0,0 28.948184,-37.737837 113.476066,-70.243705 z"
+       id="path2"
+       sodipodi:nodetypes="ccc" />
+    <path
+       style="fill:#b83d14;fill-opacity:1;stroke:#000000;stroke-width:6.35;stroke-opacity:1"
+       d="m 133.63291,37.594936 h 33.83544 v 79.632914 h -34.86076 z"
+       id="path3" />
+  </g>
+</svg>

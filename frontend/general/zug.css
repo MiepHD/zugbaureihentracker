@@ -1,0 +1,36 @@
+.zug > * {
+    display: inline-block;
+    cursor: pointer;
+    background-size: contain;
+    --width: 1.875rem;
+    width: var(--width);
+    height: 3.75rem;
+    padding: 0;
+    vertical-align: center;
+    color: var(--background);
+}
+
+.zug > .door {
+    width: calc(var(--width) * 2);
+    background-image: url("/assets/zug/door.svg");
+}
+
+.zug > .verbindung {
+    background-image: url("/assets/zug/verbindung.svg");
+    width: calc(var(--width) / 2);
+}
+
+.zug > .fenster {
+    box-sizing: border-box;
+    padding: 0.75rem 0 0 0;
+    background-image: url("/assets/zug/fenster.svg");
+}
+
+.zug > .anfang, .zug > .ende {
+    width: calc(var(--width) * 2);
+    background-image: url("/assets/zug/ende.svg");
+}
+
+.zug > .ende {
+    transform: scaleX(-1);
+}

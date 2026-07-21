@@ -42,7 +42,47 @@ function renderBaureihen(items: unknown, additionalContent = ""): void {
       (document.getElementById("liste") as HTMLElement).appendChild(details);
     }
     const li = document.createElement('li');
-    li.innerHTML = `<a href="/app/suchergebnis?ubid=${baureihe.ubid}">${baureihe.ubid}<span style="color:green">${baureihe.gefahren ? "✓" : "&nbsp;&nbsp;&nbsp;"}</span></a>${additionalContent.replaceAll("%s", baureihe.ubid)}`;
+    const anfang = `<span class="anfang">&nbsp;&nbsp;&nbsp;</span>`;
+    const ende = `<span class="ende">&nbsp;&nbsp;&nbsp;</span>`;
+    const verbindungen: Array<number> = [];
+    let ubid: Array<string> = Array.from(baureihe.ubid);
+    ubid.forEach((value: unknown, index: number, arr: unknown[]) => {
+        if ((value as string).includes(" ")) {
+          arr[index] = `<span class="verbindung">&nbsp;&nbsp;&nbsp;</span>`;
+          verbindungen.push(index);
+        } else {
+          arr[index] = `<span class="fenster">${value}</span>`;
+        }
+    });
+
+    ubid.unshift(anfang);
+    ubid.push(ende);
+
+    let min = 0;
+    for (let i = 0; i < ubid.length; i++) {
+      if (ubid[i] == `<span class="verbindung">&nbsp;&nbsp;&nbsp;</span>` || ubid[i].includes(ende)) {
+        ubid[i - 1] = `<span class="door">&nbsp;&nbsp;&nbsp;</span>` + ubid[i - 1];
+
+        let count = 0;
+        let curr = i - 2;
+        while (curr > min + 1) {
+          count += 1;
+          if (count == 2) {
+            ubid[curr] = `<span class="door">&nbsp;&nbsp;&nbsp;</span>` + ubid[curr];
+            count = 0;
+          }
+          curr -= 1;
+        }
+        min = i;
+      }
+    }
+
+    let ubidstring = "";
+    for (const str of ubid) {
+      ubidstring += str;
+    }
+
+    li.innerHTML = `<a class="zug" href="/app/suchergebnis?ubid=${baureihe.ubid}">${ubidstring}<span style="color:green">${baureihe.gefahren ? "✓" : "&nbsp;&nbsp;&nbsp;"}</span></a>${additionalContent.replaceAll("%s", baureihe.ubid)}`;
     list.prepend(li);
   }
 }
