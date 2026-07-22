@@ -74,4 +74,12 @@ export class Sessiontoken extends Table {
         });
         return test != 0;
     }
+
+    public static async remove(sessiontoken: string): Promise<void> {
+        await Sessiontoken.destroy({
+            where: {
+                sessiontoken
+            }
+        });
+    }
 }

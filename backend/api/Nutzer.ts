@@ -10,20 +10,6 @@ import { ValidationError } from "../error/ValidationError";
 import { Sessiontoken } from "../models/Sessiontoken";
 
 export class Nutzer {
-    async logout(req: Request, res: Response) {
-        res.clearCookie("sessiontoken", {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: false
-        });
-        const data: any = req.query;
-        if (data.errorMessage) {
-            res.redirect("/public/login?errorMessage=" + encodeURIComponent(data.errorMessage));
-        } else {
-            res.redirect("/public/login");
-        }
-    }
-
     /**
      * Lia
      * Gibt die Anfrage des Servers, eine Registrierung durchzuführen an die Datenbank weiter, damit diese einen neuen Nutzer speichern kann. Bei Erfolg Weiterleitung zur Login Seite, sonst auf Registrieren Seite bleiben.

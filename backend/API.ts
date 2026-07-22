@@ -17,6 +17,7 @@ import { randomUUID } from "crypto";
 import { UnauthorizedError } from "./error/UnauthorizedError";
 import { ForbiddenError } from "./error/ForbiddenError";
 import { Beschreibung } from "./api/Beschreibung";
+import { Sessiontoken } from "./api/Sessiontoken";
 
 export class API {
     private adminpasswort: string;
@@ -48,7 +49,6 @@ export class API {
 
     private async bindListeners(app: Express) {
         const nutzer = new Nutzer();
-        app.get("/api/nutzer/web/logout", nutzer.logout.bind(nutzer));
         app.post("/api/nutzer/json/registrieren", nutzer.registrieren.bind(nutzer));
         app.post("/api/nutzer/json/anmelden", nutzer.anmelden.bind(nutzer));
         app.get("/api/nutzer/raw/getUUID", nutzer.getUUID.bind(nutzer));
@@ -102,6 +102,9 @@ export class API {
         app.post("/api/beschreibung/json/remove", beschreibung.remove.bind(beschreibung));
         app.post("/api/beschreibung/json/edit", beschreibung.edit.bind(beschreibung));
         app.get("/api/beschreibung/json/get", beschreibung.get.bind(beschreibung));
+
+        const sessiontoken = new Sessiontoken();
+        app.post("/api/sessiontoken/web/logout", sessiontoken.logout.bind(sessiontoken));
     }
 
     private authorize(req: Request, res: Response, redirect: string) {
