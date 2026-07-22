@@ -54,7 +54,8 @@ export class Nutzer {
             res.cookie("sessiontoken", sessiontoken, {
                 httpOnly: true,
                 sameSite: "lax",
-                secure: false
+                secure: false,
+                maxAge: 30 * 24 * 60 * 60 * 1000
             });
             res.send(`{ "successMessage": "Erfolreich angemeldet." }`);
         });

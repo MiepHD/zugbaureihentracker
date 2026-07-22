@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, UniqueConstraintError } from "sequelize";
+import { DataTypes, Op, Sequelize, UniqueConstraintError } from "sequelize";
 import { Table } from "./Table";
 import { Nutzer } from "./Nutzer";
 import { randomUUID } from "crypto";
@@ -19,6 +19,10 @@ export class Sessiontoken extends Table {
                 allowNull: false,
                 primaryKey: true,
                 unique: true,
+            },
+            expiresAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
             }
         },
         {
@@ -39,9 +43,12 @@ export class Sessiontoken extends Table {
     public static async add(uuid: string): Promise<string> {
         try {
             const sessiontoken = randomUUID();
+            const expiresAt = new Date();
+            expiresAt.setMonth(expiresAt.getMonth() + 1);
             await Sessiontoken.create({
                 uuid,
-                sessiontoken
+                sessiontoken,
+                expiresAt
             });
             return sessiontoken;
         } catch (e: unknown) {
@@ -53,6 +60,13 @@ export class Sessiontoken extends Table {
     }
 
     public static async isValidSessiontoken(sessiontoken: string): Promise<boolean> {
+        await Sessiontoken.destroy({
+            where: {
+                expiresAt: {
+                    [Op.lt]: new Date()
+                }
+            }
+        })
         const test = await Sessiontoken.count({
             where: {
                 sessiontoken
