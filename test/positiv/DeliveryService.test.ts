@@ -61,7 +61,7 @@ async function registerAndLogin(username: string) {
 
 async function loginAsAdmin(username: string) {
     const cookie = await registerAndLogin(username);
-    await request(app).post("/api/nutzer/json/elevate").set("Cookie", cookie).send({ passwort: "Das Adminpasswort" });
+    await request(app).post("/api/nutzer/json/elevate").send({ passwort: "Das Adminpasswort" });
     return cookie;
 }
 
