@@ -43,7 +43,7 @@ function renderBaureihen(items: unknown, additionalContent = ""): void {
     }
     const li = document.createElement('li');
     const anfang = `<span class="anfang">&nbsp;&nbsp;&nbsp;</span>`;
-    const ende = `<span class="ende">${baureihe.gefahren ? "✓" : "&nbsp;&nbsp;&nbsp;"}</span>`;
+    const ende = `<span class="ende">${baureihe.gefahren ? "<span class='icon user small'></span>" : "&nbsp;&nbsp;&nbsp;"}</span>`;
     const verbindungen: Array<number> = [];
     let ubid: Array<string> = Array.from(baureihe.ubid);
     ubid.forEach((value: unknown, index: number, arr: unknown[]) => {

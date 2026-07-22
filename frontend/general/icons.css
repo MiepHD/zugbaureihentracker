@@ -54,3 +54,24 @@
 .icon.x {
     mask-image: url("/assets/x-alt-svgrepo-com.svg");
 }
+
+.icon.admin {
+    mask-image: url("/assets/beneficiaries-svgrepo-com.svg");
+}
+
+.icon.floppy {
+    mask-image: url("/assets/floppy-svgrepo-com.svg");
+}
+
+.icon.plus {
+    mask-image: url("/assets/plus-alt-svgrepo-com.svg");
+}
+
+.icon.user {
+    mask-image: url("/assets/user-svgrepo-com.svg");
+    background-color: var(--background);
+}
+
+.icon.contacts {
+    mask-image: url("/assets/contacts-svgrepo-com.svg");
+}

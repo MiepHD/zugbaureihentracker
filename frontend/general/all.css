@@ -118,6 +118,12 @@ form:has(button > img.icon) {
     left: 1ch;
 }
 
+.topright {
+    position: absolute;
+    top: 1ch;
+    right: 1ch;
+}
+
 textarea {
     width: 100%;
     height: 100%;
