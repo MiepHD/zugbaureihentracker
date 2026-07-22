@@ -51,7 +51,7 @@ async function getUUID(cookie: any) {
 
 test("Logout API", async () => {
     const cookie = await registerAndLogin("LogoutUser");
-    const response = await request(app).get("/api/nutzer/web/logout").set("Cookie", cookie);
+    const response = await request(app).post("/api/sessiontoken/web/logout").set("Cookie", cookie);
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/public/login");
 });

@@ -37,10 +37,10 @@ export class API {
             }
         }
         API.db = new Database(sequelize);
-        API.db.init();
     }
 
     public async init(app: Express): Promise<void> {
+        await API.db.init();
         app.use(express.urlencoded({ extended: true }));
         app.use(express.json());
         app.use(cookieParser());
