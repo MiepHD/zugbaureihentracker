@@ -83,20 +83,21 @@ ul > li > a {
 
 /* Ecken */
 
+.bottomleft, .topright, .back {
+    position: fixed;
+}
+
 .bottomleft {
-    position: absolute;
     bottom: 1ch;
     left: 1ch;
 }
 
 .topright {
-    position: absolute;
     top: 1ch;
     right: 1ch;
 }
 
 .back {
-    position: absolute;
     left: 1ch;
     top: 1ch;
 }
