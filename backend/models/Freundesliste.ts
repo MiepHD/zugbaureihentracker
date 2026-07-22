@@ -7,6 +7,7 @@ import { Baureihe } from './Baureihe';
 
 import { NotFoundError } from '../error/NotFoundError';
 import { ConflictError } from '../error/ConflictError';
+import { Sessiontoken } from './Sessiontoken';
 
 export class Freundesliste extends Table {
     public static initialize(sequelize: Sequelize) {
@@ -148,7 +149,6 @@ export class Freundesliste extends Table {
             isComplete: true
         });
         const tabelle = await Nutzer.findAll({
-            where: { sessiontoken },
             attributes: ["uuid"], 
             subQuery: false,
             include: [{
@@ -171,6 +171,13 @@ export class Freundesliste extends Table {
                         'score'
                     ]
                 ]
+            }, {
+                model: Sessiontoken,
+                required: true,
+                where: {
+                    sessiontoken
+                },
+                attributes: ["uuid"]
             }],
             order: [
                 [literal('`Freunde.score`'), 'DESC'] // Beachte die Backticks passend zum MariaDB SQL-Dialekt

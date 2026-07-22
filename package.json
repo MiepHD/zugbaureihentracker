@@ -23,7 +23,7 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
-    "mariadb": "^3.5.3",
+    "mariadb": "^2.5.6",
     "multer": "^2.2.0",
     "sequelize": "^6.37.8"
   }

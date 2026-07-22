@@ -9,8 +9,10 @@ import { Registrierungscodes } from './Registrierungscodes';
 import { NotFoundError } from '../error/NotFoundError';
 import { ConflictError } from '../error/ConflictError';
 import { UnauthorizedError } from '../error/UnauthorizedError';
+import { Sessiontoken } from './Sessiontoken';
 
 export class Nutzer extends Table {
+    declare uuid: string;
     public static initialize(sequelize: Sequelize) {
         Nutzer.init({
             uuid: {
@@ -28,9 +30,6 @@ export class Nutzer extends Table {
             passworthash: {
                 type: DataTypes.STRING,
                 allowNull: false,
-            },
-            sessiontoken: {
-                type: DataTypes.STRING,
             },
             admin: {
                 type: DataTypes.BOOLEAN,
@@ -72,6 +71,9 @@ export class Nutzer extends Table {
         Nutzer.hasMany(Aktivitaet, {
             foreignKey: "uuid"
         });
+        Nutzer.hasMany(Sessiontoken, {
+            foreignKey: "uuid"
+        });
     }
 
 
@@ -83,9 +85,13 @@ export class Nutzer extends Table {
      */
     static async getNutzer(sessiontoken: string): Promise<Nutzer> {
         const nutzer = await Nutzer.findOne({
-            where: {
-                sessiontoken,
-            },
+            include: [{
+                model: Sessiontoken,
+                where: {
+                    sessiontoken,
+                },
+                required: true
+            }]
         });
         if (!nutzer) throw new UnauthorizedError("invalidSession");
         return nutzer;
@@ -166,9 +172,7 @@ export class Nutzer extends Table {
             }
         });
         if(!entry) throw new NotFoundError("login");
-        const sessiontoken: string = randomUUID();
-        entry.setDataValue("sessiontoken", sessiontoken);
-        await entry.save();
+        const sessiontoken = await Sessiontoken.add(entry.uuid);
         return sessiontoken;
     }
 
@@ -203,18 +207,15 @@ export class Nutzer extends Table {
     public static async isElevated(sessiontoken: string): Promise<boolean> {
         const test = await Nutzer.count({
             where: {
-                sessiontoken,
                 admin: true
-            }
-        });
-        return test != 0;
-    }
-
-    public static async isValidSessiontoken(sessiontoken: string): Promise<boolean> {
-        const test = await Nutzer.count({
-            where: {
-                sessiontoken
-            }
+            },
+            include: [{
+                model: Sessiontoken,
+                where: {
+                    sessiontoken
+                },
+                required: true
+            }]
         });
         return test != 0;
     }

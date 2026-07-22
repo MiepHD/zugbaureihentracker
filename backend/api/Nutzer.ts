@@ -7,6 +7,7 @@ import { API } from "../API";
 import { UnauthorizedError } from "../error/UnauthorizedError";
 import { ForbiddenError } from "../error/ForbiddenError";
 import { ValidationError } from "../error/ValidationError";
+import { Sessiontoken } from "../models/Sessiontoken";
 
 export class Nutzer {
     async logout(req: Request, res: Response) {
@@ -83,7 +84,7 @@ export class Nutzer {
     async isElevated(req: Request, res: Response) {
         const sessiontoken = req.cookies.sessiontoken;
         await API.try(req, res, false, async () => {
-            if (sessiontoken == undefined || sessiontoken == null || sessiontoken == "" || !await DBNutzer.isValidSessiontoken(sessiontoken)) throw new UnauthorizedError("noSession", false);
+            if (sessiontoken == undefined || sessiontoken == null || sessiontoken == "" || !await Sessiontoken.isValidSessiontoken(sessiontoken)) throw new UnauthorizedError("noSession", false);
             const isElevated = await DBNutzer.isElevated(sessiontoken as string);
             res.send(`{ "isElevated": ${isElevated} }`);
         });
@@ -149,7 +150,7 @@ export class Nutzer {
      */
     static async checkSessiontoken(req: Request, res: Response): Promise<string | null> {
         const sessiontoken = req.cookies.sessiontoken;
-        if (sessiontoken == undefined || sessiontoken == null || sessiontoken == "" || !await DBNutzer.isValidSessiontoken(sessiontoken)) throw new UnauthorizedError("noSession");
+        if (sessiontoken == undefined || sessiontoken == null || sessiontoken == "" || !await Sessiontoken.isValidSessiontoken(sessiontoken)) throw new UnauthorizedError("noSession");
         return sessiontoken;
     }
 }
