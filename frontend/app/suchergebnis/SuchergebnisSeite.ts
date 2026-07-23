@@ -32,6 +32,7 @@ class SuchergebnisSeite {
     }
     
     (document.querySelector("i") as HTMLElement).innerHTML = response.baureihe.name;
+    (document.querySelector("img") as HTMLImageElement).src += response.baureihe.Beschreibung.name + ".webp";
 
     const elem = document.querySelector("#gefunden button") as HTMLButtonElement;
     elem.textContent = "Gefunden";

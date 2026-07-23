@@ -18,6 +18,7 @@ import { UnauthorizedError } from "./error/UnauthorizedError";
 import { ForbiddenError } from "./error/ForbiddenError";
 import { Beschreibung } from "./api/Beschreibung";
 import { Sessiontoken } from "./api/Sessiontoken";
+import multer from "multer";
 
 export class API {
     private adminpasswort: string;
@@ -48,26 +49,27 @@ export class API {
     }
 
     private async bindListeners(app: Express) {
+        const upload = multer({ storage: multer.memoryStorage() });
         const nutzer = new Nutzer();
-        app.post("/api/nutzer/json/registrieren", nutzer.registrieren.bind(nutzer));
-        app.post("/api/nutzer/json/anmelden", nutzer.anmelden.bind(nutzer));
+        app.post("/api/nutzer/json/registrieren", upload.none(), nutzer.registrieren.bind(nutzer));
+        app.post("/api/nutzer/json/anmelden", upload.none(), nutzer.anmelden.bind(nutzer));
         app.get("/api/nutzer/raw/getUUID", nutzer.getUUID.bind(nutzer));
         app.get("/api/nutzer/json/getAccounts", nutzer.getAll.bind(nutzer));
-        app.post("/api/nutzer/json/removeAccount", nutzer.remove.bind(nutzer));
+        app.post("/api/nutzer/json/removeAccount", upload.none(), nutzer.remove.bind(nutzer));
         app.get("/api/nutzer/json/isElevated", nutzer.isElevated.bind(nutzer));
         app.get("/api/nutzer/raw/getNutzername", nutzer.getNutzername.bind(nutzer));
-        app.post("/api/nutzer/json/removeAdmin", (req: Request, res: Response) => {
+        app.post("/api/nutzer/json/removeAdmin", upload.none(), (req: Request, res: Response) => {
             if (this.authorize(req, res, "accounts")) nutzer.removeAdmin(req, res);
         });
-        app.post("/api/nutzer/json/addAdmin", (req: Request, res: Response) => {
+        app.post("/api/nutzer/json/addAdmin", upload.none(), (req: Request, res: Response) => {
             if (this.authorize(req, res, "accounts")) nutzer.elevateByUUID(req, res);
         });
-        app.post("/api/nutzer/json/elevate", (req: Request, res: Response) => {
+        app.post("/api/nutzer/json/elevate", upload.none(), (req: Request, res: Response) => {
             if (this.authorize(req, res, "elevate")) nutzer.elevate(req, res);
         });
 
         const registrierungscodes = new Registrierungscodes();
-        app.post("/api/registrierungscodes/json/addInviteCode", (req: Request, res: Response) => {
+        app.post("/api/registrierungscodes/json/addInviteCode", upload.none(), (req: Request, res: Response) => {
             registrierungscodes.add(req, res, req.body.passwort == this.adminpasswort)
         });
 
@@ -75,33 +77,34 @@ export class API {
         app.get("/api/baureihe/json/get", baureihe.get.bind(baureihe));
         app.get("/api/baureihe/json/getall", baureihe.getAll.bind(baureihe));
         app.get("/api/baureihe/raw/count", baureihe.count.bind(baureihe));
-        app.post("/api/baureihe/json/add", baureihe.add.bind(baureihe));
-        app.post("/api/baureihe/json/remove", baureihe.remove.bind(baureihe));
-        app.post("/api/baureihe/json/edit", baureihe.edit.bind(baureihe));
+        app.post("/api/baureihe/json/add", upload.none(), baureihe.add.bind(baureihe));
+        app.post("/api/baureihe/json/remove", upload.none(), baureihe.remove.bind(baureihe));
+        app.post("/api/baureihe/json/edit", upload.none(), baureihe.edit.bind(baureihe));
 
         const aktivitaet = new Aktivitaet();
-        app.post("/api/aktivitaet/json/setgefunden", aktivitaet.alsGefundenMarkieren.bind(aktivitaet));
-        app.post("/api/aktivitaet/json/setnichtgefunden", aktivitaet.alsNichtGefundenMarkieren.bind(aktivitaet));
-        app.post("/api/aktivitaet/json/setgefahren", aktivitaet.alsGefahrenMarkieren.bind(aktivitaet));
-        app.post("/api/aktivitaet/json/setnichtgefahren", aktivitaet.alsNichtGefahrenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setgefunden", upload.none(), aktivitaet.alsGefundenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setnichtgefunden", upload.none(), aktivitaet.alsNichtGefundenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setgefahren", upload.none(), aktivitaet.alsGefahrenMarkieren.bind(aktivitaet));
+        app.post("/api/aktivitaet/json/setnichtgefahren", upload.none(), aktivitaet.alsNichtGefahrenMarkieren.bind(aktivitaet));
         app.get("/api/aktivitaet/json/getgefunden", aktivitaet.getGefundene.bind(aktivitaet));
 
         const freundesliste = new Freundesliste();
-        app.post("/api/freundesliste/json/add", freundesliste.add.bind(freundesliste));
-        app.post("/api/freundesliste/json/remove", freundesliste.remove.bind(freundesliste));
+        app.post("/api/freundesliste/json/add", upload.none(), freundesliste.add.bind(freundesliste));
+        app.post("/api/freundesliste/json/remove", upload.none(), freundesliste.remove.bind(freundesliste));
         app.get("/api/freundesliste/json/baureihenvonfreundenabrufen", freundesliste.baureihenVonFreundenAbrufen.bind(freundesliste));
         app.get("/api/freundesliste/json/getranking", freundesliste.getRanking.bind(freundesliste));
-        app.post("/api/freundesliste/json/akzeptiereanfrage", freundesliste.akzeptiereFreundschaftsanfrage.bind(freundesliste));
-        app.post("/api/freundesliste/json/abortanfrage", freundesliste.abortFreundschaftsanfrage.bind(freundesliste));
-        app.post("/api/freundesliste/json/ablehnenanfrage", freundesliste.FreundschaftsanfrageAblehnen.bind(freundesliste));
+        app.post("/api/freundesliste/json/akzeptiereanfrage", upload.none(), freundesliste.akzeptiereFreundschaftsanfrage.bind(freundesliste));
+        app.post("/api/freundesliste/json/abortanfrage", upload.none(), freundesliste.abortFreundschaftsanfrage.bind(freundesliste));
+        app.post("/api/freundesliste/json/ablehnenanfrage", upload.none(), freundesliste.FreundschaftsanfrageAblehnen.bind(freundesliste));
         app.get("/api/freundesliste/json/getausstehend", freundesliste.getAusstehendeFreundschaftsanfragen.bind(freundesliste));
 
         const beschreibung = new Beschreibung();
-        app.post("/api/beschreibung/json/add", beschreibung.add.bind(beschreibung));
+        app.post("/api/beschreibung/json/add", upload.single("bild"), beschreibung.add.bind(beschreibung));
         app.get("/api/beschreibung/json/getAll", beschreibung.getAll.bind(beschreibung));
-        app.post("/api/beschreibung/json/remove", beschreibung.remove.bind(beschreibung));
-        app.post("/api/beschreibung/json/edit", beschreibung.edit.bind(beschreibung));
+        app.post("/api/beschreibung/json/remove", upload.none(), beschreibung.remove.bind(beschreibung));
+        app.post("/api/beschreibung/json/edit", upload.single("bild"), beschreibung.edit.bind(beschreibung));
         app.get("/api/beschreibung/json/get", beschreibung.get.bind(beschreibung));
+        app.post("/api/beschreibung/json/removeImage", upload.none(), beschreibung.removeImage.bind(beschreibung));
 
         const sessiontoken = new Sessiontoken();
         app.post("/api/sessiontoken/web/logout", (req, res) => {

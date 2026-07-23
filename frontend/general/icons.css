@@ -79,3 +79,15 @@
 .icon.settings {
     mask-image: url("/assets/cog-svgrepo-com.svg");
 }
+
+.icon.trash {
+    mask-image: url("/assets/document-x-svgrepo-com.svg");
+}
+
+.icon.star {
+    mask-image: url("/assets/star-svgrepo-com.svg");
+}
+
+.icon.unstar {
+    mask-image: url("/assets/star-off-svgrepo-com.svg");
+}

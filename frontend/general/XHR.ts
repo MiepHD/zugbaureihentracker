@@ -13,21 +13,11 @@ class XHR {
 
     post(endpoint: string, data: any, callback: (response: any) => void) {
         this.xhr.open('POST', endpoint, true);
-        // Teilt dem Server mit, dass wir JSON senden und erwarten
-        this.xhr.setRequestHeader('Content-Type', 'application/json');
         this.xhr.setRequestHeader('Accept', 'application/json');
         
         this.handleAnswer(callback);
-
-        if (data instanceof FormData) {
-            const newdata: Record<string, any> = {};
-            data.forEach((value, key) => {
-                newdata[key] = value;
-            });
-            data = newdata;
-        }
         
-        this.xhr.send(JSON.stringify(data));
+        this.xhr.send(data instanceof FormData ? data : JSON.stringify(data));
     }
 
     private handleAnswer(callback: (response: any) => void) {

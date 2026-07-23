@@ -1,7 +1,7 @@
 class EditorBeschreibungSeite {
   constructor() {
     this.update();
-    new FormHandler(this.resetForm, this.resetForm);
+    new FormHandler(this.update, this.update);
   }
   update() {
     (document.getElementById("name") as HTMLInputElement).value = query.get("name") as string;
@@ -13,18 +13,13 @@ class EditorBeschreibungSeite {
       }
 
       (document.getElementById("name") as HTMLInputElement).value = response.beschreibung.name;
+      (document.querySelector("img") as HTMLImageElement).src = "/data/fotos/" + response.beschreibung.name + `.webp?t=${Date.now()}`;
+      (document.getElementById("remove-name") as HTMLInputElement).value = response.beschreibung.name;
       (document.getElementById("besitzer") as HTMLInputElement).value = response.beschreibung.besitzer;
       (document.getElementById("vmax") as HTMLInputElement).value = response.beschreibung.vmax;
       (document.getElementById("baujahre") as HTMLInputElement).value = response.beschreibung.baujahre;
       (document.getElementById("gewicht") as HTMLInputElement).value = response.beschreibung.gewicht;
     });
-
-    (document.querySelector("form") as HTMLFormElement).addEventListener("submit", () => {
-      (document.getElementById("name") as HTMLInputElement).removeAttribute("disabled");
-    });
-  }
-  resetForm() {
-    (document.getElementById("name") as HTMLInputElement).disabled = true;
   }
 }
 new EditorBeschreibungSeite();

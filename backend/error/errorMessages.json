@@ -27,6 +27,7 @@
     "ForbiddenError.removeBeschreibung": "Keine Berechtigung Beschreibungen zu löschen.",
     "ForbiddenError.editBeschreibung": "Keine Berechtigung Beschreibungen zu ändern.",
     "ForbiddenError.getBeschreibung": "Keine Berechtigung eine Beschreibung unabhängig einer Baureihe abzufragen.",
+    "ForbiddenError.removeImageBeschreibung": "Keine Berechtigung ein Bild zu löschen.",
 
     "UnauthorizedError.noSession": "Keine Session gefunden.",
     "UnauthorizedError.invalidSession": "Diese Session ist ungültig.",

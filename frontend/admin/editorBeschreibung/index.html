@@ -21,23 +21,39 @@
     <script src="/general/XHR.js" defer></script>
     <script src="/general/MessageHandler.js" defer></script>
     <script src="EditorBeschreibungSeite.js" defer></script>
-    <title>Zugbaureihentracker | Beschreibung hinzufügen</title>
+    <title>Zugbaureihentracker | Beschreibung bearbeiten</title>
 </head>
 <body>
     <main>
         <a href onclick="history.back()" class="back icon"></a>
         <form data-api="/api/beschreibung/json/edit" class="easyform">
             <label for="name">Name:</label>
-            <input type="text" id="name" name="name" disabled>
+            <input type="text" id="name" name="name" readonly>
+
             <label for="besitzer">Besitzer:</label>
             <input type="text" id="besitzer" name="besitzer">
+
             <label for="vmax">Vmax:</label>
             <input type="text" id="vmax" name="vmax">
+            
             <label for="baujahre">Baujahr(e):</label>
             <input type="text" id="baujahre" name="baujahre">
+            
             <label for="gewicht">Gewicht:</label>
             <input type="text" id="gewicht" name="gewicht">
+            
+            <label for="bild">Bild ändern:</label>
+            <input type="file" id="bild" name="bild" accept="image/*" />
+
             <button class="icon topright floppy"></button>
+        </form>
+
+        <form data-api="/api/beschreibung/json/removeImage" class="easyform">
+          <input type="text" id="remove-name" name="name" style="display:none" />
+          <span>
+            Aktuelles Bild: <button class="icon small trash" aria-label="Bild löschen"></button>
+          </span>
+          <img src="">
         </form>
     </main>
 </body>
