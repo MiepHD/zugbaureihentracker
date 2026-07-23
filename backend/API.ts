@@ -104,7 +104,12 @@ export class API {
         app.get("/api/beschreibung/json/get", beschreibung.get.bind(beschreibung));
 
         const sessiontoken = new Sessiontoken();
-        app.post("/api/sessiontoken/web/logout", sessiontoken.logout.bind(sessiontoken));
+        app.post("/api/sessiontoken/web/logout", (req, res) => {
+            sessiontoken.logout(req, res, false);
+        });
+        app.post("/api/sessiontoken/web/removeAll", (req, res) => {
+            sessiontoken.logout(req, res, true);
+        });
     }
 
     private authorize(req: Request, res: Response, redirect: string) {

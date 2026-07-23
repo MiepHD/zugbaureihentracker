@@ -75,3 +75,7 @@
 .icon.contacts {
     mask-image: url("/assets/contacts-svgrepo-com.svg");
 }
+
+.icon.settings {
+    mask-image: url("/assets/cog-svgrepo-com.svg");
+}

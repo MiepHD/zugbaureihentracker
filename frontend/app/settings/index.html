@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/all.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/colors.css"
+    /><link
+      rel="stylesheet"
+      type="text/css"
+      href="/general/icons.css"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="/general/Query.js"></script>
+    <script src="/general/FormHandler.js" defer></script>
+    <script src="/general/XHR.js" defer></script>
+    <script src="/general/MessageHandler.js" defer></script>
+    <script src="script.js" defer></script>
+    <title>Zugbaureihentracker | Einstellungen</title>
+  </head>
+  <body>
+    <main>
+      <a href="/app/home" class="back icon"></a>
+      <form data-api="/api/sessiontoken/web/removeAll" method="POST">
+        <button>Aus allen Sessios abmelden</button>
+      </form>
+    </main>
+  </body>
+</html>

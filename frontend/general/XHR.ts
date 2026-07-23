@@ -12,12 +12,15 @@ class XHR {
                 return;
             }
             let response = null;
-            try {
-                response = JSON.parse(this.xhr.responseText);
-            } catch {
-                response = this.xhr.responseText;
+            if (this.xhr.status == 0) {
+                response = "0: Der Server ist nicht erreichbar.";
+            } else {
+                try {
+                    response = JSON.parse(this.xhr.responseText);
+                } catch {
+                    response = this.xhr.responseText;
+                }
             }
-            
             callback(response);
         };
         this.xhr.send();

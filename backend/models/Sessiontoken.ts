@@ -82,4 +82,12 @@ export class Sessiontoken extends Table {
             }
         });
     }
+
+    public static async removeAll(sessiontoken: string): Promise<void> {
+        await Sessiontoken.destroy({
+            where: {
+                uuid: await Nutzer.getUUID(sessiontoken)
+            }
+        });
+    }
 }
