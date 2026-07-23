@@ -1,7 +1,3 @@
-/**
- * Christoph
- */
-
 const uuidU = query.get("uuid");
 
 if (uuidU) (document.querySelector("i") as HTMLElement).textContent = uuidU;

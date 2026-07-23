@@ -9,18 +9,18 @@ class FormHandler {
     }
 
     private accountsForm(e: Event) {
-  e.preventDefault();
-  new XHR().post((e.target as HTMLFormElement).getAttribute("data-api") as string, new FormData(e.target as HTMLFormElement), (response: any) => {    
-    if (response && response.errorMessage) {
-        if (this.onerror) this.onerror();
-        messageHandler.showError(response.errorMessage);
-    } else if (response && response.successMessage) {
-        if (this.onsuccess) this.onsuccess();
-        messageHandler.showSuccess(response.successMessage);
-    } else {
-        if (this.onerror) this.onerror();
-        messageHandler.showError(response);
+    e.preventDefault();
+    new XHR().post((e.target as HTMLFormElement).getAttribute("data-api") as string, new FormData(e.target as HTMLFormElement), (response: any) => {    
+        if (response && response.errorMessage) {
+            if (this.onerror) this.onerror();
+            messageHandler.showError(response.errorMessage);
+        } else if (response && response.successMessage) {
+            if (this.onsuccess) this.onsuccess();
+            messageHandler.showSuccess(response.successMessage);
+        } else {
+            if (this.onerror) this.onerror();
+            messageHandler.showError(response);
+        }
+    });
     }
-  });
-}
 }

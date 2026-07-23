@@ -1,4 +1,3 @@
-
 function getBaureihenEndpoint(): string {
   return '/api/aktivitaet/json/getgefunden';
 }
