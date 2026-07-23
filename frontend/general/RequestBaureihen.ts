@@ -83,5 +83,6 @@ function renderBaureihen(items: unknown, additionalContent = ""): void {
 
     li.innerHTML = `<a class="zug" href="/app/suchergebnis?ubid=${baureihe.ubid}">${ubidstring}</a>${additionalContent.replaceAll("%s", baureihe.ubid)}`;
     list.prepend(li);
+    li.children[0].scrollLeft = li.children[0].scrollWidth;
   }
 }

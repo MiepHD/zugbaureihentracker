@@ -40,3 +40,9 @@
     color: var(--accent);
     font-size: x-large;
 }
+
+.zug {
+    display: block;
+    overflow-x: scroll;
+    text-wrap-mode: nowrap;
+}
