@@ -12,7 +12,7 @@ export class Sessiontoken {
                 secure: false
             });
             all ? await DBSessiontoken.removeAll(sessiontoken as string) : await DBSessiontoken.remove(sessiontoken as string);
-            if (data.errorMessage) {
+            if (data && data.errorMessage) {
                 res.redirect("/public/login?errorMessage=" + encodeURIComponent(data.errorMessage));
             } else {
                 res.redirect("/public/login");
