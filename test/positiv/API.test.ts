@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 import express, { Express } from "express";
 import request from "supertest";
 import { beforeAll, beforeEach, expect, test } from "vitest";
-import { API } from "../../backend//API";
+import { API } from "../../src/backend//API";
 
 let app: Express;
 let sequelize: Sequelize;

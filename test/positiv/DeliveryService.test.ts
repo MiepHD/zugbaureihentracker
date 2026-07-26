@@ -3,8 +3,8 @@ import { Sequelize } from 'sequelize';
 import express, { Express } from "express";
 import request from 'supertest';
 
-import { API } from "../../backend/API";
-import { DeliveryService } from "../../backend/DeliveryService";
+import { API } from "../../src/backend/API";
+import { DeliveryService } from "../../src/backend/DeliveryService";
 
 const publicpaths: string[] = ["public/login", "public/registrieren", "public/invite"];
 const restricted: string[] = ["", "app/elevate", "app/freunde", "app/freundschaftsanfragen", "app/home", "app/leaderboard", "app/suchergebnis", "app/user"];

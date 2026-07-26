@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
-import { Database } from "../../backend/Database";
-import { Baureihe } from "../../backend/models/Baureihe";
+import { Database } from "../../src/backend/Database";
+import { Baureihe } from "../../src/backend/models/Baureihe";
 import { expect, test, beforeEach, beforeAll } from 'vitest';
 
 const sequelize = new Sequelize({
