@@ -79,5 +79,5 @@ echo "  mariadb -u ${DB_USER} -p ${DB_NAME}"
 echo ""
 
 echo ""
-echo "Server starten... (mit node backend/Server.js)"
-node backend/Server.js
+echo "Server starten... (mit node src/backend/Server.js)"
+node src/backend/Server.js

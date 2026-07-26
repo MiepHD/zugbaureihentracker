@@ -12,10 +12,11 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/backend/Server.js",
+            "program": "${workspaceFolder}/src/backend/Server.js",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
-            ]
+            ],
+            "preLaunchTask": "npm: build"
         }
     ]
 }

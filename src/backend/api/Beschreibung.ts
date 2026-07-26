@@ -13,7 +13,7 @@ export class Beschreibung {
     private uploadDir: string;
 
     constructor() {
-        this.uploadDir = path.join(__dirname, "../../frontend/data/fotos");
+        this.uploadDir = path.join(__dirname, "../../pages/data/fotos");
 
         if (!fs.existsSync(this.uploadDir)) {
             fs.mkdirSync(this.uploadDir, { recursive: true });

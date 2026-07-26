@@ -2,9 +2,11 @@
   "name": "Zugbaureihentracker",
   "version": "0.0.1",
   "description": "",
-  "main": "backend/Server.js",
+  "main": "./src/backend/Server.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "build": "tsc",
+    "launch": "node $npm_package_main"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +21,7 @@
     "sqlite3": "^6.0.1",
     "supertest": "^7.2.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^7.0.2",
+    "typescript": "^5.9.3",
     "vitest": "^4.1.10"
   },
   "dependencies": {
@@ -29,5 +31,8 @@
     "multer": "^2.2.0",
     "sequelize": "^6.37.8",
     "sharp": "^0.35.3"
+  },
+  "allowScripts": {
+    "sqlite3@6.0.1": true
   }
 }

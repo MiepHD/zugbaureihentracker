@@ -29,13 +29,13 @@ export class DeliveryService {
         app.use(cookieParser());
         app.get(["/admin{*any}", "/admin"], this.adminAccess.bind(this));
         app.get(["/app/{*any}", "/app", "/", ""], this.restrictedAccess.bind(this));
-        app.use(express.static(path.join(__dirname, '../frontend')));
+        app.use(express.static(path.join(__dirname, '../pages')));
     }
 
     private async adminAccess(req: Request, res: Response) {
         await API.try(req, res, true, async (ignored, sessiontoken) => {
             if (!await Nutzer.isElevated(sessiontoken as string)) throw new ForbiddenError("site");
-            res.sendFile(path.join(__dirname, `../frontend/${req.path}`));
+            res.sendFile(path.join(__dirname, `../pages/${req.path}`));
         });
     }
 
@@ -43,7 +43,7 @@ export class DeliveryService {
         let urlpath = req.path;
         if (urlpath.replaceAll("/", "") === "") {res.redirect("/app/home"); return;}
         await API.try(req, res, true, async () => {
-            res.sendFile(path.join(__dirname, `../frontend/${urlpath}`));
+            res.sendFile(path.join(__dirname, `../pages/${urlpath}`));
         });
     }
 }
